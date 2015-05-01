@@ -98,6 +98,31 @@
             android:layout_toEndOf="@+id/start"
             android:layout_toRightOf="@+id/start"
             android:text="01/01/2015   09:00" />
+        
+        
+         <ImageView
+            android:id="@+id/playButton"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:contentDescription="play button"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_play_circle_outline_grey600_36dp" />
+         
+         <ImageView
+            android:id="@+id/pauseButton"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:contentDescription="Pause button"
+             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_pause_circle_outline_grey600_36dp" />
 
         
         <TextView

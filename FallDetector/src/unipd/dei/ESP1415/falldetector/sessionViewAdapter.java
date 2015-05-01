@@ -6,14 +6,13 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.opengl.Visibility;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -65,7 +64,7 @@ public class sessionViewAdapter extends BaseAdapter implements OnClickListener {
 	@Override
 	public View getView(int position, View mySessionView, ViewGroup parent) {
 
-		SessionViewHolder holder;
+		final SessionViewHolder holder;
 
 		if (mySessionView == null) {
 
@@ -85,6 +84,8 @@ public class sessionViewAdapter extends BaseAdapter implements OnClickListener {
 					.findViewById(R.id.durationTime);
 			
 			holder.expandable = (RelativeLayout) mySessionView.findViewById(R.id.expandableLayout);
+			holder.playButton = (ImageView) mySessionView.findViewById(R.id.playButton);
+			holder.pauseButton = (ImageView) mySessionView.findViewById(R.id.pauseButton);
 
 			mySessionView.setTag(holder);
 			
@@ -111,6 +112,30 @@ public class sessionViewAdapter extends BaseAdapter implements OnClickListener {
 		holder.startTime.setText(getDate(start));
 		holder.endTime.setText(getDate(end));
 		holder.durationTime.setText(duration);
+		
+		if(ses.getEnd() == 0) //E' in esecuzione
+		{
+			holder.playButton.setVisibility(View.VISIBLE);
+		}
+			
+		
+		holder.playButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				holder.pauseButton.setVisibility(View.VISIBLE);
+				
+			}
+		});
+		
+		holder.pauseButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				holder.playButton.setVisibility(View.VISIBLE);
+				
+			}
+		});
 
 		mySessionView.setOnClickListener(new OnItemClickListener(position));
 
@@ -181,6 +206,8 @@ public class sessionViewAdapter extends BaseAdapter implements OnClickListener {
 		public TextView endTime;
 		public TextView durationTime;
 		public RelativeLayout expandable;
+		public ImageView playButton;
+		public ImageView pauseButton;
 
 	}
 
