@@ -4,5 +4,11 @@
     <string name="app_name">FallDetector</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="sessionText">SESSION</string>
+    <string name="btnMoreDsc">Click for more details</string>
+    <string name="fallText">Falls</string>
+    <string name="startText">Sarted:</string>
+    <string name="durationText">Duration:</string>
+    <string name="endText">Ended:</string>
 
 </resources>
