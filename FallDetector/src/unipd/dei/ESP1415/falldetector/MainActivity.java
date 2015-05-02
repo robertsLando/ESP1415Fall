@@ -40,7 +40,7 @@ public class MainActivity extends ActionBarActivity {
 			final Session temp = new Session();
 
 			temp.setName("NomeSex");
-			temp.setEnd(1430575557); //oggi
+			temp.setEnd(0); //oggi
 			temp.setStart(1430489157); //domani
 			temp.setFalls(11);
 
