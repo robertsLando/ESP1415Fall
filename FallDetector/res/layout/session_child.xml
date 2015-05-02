@@ -24,15 +24,22 @@
             android:id="@+id/sessionName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/fallsNumber"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
+            android:layout_alignRight="@+id/fallsNumber"
+            android:layout_marginEnd="30dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/sessionImage"
             android:layout_toRightOf="@+id/sessionImage"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="@string/sessionText"
-            android:textAppearance="?android:attr/textAppearanceLarge" />   
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-         <ImageView
+        <ImageView
             android:id="@+id/moreButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,30 +49,19 @@
             android:layout_marginTop="10dp"
             android:contentDescription="@string/btnMoreDsc"
             android:src="@drawable/ic_action_overflow" />
-        
-        <TextView
-            android:id="@+id/falls"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/moreButton"
-            android:layout_toStartOf="@+id/moreButton"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="30dp"
-            android:text="@string/fallText"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/fallsNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginTop="10dp"
-            android:layout_toLeftOf="@+id/falls"
-            android:layout_toStartOf="@+id/falls"
+            android:layout_alignRight="@+id/moreButton"
+            android:layout_alignEnd="@+id/moreButton"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="10"
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </RelativeLayout>
@@ -75,8 +71,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="5dp" 
-        android:visibility="gone">
+        android:paddingBottom="5dp"
+        android:visibility="gone" >
 
         <TextView
             android:id="@+id/start"
@@ -94,47 +90,49 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/start"
             android:layout_toRightOf="@+id/start"
             android:text="01/01/2015   09:00" />
-        
-        
-         <ImageView
-            android:id="@+id/playButton"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:contentDescription="play button"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/ic_play_circle_outline_grey600_36dp" />
-         
-         <ImageView
-            android:id="@+id/pauseButton"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:contentDescription="Pause button"
-             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/ic_pause_circle_outline_grey600_36dp" />
 
-        
+        <ImageView
+            android:id="@+id/playButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:contentDescription="play button"
+            android:src="@drawable/ic_play_circle_outline_grey600_36dp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/pauseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:contentDescription="Pause button"
+            android:src="@drawable/ic_pause_circle_outline_grey600_36dp"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:text="@string/durationText" />
-        
+
         <TextView
             android:id="@+id/end"
             android:layout_width="wrap_content"
@@ -151,24 +149,23 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/startTime"
             android:layout_marginLeft="11dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/end"
             android:layout_toRightOf="@+id/end"
             android:text="02/01/2015   10:56" />
 
-    
-        
         <TextView
             android:id="@+id/durationTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/duration"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/duration"
+            android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
             android:text="21:01:15" />
-        
     </RelativeLayout>
 
 </LinearLayout>

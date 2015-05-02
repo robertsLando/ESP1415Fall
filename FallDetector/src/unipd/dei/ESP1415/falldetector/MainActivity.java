@@ -2,10 +2,14 @@ package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -14,17 +18,22 @@ public class MainActivity extends ActionBarActivity {
 	ListView list; //the reference to the widget in main activity
 	sessionViewAdapter adapter; //the adapter for listview manage
 	public ArrayList<Session> listViewValues = new ArrayList<Session>(); //the container
+	private static FloatingActionButton fabButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		fabButton = fabSetter();
+		
+		
 		//add the elements into the listview
 		setListData();
 		
 		//get the listview widget
-		list = (ListView) findViewById(R.id.sessionListView); 
+		list = (ListView) findViewById(R.id.sessionListView);
+		
 		
 		//create a new adapter for the listview
 		adapter = new sessionViewAdapter(this, listViewValues);
@@ -39,10 +48,10 @@ public class MainActivity extends ActionBarActivity {
 
 			final Session temp = new Session();
 
-			temp.setName("NomeSex");
+			temp.setName("NomeSessioneeeeeeeeee");
 			temp.setEnd(0); //oggi
 			temp.setStart(1430489157); //domani
-			temp.setFalls(11);
+			temp.setFalls(1000);
 
 			listViewValues.add(temp);
 		}
@@ -59,6 +68,32 @@ public class MainActivity extends ActionBarActivity {
         .show();
         
     }
+	
+	private FloatingActionButton fabSetter(){
+		// Set ad final otherwise there are problem on the Listener 
+		final FloatingActionButton fabButton;
+
+		fabButton= new FloatingActionButton.Builder(this)
+		.withDrawable(getResources().getDrawable(R.drawable.ic_plus_black_24dp))
+		.withButtonColor(Color.WHITE)
+		.withGravity(Gravity.BOTTOM | Gravity.END)
+		.withMargins(0, 0, 16, 16).create();
+
+		fabButton.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				if(!fabButton.isHidden()){
+					Toast.makeText(v.getContext(), "Hai premuto il FAB", Toast.LENGTH_SHORT).show();
+				}//if
+			}//onCLick
+		});//setOnClickListener
+
+		return fabButton;
+	}//fabSetter
+	
+	public static FloatingActionButton getFAB(){
+		return fabButton;
+	}//getFAB
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

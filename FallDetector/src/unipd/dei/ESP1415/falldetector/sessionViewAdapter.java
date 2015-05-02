@@ -133,12 +133,12 @@ public class sessionViewAdapter extends BaseAdapter implements OnClickListener {
 		holder.durationTime.setText(duration);
 	
 
-		// generate the random bgcolor not too dark
+		// generate the random bgcolor (not too dark)
 		Random rnd = new Random();
 		int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
 				rnd.nextInt(256));
 		
-		while(ImageHelper.isColorDark(color))
+		while(isColorDark(color))
 			color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
 					rnd.nextInt(256));
 			
@@ -251,6 +251,15 @@ public class sessionViewAdapter extends BaseAdapter implements OnClickListener {
 			return null;
 		}
 	}
+	
+	 private boolean isColorDark(int color){
+		    double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
+		    if(darkness<0.5){
+		        return false; // It's a light color
+		    }else{
+		        return true; // It's a dark color
+		    }
+		}
 	
 
 	/**
