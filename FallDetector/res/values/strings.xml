@@ -10,5 +10,9 @@
     <string name="startText">Sarted:</string>
     <string name="durationText">Duration:</string>
     <string name="endText">Ended:</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="stop">Stop</string>
+    <string name="details">Details</string>
 
 </resources>
