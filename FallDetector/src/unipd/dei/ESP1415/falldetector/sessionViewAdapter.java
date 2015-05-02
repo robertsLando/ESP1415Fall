@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.PopupMenu;
-import android.test.MoreAsserts;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -139,7 +138,7 @@ public class sessionViewAdapter extends BaseAdapter implements OnClickListener {
 		int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
 				rnd.nextInt(256));
 		
-		while(isColorDark(color))
+		while(ImageHelper.isColorDark(color))
 			color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
 					rnd.nextInt(256));
 			
@@ -253,14 +252,6 @@ public class sessionViewAdapter extends BaseAdapter implements OnClickListener {
 		}
 	}
 	
-	private boolean isColorDark(int color){
-	    double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
-	    if(darkness<0.5){
-	        return false; // It's a light color
-	    }else{
-	        return true; // It's a dark color
-	    }
-	}
 
 	/**
 	 * The holder for each ListView Session element
