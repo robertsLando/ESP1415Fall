@@ -90,6 +90,7 @@ public class FloatingActionButton extends View {
 			animSetXY.setDuration(100);
 			animSetXY.start();
 			mHidden = true;
+			this.setVisibility(View.GONE);
 		}
 	}
 
@@ -105,6 +106,7 @@ public class FloatingActionButton extends View {
 			animSetXY.setDuration(200);
 			animSetXY.start();
 			mHidden = false;
+			this.setVisibility(View.VISIBLE);
 		}
 	}
 

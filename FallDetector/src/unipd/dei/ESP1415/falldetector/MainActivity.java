@@ -45,25 +45,29 @@ public class MainActivity extends ActionBarActivity {
 
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				// TODO Auto-generated method stub
+			
+				switch (scrollState) {
+				case OnScrollListener.SCROLL_STATE_IDLE:
+					fabButton.showFloatingActionButton();					
+					break;
+				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+					fabButton.hideFloatingActionButton();
+					break;
+				case OnScrollListener.SCROLL_STATE_FLING:
+					fabButton.hideFloatingActionButton();
+					break;
+				}
+					
 
 			}
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				if (firstVisibleItem + visibleItemCount == totalItemCount
-						&& totalItemCount != 0) {
-					fabButton.hideFloatingActionButton();
-					fabButton.setVisibility(View.GONE);
-				}
-
-				else
-				{
-					fabButton.showFloatingActionButton();
-					fabButton.setVisibility(View.VISIBLE);
-				}
-
+				if(visibleItemCount == totalItemCount)
+					return;
+					
+				
 			}
 		});
 
@@ -72,7 +76,7 @@ public class MainActivity extends ActionBarActivity {
 	public void setListData() {
 
 		// TODO: Add database support fetching
-		for (int i = 0; i < 11; i++) {
+		for (int i = 0; i < 8; i++) {
 
 			final Session temp = new Session();
 
@@ -95,6 +99,7 @@ public class MainActivity extends ActionBarActivity {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	private FloatingActionButton fabSetter() {
 		// Set ad final otherwise there are problem on the Listener
 		final FloatingActionButton fabButton;
