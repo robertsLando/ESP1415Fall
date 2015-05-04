@@ -17,7 +17,7 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity {
 
 	ListView list; // the reference to the widget in main activity
-	sessionViewAdapter adapter; // the adapter for listview manage
+	SessionViewAdapter adapter; // the adapter for listview manage
 	public ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
 																			// container
 	private static FloatingActionButton fabButton;
@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity {
 		list = (ListView) findViewById(R.id.sessionListView);
 
 		// create a new adapter for the listview
-		adapter = new sessionViewAdapter(this, listViewValues);
+		adapter = new SessionViewAdapter(this, listViewValues);
 		list.setAdapter(adapter);
 		
 		//to hide action button when scrolling
