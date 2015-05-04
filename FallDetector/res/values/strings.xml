@@ -10,5 +10,13 @@
     <string name="startText">Sarted:</string>
     <string name="durationText">Duration:</string>
     <string name="endText">Ended:</string>
+    <string name="title_activity_fall_event">Fall</string>
+    <string name="fallNumber">FALL</string>
+    <string name="fallDate">Date:</string>
+    <string name="fallTime">Time:</string>
+    <string name="fallLongitude">Longitude:</string>
+    <string name="fallLatitude">Latitude:</string>
+    <string name="whenFallHappens">WHEN:</string>
+    <string name="fallLocation">WHERE:</string>
 
 </resources>
