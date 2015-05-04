@@ -18,5 +18,10 @@
     <string name="fallLatitude">Latitude:</string>
     <string name="whenFallHappens">WHEN:</string>
     <string name="fallLocation">WHERE:</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="stop">Stop</string>
+    <string name="details">Details</string>
+
 
 </resources>
