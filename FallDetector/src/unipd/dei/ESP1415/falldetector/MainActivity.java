@@ -2,6 +2,8 @@ package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
 
+import android.app.Dialog;
+import android.view.View.OnClickListener;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -115,12 +120,43 @@ public class MainActivity extends ActionBarActivity {
 		fabButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (!fabButton.isHidden()) {
-					Toast.makeText(v.getContext(), "Hai premuto il FAB",
-							Toast.LENGTH_SHORT).show();
-				}// if
-			}// onCLick
-		});// setOnClickListener
+					
+					// custom dialog
+					final Dialog dialog = new Dialog(v.getContext());
+					dialog.setContentView(R.layout.new_session_dialog);
+					dialog.setTitle(getString(R.string.newSession));
+		 
+					// set the custom dialog components - text, image and button
+					EditText text = (EditText) dialog.findViewById(R.id.newSessionName);
+					ImageView image = (ImageView) dialog.findViewById(R.id.newSessionImage);
+					
+					image.setBackgroundColor(SessionViewAdapter.generateRandomBg());
+					
+					Button dialogOkButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+					Button dialogCancelButton = (Button) dialog.findViewById(R.id.dialogButtonCancel);
+					// if button is clicked, close the custom dialog
+					
+					dialogOkButton.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							Toast.makeText(v.getContext(), "Hai creato una nuova sessione", Toast.LENGTH_SHORT).show();
+							dialog.dismiss();
+						}
+					});
+					dialogCancelButton.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							dialog.dismiss();
+							
+						}
+					});
+				 dialog.show();
+					
+			}// onCLick FabButton
+			
+		});// setOnClickListener FabButon
 
 		return fabButton;
 	}// fabSetter

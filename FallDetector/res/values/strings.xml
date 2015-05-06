@@ -28,6 +28,12 @@
     <string name="pref_session_time">Durata sessione</string>
     <string name="pref_session_time_sum">Imposta la durata della sessione</string>
     <string name="pref_contact_setting">IMPOSTAZIONI CONTATTI</string>
-
+    <string name="newSession">NEW SESSION</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="hintSession">Session Name</string>
+    <string name="fallImageDescriptor">Thumbnail Image</string>
+    <string name="pauseButtonDescriptor">Pause Button</string>
+    <string name="playButtonDescriptor">Play Button</string>
 
 </resources>

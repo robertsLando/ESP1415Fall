@@ -134,16 +134,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	
 
 		// generate the random bgcolor (not too dark)
-		Random rnd = new Random();
-		int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
-				rnd.nextInt(256));
 		
-		while(isColorDark(color))
-			color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
-					rnd.nextInt(256));
-			
-		
-		holder.fallIcon.setBackgroundColor(color);
+		holder.fallIcon.setBackgroundColor(generateRandomBg());
 		
 
 		if (ses.getEnd() == 0) // E' in esecuzione
@@ -252,7 +244,20 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		}
 	}
 	
-	 private boolean isColorDark(int color){
+	public static int generateRandomBg()
+	{
+		Random rnd = new Random();
+		int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+				rnd.nextInt(256));
+		
+		while(isColorDark(color))
+			color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+					rnd.nextInt(256));
+			
+		return color;
+	}
+	
+	 private static boolean isColorDark(int color){
 		    double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
 		    if(darkness<0.5){
 		        return false; // It's a light color

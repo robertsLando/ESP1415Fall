@@ -21,6 +21,9 @@ public final class FallDB {
 		public static final String NAME_COLUMN = "name";
 		public static final String START_COLUMN = "start";
 		public static final String END_COLUMN = "end";
+		public static final String X_COLUMN = "x";
+		public static final String Y_COLUMN = "y";
+		public static final String Z_COLUMN = "z";
 		
 		
 		//TYPES STRINGS
