@@ -7,23 +7,30 @@ package unipd.dei.ESP1415.falldetector;
  */
 public class Session {
 	
-	private int id;
+	private long id;
 	private String name;
 	private long start; //timestamp
 	private long end; //timestamp
 	private int falls;
+	private String bgColor;
 	
 	
+	public String getBgColor() {
+		return bgColor;
+	}
+	public void setBgColor(String bgColor) {
+		this.bgColor = bgColor;
+	}
 	public int getFalls() {
 		return falls;
 	}
 	public void setFalls(int falls) {
 		this.falls = falls;
 	}
-	public int getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	public String getName() {

@@ -22,6 +22,14 @@
     <string name="rename">Rename</string>
     <string name="stop">Stop</string>
     <string name="details">Details</string>
-
+    <string name="newSession">NEW SESSION</string>
+    <string name="cancel">CANCEL</string>
+    <string name="ok">OK</string>
+    <string name="hintSession">Session Name</string>
+    <string name="fallImageDescriptor">Thumbnail Image</string>
+     <string name="pauseButtonDescriptor">Pause Button</string>
+      <string name="playButtonDescriptor">Play Button</string>
+    
+    
 
 </resources>
