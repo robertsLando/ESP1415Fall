@@ -2,180 +2,170 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unipd.dei.ESP1415.falldetector.FallEvent"
-    android:orientation="vertical" >
-    
-    <RelativeLayout 
+    android:orientation="vertical"
+    tools:context="unipd.dei.ESP1415.falldetector.FallEvent" >
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0099CC"
         android:orientation="vertical" >
-        
-        <ImageView 
+
+        <ImageView
             android:id="@+id/sessionImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:contentDescription="thumbnail Image"
-            android:src="@drawable/ic_launcher" />
-        
-        <TextView 
+            android:contentDescription="Thumbnail Image"
+            android:src="@drawable/ic_fall" />
+
+        <TextView
             android:id="@+id/fallNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/sessionImage"
-            android:layout_toRightOf="@+id/sessionImage"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
-            android:textColor="#CC0000"
-            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/sessionImage"
+            android:layout_toRightOf="@+id/sessionImage"
             android:text="@string/fallNumber"
-            android:textAppearance="?android:attr/textAppearanceLarge"  />
-        
-        </RelativeLayout>
-        
-     <RelativeLayout 
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#CC0000"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#33B5E5"
         android:orientation="vertical" >
-        
-        <TextView 
+
+        <TextView
             android:id="@+id/when"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/whenFallHappens"
-            android:textStyle="bold"
-            android:textColor="#FFFF4444"/>
-        
-         
-        <TextView 
+            android:textColor="#FFFF4444"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/when"
-            android:layout_marginTop="5dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:textStyle="bold"
-            android:text="@string/fallDate" />
-        
+            android:layout_below="@+id/when"
+            android:layout_marginTop="5dp"
+            android:text="@string/fallDate"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/day"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:layout_below="@+id/when"
-            android:layout_toEndOf="@+id/date"
-            android:layout_toRightOf="@+id/date"
-            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/when"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/date"
+            android:layout_toRightOf="@+id/date"
             android:text="01.01.2015" />
-        
+
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/date"
-            android:layout_marginTop="5dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:textStyle="bold"
-            android:text="@string/fallTime" />
-        
+            android:layout_below="@+id/date"
+            android:layout_marginTop="5dp"
+            android:text="@string/fallTime"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/hour"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:layout_below="@+id/day"
-            android:layout_toEndOf="@+id/time"
-            android:layout_toRightOf="@+id/time"
-            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/day"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/time"
+            android:layout_toRightOf="@+id/time"
             android:text="15:24:30" />
-        
+
         <TextView
             android:id="@+id/location"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_below="@+id/time"
+            android:layout_marginTop="10dp"
             android:text="@string/fallLocation"
-            android:textStyle="bold"
-            android:textColor="#FFFF4444"/>
-            
-        
+            android:textColor="#FFFF4444"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/latitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/location"
-            android:layout_marginTop="5dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:textStyle="bold"
-            android:text="@string/fallLatitude" />
-        
+            android:layout_below="@+id/location"
+            android:layout_marginTop="5dp"
+            android:text="@string/fallLatitude"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/latitudeCoordinates"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:layout_below="@+id/location"
-            android:layout_toEndOf="@+id/latitude"
-            android:layout_toRightOf="@+id/latitude"
-            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/location"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/latitude"
+            android:layout_toRightOf="@+id/latitude"
             android:text="N 41° 53’ 24″" />
-        
+
         <TextView
             android:id="@+id/longitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/latitude"
-            android:layout_marginTop="5dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:textStyle="bold"
-            android:text="@string/fallLongitude"/>
-        
+            android:layout_below="@+id/latitude"
+            android:layout_marginTop="5dp"
+            android:text="@string/fallLongitude"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/longitudeCoordinates"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:layout_below="@+id/latitudeCoordinates"
-            android:layout_toEndOf="@+id/longitude"
-            android:layout_toRightOf="@+id/longitude"
-            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/latitudeCoordinates"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/longitude"
+            android:layout_toRightOf="@+id/longitude"
             android:text="E 012° 29’ 32″" />
-            
     </RelativeLayout>
-    
-    <LinearLayout 
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-        
-        
-        
-        
     </LinearLayout>
-
 
 </LinearLayout>

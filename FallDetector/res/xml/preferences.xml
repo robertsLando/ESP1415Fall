@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:key="session_settings"
+        android:title="@string/session_pref" >
+    </PreferenceCategory>
+
+    <ListPreference
+        android:defaultValue="SENSOR_DELAY_NORMAL"
+        android:entries="@array/sensorRate"
+        android:entryValues="@array/sensorRateValue"
+        android:key="accelerometer_settings"
+        android:selectable="true"
+        android:summary="@string/pref_acc_sum"
+        android:title="@string/pref_acc" />
+
+    <Preference
+        android:key="session_duration"
+        android:summary="@string/pref_session_time_sum"
+        android:title="@string/pref_session_time" />
+
+    <PreferenceCategory 
+        android:key="contacts_setting"
+        android:title="@string/pref_contact_setting" >
+    </PreferenceCategory>
+
+</PreferenceScreen>
