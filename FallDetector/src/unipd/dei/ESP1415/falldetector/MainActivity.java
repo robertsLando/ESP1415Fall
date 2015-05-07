@@ -26,9 +26,9 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity {
 
 	ListView list; // the reference to the widget in main activity
-	SessionViewAdapter adapter; // the adapter for listview manage
-	public ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
-	public Context mContext;																	// container
+	public static SessionViewAdapter adapter; // the adapter for listview manage
+	public static ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
+	public static Context mContext;																	// container
 	private static FloatingActionButton fabButton;
 
 	@Override
@@ -109,14 +109,13 @@ public class MainActivity extends ActionBarActivity {
 			
 			final Session temp = new Session();
 
+			temp.setId(c.getInt(SessionTable.ID));
 			temp.setName(c.getString(SessionTable.NAME));
 			temp.setEnd(c.getLong(SessionTable.END)); // oggi
 			temp.setStart(c.getLong(SessionTable.START)); // domani
 			temp.setBgColor(c.getInt(SessionTable.BGCOLOR));
 			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR)); 
-			temp.setFalls(c.getInt(0));
-			
-			//ok
+			temp.setFalls(c.getInt(SessionTable.FALLS));
 
 			listViewValues.add(temp);
 		}
@@ -172,27 +171,32 @@ public class MainActivity extends ActionBarActivity {
 						public void onClick(View v) {
 							
 							Session temp = new Session();
-							temp.setName(text.getText().toString());
-							temp.setStart(System.currentTimeMillis());
-							temp.setEnd(0);
-							temp.setBgColor(color[0]);
-							temp.setImgColor(color[1]);
-							
-							DbManager databaseManager = new DbManager(mContext);
-							
-							long id = databaseManager.addSession(temp);
-							
-							if(id >= 0)
+							String name = text.getText().toString();
+							if(!name.equals(""))
 							{
-								temp.setId(id);
-								listViewValues.add(temp);
-								Toast.makeText(v.getContext(), "Hai creato una nuova sessione", Toast.LENGTH_SHORT).show();
+								temp.setName(name);
+								temp.setBgColor(color[0]);
+								temp.setImgColor(color[1]);
+								
+								DbManager databaseManager = new DbManager(mContext);
+								
+								long id = databaseManager.addSession(temp);
+								
+								if(id >= 0)
+								{
+									temp.setId(id);
+									listViewValues.add(temp);
+								}
+								
+								else 
+									Toast.makeText(v.getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+								
+								dialog.dismiss();
 							}
-							
-							else 
-								Toast.makeText(v.getContext(), "Si è verificato un errore", Toast.LENGTH_SHORT).show();
+							else
+								Toast.makeText(v.getContext(), getString(R.string.errorEmptyName), Toast.LENGTH_SHORT).show();
 
-							dialog.dismiss();
+								
 						}
 					});
 					dialogCancelButton.setOnClickListener(new OnClickListener() {

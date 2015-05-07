@@ -35,5 +35,8 @@
     <string name="fallImageDescriptor">Thumbnail Image</string>
     <string name="pauseButtonDescriptor">Pause Button</string>
     <string name="playButtonDescriptor">Play Button</string>
+    <string name="error">An error occured</string>
+    <string name="errorEmptyName">Session name must be set!</string>
+    <string name="inExecution">In execution...</string>
 
 </resources>
