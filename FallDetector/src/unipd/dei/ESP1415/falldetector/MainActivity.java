@@ -115,6 +115,8 @@ public class MainActivity extends ActionBarActivity {
 			temp.setBgColor(c.getInt(SessionTable.BGCOLOR));
 			temp.setBgColor(c.getInt(SessionTable.IMGCOLOR)); 
 			temp.setFalls(c.getInt(0));
+			
+			//ok
 
 			listViewValues.add(temp);
 		}
