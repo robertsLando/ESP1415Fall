@@ -32,14 +32,14 @@ public class DbManager {
 	}
 
 	/**
-	 * Gets sessions to complete ordered by priority
+	 * Gets sessions ordered by started date
 	 * 
 	 * @return A Cursor
 	 */
 	public Cursor getSessions() {
 		final String QUERY_MAIN_VIEW = "SELECT * " + "FROM "
 				+ SessionTable.SESSION_TABLE  + " ORDER BY "
-				+ SessionTable.ID_COLUMN + " DESC";
+				+ SessionTable.START_COLUMN + " DESC";
 		db = dbHelper.getReadableDatabase();
 
 		Cursor c = db.rawQuery(QUERY_MAIN_VIEW, null);

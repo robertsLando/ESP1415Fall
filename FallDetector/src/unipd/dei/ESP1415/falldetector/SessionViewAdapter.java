@@ -8,6 +8,9 @@ import java.util.Random;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -135,7 +138,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 		// generate the random bgcolor (not too dark)
 		
-		holder.fallIcon.setBackgroundColor(generateRandomBg());
+		setRandomBg(holder.fallIcon);
 		
 
 		if (ses.getEnd() == 0) // E' in esecuzione
@@ -244,16 +247,37 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		}
 	}
 	
-	public static int generateRandomBg()
+	/**
+	 * This method generate a random thumbnail
+	 * @param v the ImageView
+	 * @return an array with 2 elements: color[0]: the Bgcolor, color[1] the image color
+	 */
+	
+	public static int[] setRandomBg(ImageView v)
 	{
 		Random rnd = new Random();
-		int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+		int[] color = new int[2];
+		color[0] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+				rnd.nextInt(256));
+	    color[1] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
 				rnd.nextInt(256));
 		
-		while(isColorDark(color))
-			color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
-					rnd.nextInt(256));
+		if((isColorDark(color[0]) && isColorDark(color[1])) || (!isColorDark(color[0]) && !isColorDark(color[1])))
+		{
+			while(isColorDark(color[1]))
+				 color[1] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+						rnd.nextInt(256));
 			
+			while(!isColorDark(color[0]))
+				 color[0] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+						rnd.nextInt(256));
+			
+			PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(color[1], PorterDuff.Mode.SRC_ATOP);
+			v.setColorFilter(colorFilter);
+		}
+		
+		v.setBackgroundColor(color[0]);
+		
 		return color;
 	}
 	
