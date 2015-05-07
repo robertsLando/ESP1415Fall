@@ -70,6 +70,7 @@ public class DbManager {
 		values.put(SessionDB.SessionTable.START_COLUMN, currentTimestamp);
 		values.put(SessionDB.SessionTable.END_COLUMN, 0);
 		values.put(SessionDB.SessionTable.BGCOLOR_COLUMN, session.getBgColor());
+		values.put(SessionDB.SessionTable.IMGCOLOR_COLUMN, session.getImgColor());
 		
 
 		// Insert into the table the values

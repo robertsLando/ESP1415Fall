@@ -134,11 +134,12 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		holder.startTime.setText(getDate(start));
 		holder.endTime.setText(getDate(end));
 		holder.durationTime.setText(duration);
-	
-
-		// generate the random bgcolor (not too dark)
 		
-		setRandomBg(holder.fallIcon);
+		PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(ses.getImgColor(), PorterDuff.Mode.SRC_ATOP);
+		holder.fallIcon.setColorFilter(colorFilter);
+		holder.fallIcon.setBackgroundColor(ses.getBgColor());
+		
+		
 		
 
 		if (ses.getEnd() == 0) // E' in esecuzione

@@ -113,7 +113,7 @@ public class MainActivity extends ActionBarActivity {
 			temp.setEnd(c.getLong(SessionTable.END)); // oggi
 			temp.setStart(c.getLong(SessionTable.START)); // domani
 			temp.setBgColor(c.getInt(SessionTable.BGCOLOR));
-			temp.setBgColor(c.getInt(SessionTable.IMGCOLOR)); 
+			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR)); 
 			temp.setFalls(c.getInt(0));
 			
 			//ok
