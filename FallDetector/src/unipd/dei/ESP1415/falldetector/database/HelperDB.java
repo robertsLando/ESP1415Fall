@@ -17,7 +17,13 @@ public final class HelperDB {
 	public static abstract class HelperTable implements BaseColumns {
 		public static final String HELPER_TABLE = "helper";
 		
-		public static final String PHONE_COLUMN = "phone";
+		/*CREATE TABLE helper (
+		 * email TEXT PRIMARY KEY,
+		 * name TEXT NOT NULL,
+		 * surname TEXT NOT NULL,
+		 * priority INTEGER NOT NULL);*/
+		
+		public static final String EMAIL_COLUMN = "email";
 		public static final String NAME_COLUMN = "name";
 		public static final String SURNAME_COLUMN = "surname";
 		public static final String PRIORITY_COLUMN = "priority";
@@ -33,15 +39,15 @@ public final class HelperDB {
 		private static final String PRIMARY_KEY = " PRIMARY KEY";
 		
 		
-		static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + HelperTable.HELPER_TABLE + " (" 
-				+ HelperTable.PHONE_COLUMN + TEXT_TYPE + PRIMARY_KEY + COMMA_SEP
-				+ HelperTable.NAME_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
-				+ HelperTable.SURNAME_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
-				+ HelperTable.PRIORITY_COLUMN + INTEGER_TYPE + NOT_NULL
+		static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + HELPER_TABLE + " (" 
+				+ EMAIL_COLUMN + TEXT_TYPE + PRIMARY_KEY + COMMA_SEP
+				+ NAME_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
+				+ SURNAME_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
+				+ PRIORITY_COLUMN + INTEGER_TYPE + NOT_NULL
 				+ ");";
 		
 		//references
-				public static final int PHONE = 0;
+				public static final int EMAIL = 0;
 				public static final int NAME = 1;
 				public static final int SURNAME = 2;
 				public static final int PRIORITY = 3;
@@ -49,7 +55,7 @@ public final class HelperDB {
 		
 		//DELETE
 		static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS "
-				+ HelperTable.HELPER_TABLE;
+				+ HELPER_TABLE;
 		
 
 	}

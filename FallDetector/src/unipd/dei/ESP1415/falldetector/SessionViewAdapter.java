@@ -272,7 +272,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			return format.format(date);
 		} catch (Exception e) {
 			Log.e("Date format EXCEPTION",
-					"Something went wrong with date formatting");
+					e.getMessage());
 			return null;
 		}
 	}

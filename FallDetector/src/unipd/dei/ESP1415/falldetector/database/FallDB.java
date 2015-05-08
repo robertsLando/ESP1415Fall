@@ -1,5 +1,6 @@
 package unipd.dei.ESP1415.falldetector.database;
 
+import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
 import android.provider.BaseColumns;
 
 /**
@@ -16,6 +17,15 @@ public final class FallDB {
 	 */
 	public static abstract class FallTable implements BaseColumns {
 		public static final String FALL_TABLE = "fall";
+		
+		
+		/*CREATE TABLE fall (
+		 * _id INTEGER PRIMARY KEY autoincrement,
+		 * name TEXT NOT NULL,
+		 * start DATETIME NOT NULL,
+		 * end DATETIME NOT NULL,
+		 * sessionID INTEGER NOT NULL,
+		 * FOREIGN KEY(sessionID) REFERENCES session(_id));*/
 		
 		/*Android documentation suggest on every place where you work with IO,
 		 *  use different thread for disk manipulation.I suggest you should use one
@@ -38,9 +48,8 @@ public final class FallDB {
 		public static final String NAME_COLUMN = "name";
 		public static final String START_COLUMN = "start";
 		public static final String END_COLUMN = "end";
-		public static final String _COLUMN = "x";
-		public static final String Y_COLUMN = "y";
-		public static final String Z_COLUMN = "z";
+		public static final String SESSIONID_COLUMN = "sessionID";
+		
 		
 		
 		//TYPES STRINGS
@@ -52,13 +61,18 @@ public final class FallDB {
 		
 		//CONSTRAINT
 		private static final String PRIMARY_KEY = " PRIMARY KEY";
+		private static final String FOREIGN_KEY = " FOREIGN KEY(" + SESSIONID_COLUMN + ") REFERENCES " + SessionTable.SESSION_TABLE 
+				+ "(" + SessionTable.ID_COLUMN + ")";
+
 		
 		
-		static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + FallTable.FALL_TABLE + " (" 
-				+ FallTable.ID_COLUMN + INTEGER_TYPE + PRIMARY_KEY + " autoincrement" + COMMA_SEP
-				+ FallTable.NAME_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
-				+ FallTable.START_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
-				+ FallTable.END_COLUMN + TIMESTAMP_TYPE + NOT_NULL
+		static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + FALL_TABLE + " (" 
+				+ ID_COLUMN + INTEGER_TYPE + PRIMARY_KEY + " autoincrement" + COMMA_SEP
+				+ NAME_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
+				+ START_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
+				+ END_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
+				+ SESSIONID_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+				+ FOREIGN_KEY
 				+ ");";
 		
 		//references
@@ -66,11 +80,12 @@ public final class FallDB {
 				public static final int NAME = 1;
 				public static final int START = 2;
 				public static final int END = 3;
+				public static final int SESSIONID = 4;
 				
 		
 		//DELETE
 		static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS "
-				+ FallTable.FALL_TABLE;
+				+ FALL_TABLE;
 		
 
 	}

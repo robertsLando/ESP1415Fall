@@ -17,6 +17,15 @@ public final class SessionDB {
 	public static abstract class SessionTable implements BaseColumns {
 		public static final String SESSION_TABLE = "session";
 		
+		/*CREATE TABLE session (
+		 * _id INTEGER PRIMARY KEY autoincrement,
+		 * name TEXT NOT NULL,
+		 * bgcolor INTEGER NOT NULL,
+		 * imgcolor INTEGER NOT NULL,
+		 * falls INTEGER NOT NULL,
+		 * start DATETIME NOT NULL,
+		 * end DATETIME NOT NULL);*/
+		
 		public static final String ID_COLUMN = "_id";
 		public static final String NAME_COLUMN = "name";
 		public static final String BGCOLOR_COLUMN = "bgcolor";
@@ -37,14 +46,14 @@ public final class SessionDB {
 		private static final String PRIMARY_KEY = " PRIMARY KEY";
 		
 		
-		static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + SessionTable.SESSION_TABLE + " (" 
-				+ SessionTable.ID_COLUMN + INTEGER_TYPE + PRIMARY_KEY + " autoincrement" + COMMA_SEP
-				+ SessionTable.NAME_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
-				+ SessionTable.BGCOLOR_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-				+ SessionTable.IMGCOLOR_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-				+ SessionTable.FALLS_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-				+ SessionTable.START_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
-				+ SessionTable.END_COLUMN + TIMESTAMP_TYPE + NOT_NULL
+		static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + SESSION_TABLE + " (" 
+				+ ID_COLUMN + INTEGER_TYPE + PRIMARY_KEY + " autoincrement" + COMMA_SEP
+				+ NAME_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
+				+ BGCOLOR_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+				+ IMGCOLOR_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+				+ FALLS_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+				+ START_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
+				+ END_COLUMN + TIMESTAMP_TYPE + NOT_NULL
 				+ ");";
 		
 		//references
@@ -59,7 +68,7 @@ public final class SessionDB {
 		
 		//DELETE
 		static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS "
-				+ SessionTable.SESSION_TABLE;
+				+ SESSION_TABLE;
 		
 
 	}
