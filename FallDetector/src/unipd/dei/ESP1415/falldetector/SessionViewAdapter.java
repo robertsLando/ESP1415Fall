@@ -37,6 +37,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private static LayoutInflater inflater = null; // calls external xml layout
 													// ()
 	private SessionViewHolder itemVisible = null;
+	private SessionViewAdapter adapter;
 
 	int i = 0;
 
@@ -46,6 +47,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		sessionList = data;
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		adapter = this;
 
 	}
 
@@ -175,7 +177,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 								.getString(R.string.delete)) {
 							databaseManager.removeSession(ses.getId());
 							sessionList.remove(position);
-							MainActivity.adapter.notifyDataSetChanged();
+							adapter.notifyDataSetChanged();
 							
 
 						}
