@@ -41,5 +41,8 @@
     <string name="pref_contact_management_sum">Seleziona le persone che vuoi vengano contattate</string>
     <string name="pref_notification_setting">NOTIFICHE</string>
     <string name="title_activity_fall_detector_preferences">Settings</string>
+    <string name="error">An error occured</string>
+    <string name="errorEmptyName">Session name must be set!</string>
+    <string name="inExecution">In execution...</string>
 
 </resources>

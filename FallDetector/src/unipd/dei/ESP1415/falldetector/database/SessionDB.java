@@ -19,7 +19,9 @@ public final class SessionDB {
 		
 		public static final String ID_COLUMN = "_id";
 		public static final String NAME_COLUMN = "name";
-		public static final String BGCOLOR_COLUMN = "bgcolor ";
+		public static final String BGCOLOR_COLUMN = "bgcolor";
+		public static final String IMGCOLOR_COLUMN = "imgcolor";
+		public static final String FALLS_COLUMN = "falls";
 		public static final String START_COLUMN = "start";
 		public static final String END_COLUMN = "end";
 		
@@ -38,7 +40,9 @@ public final class SessionDB {
 		static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + SessionTable.SESSION_TABLE + " (" 
 				+ SessionTable.ID_COLUMN + INTEGER_TYPE + PRIMARY_KEY + " autoincrement" + COMMA_SEP
 				+ SessionTable.NAME_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
-				+ SessionTable.BGCOLOR_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
+				+ SessionTable.BGCOLOR_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+				+ SessionTable.IMGCOLOR_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+				+ SessionTable.FALLS_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 				+ SessionTable.START_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
 				+ SessionTable.END_COLUMN + TIMESTAMP_TYPE + NOT_NULL
 				+ ");";
@@ -46,9 +50,11 @@ public final class SessionDB {
 		//references
 				public static final int ID = 0;
 				public static final int NAME = 1;
-				public static final int START = 2;
-				public static final int BGCOLOR = 3;
-				public static final int END = 4;
+				public static final int BGCOLOR = 2;
+				public static final int IMGCOLOR = 3;
+				public static final int FALLS = 4;
+				public static final int START = 5;
+				public static final int END = 6;
 				
 		
 		//DELETE

@@ -2,8 +2,11 @@ package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
 
+import unipd.dei.ESP1415.falldetector.database.DbManager;
+import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
 import android.app.Dialog;
-import android.view.View.OnClickListener;
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +14,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.Button;
@@ -22,9 +26,9 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity {
 
 	ListView list; // the reference to the widget in main activity
-	SessionViewAdapter adapter; // the adapter for listview manage
-	public ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
-																			// container
+	public static SessionViewAdapter adapter; // the adapter for listview manage
+	public static ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
+	public static Context mContext;																	// container
 	private static FloatingActionButton fabButton;
 
 	@Override
@@ -34,6 +38,7 @@ public class MainActivity extends ActionBarActivity {
 
 		// draw the fab button
 		fabButton = fabSetter();
+		mContext = this.getBaseContext();
 
 		// add the elements into the listview
 		setListData();
@@ -80,8 +85,8 @@ public class MainActivity extends ActionBarActivity {
 
 	public void setListData() {
 
-		// TODO: Add database support fetching
-		for (int i = 0; i < 8; i++) {
+		/*
+		for (int i = 0; i < 20; i++) {
 
 			final Session temp = new Session();
 
@@ -89,6 +94,28 @@ public class MainActivity extends ActionBarActivity {
 			temp.setEnd(0); // oggi
 			temp.setStart(1430489157); // domani
 			temp.setFalls(1000);
+
+			listViewValues.add(temp);
+		}*/
+		
+		DbManager databaseManager = new DbManager(mContext);
+	
+		
+		//databaseManager.updateDB(); //uncomment this line when update database 
+		
+		Cursor c = databaseManager.getSessions();
+		
+		while(c.moveToNext()){
+			
+			final Session temp = new Session();
+
+			temp.setId(c.getInt(SessionTable.ID));
+			temp.setName(c.getString(SessionTable.NAME));
+			temp.setEnd(c.getLong(SessionTable.END)); // oggi
+			temp.setStart(c.getLong(SessionTable.START)); // domani
+			temp.setBgColor(c.getInt(SessionTable.BGCOLOR));
+			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR)); 
+			temp.setFalls(c.getInt(SessionTable.FALLS));
 
 			listViewValues.add(temp);
 		}
@@ -127,10 +154,12 @@ public class MainActivity extends ActionBarActivity {
 					dialog.setTitle(getString(R.string.newSession));
 		 
 					// set the custom dialog components - text, image and button
-					EditText text = (EditText) dialog.findViewById(R.id.newSessionName);
-					ImageView image = (ImageView) dialog.findViewById(R.id.newSessionImage);
+					final EditText text = (EditText) dialog.findViewById(R.id.newSessionName);
+					final ImageView image = (ImageView) dialog.findViewById(R.id.newSessionImage);
 					
-					image.setBackgroundColor(SessionViewAdapter.generateRandomBg());
+					final int[] color;
+					
+					color = SessionViewAdapter.setRandomBg(image);
 					
 					Button dialogOkButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
 					Button dialogCancelButton = (Button) dialog.findViewById(R.id.dialogButtonCancel);
@@ -140,8 +169,34 @@ public class MainActivity extends ActionBarActivity {
 						
 						@Override
 						public void onClick(View v) {
-							Toast.makeText(v.getContext(), "Hai creato una nuova sessione", Toast.LENGTH_SHORT).show();
-							dialog.dismiss();
+							
+							Session temp = new Session();
+							String name = text.getText().toString();
+							if(!name.equals(""))
+							{
+								temp.setName(name);
+								temp.setBgColor(color[0]);
+								temp.setImgColor(color[1]);
+								
+								DbManager databaseManager = new DbManager(mContext);
+								
+								long id = databaseManager.addSession(temp);
+								
+								if(id >= 0)
+								{
+									temp.setId(id);
+									listViewValues.add(temp);
+								}
+								
+								else 
+									Toast.makeText(v.getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+								
+								dialog.dismiss();
+							}
+							else
+								Toast.makeText(v.getContext(), getString(R.string.errorEmptyName), Toast.LENGTH_SHORT).show();
+
+								
 						}
 					});
 					dialogCancelButton.setOnClickListener(new OnClickListener() {

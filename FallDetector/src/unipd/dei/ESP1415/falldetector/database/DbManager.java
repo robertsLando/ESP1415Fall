@@ -32,14 +32,14 @@ public class DbManager {
 	}
 
 	/**
-	 * Gets sessions to complete ordered by priority
+	 * Gets sessions ordered by started date
 	 * 
 	 * @return A Cursor
 	 */
 	public Cursor getSessions() {
 		final String QUERY_MAIN_VIEW = "SELECT * " + "FROM "
 				+ SessionTable.SESSION_TABLE  + " ORDER BY "
-				+ SessionTable.ID_COLUMN + " DESC";
+				+ SessionTable.START_COLUMN + " DESC";
 		db = dbHelper.getReadableDatabase();
 
 		Cursor c = db.rawQuery(QUERY_MAIN_VIEW, null);
@@ -70,6 +70,8 @@ public class DbManager {
 		values.put(SessionDB.SessionTable.START_COLUMN, currentTimestamp);
 		values.put(SessionDB.SessionTable.END_COLUMN, 0);
 		values.put(SessionDB.SessionTable.BGCOLOR_COLUMN, session.getBgColor());
+		values.put(SessionDB.SessionTable.IMGCOLOR_COLUMN, session.getImgColor());
+		values.put(SessionDB.SessionTable.FALLS_COLUMN, 0);
 		
 
 		// Insert into the table the values
@@ -133,10 +135,10 @@ public class DbManager {
 	 * @param ID
 	 *            The ID of the session to remove
 	 */
-	public void removeSession(int ID) {
+	public int removeSession(long ID) {
 
 		db = dbHelper.getWritableDatabase();
-		db.delete(SessionTable.SESSION_TABLE, SessionTable.ID_COLUMN + " = " + ID, null);
+		return db.delete(SessionTable.SESSION_TABLE, SessionTable.ID_COLUMN + " = " + ID, null);
 	}
 
 	/**

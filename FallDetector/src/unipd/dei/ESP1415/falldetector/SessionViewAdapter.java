@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
+import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +38,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 													// ()
 	private SessionViewHolder itemVisible = null;
 
-	Session ses = null;
 	int i = 0;
 
 	public SessionViewAdapter(Activity mactivity, ArrayList<Session> data) {
@@ -69,7 +71,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	}
 
 	@Override
-	public View getView(int position, View mySessionView, ViewGroup parent) {
+	public View getView(final int position, View mySessionView, ViewGroup parent) {
 
 		final SessionViewHolder holder;
 
@@ -111,47 +113,53 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			// the view already exist
 			holder = (SessionViewHolder) mySessionView.getTag();
 
-		ses = null;
-		ses = (Session) sessionList.get(position);
+		final Session ses = (Session) sessionList.get(position);
 
 		Date start = new Date(ses.getStart());
 		Date end = new Date(ses.getEnd());
 
-		long millis = ses.getEnd() - ses.getStart();
-
-		long second = (millis / 1000) % 60;
-		long minute = (millis / (1000 * 60)) % 60;
-		long hour = (millis / (1000 * 60 * 60)) % 24;
-
-		String duration = String.format("%02d:%02d:%02d", hour, minute, second);
 
 		// Set the value of the widgets
 		holder.sessionName.setText(ses.getName());
 		holder.falls.setText(String.valueOf(ses.getFalls()));
 		holder.startTime.setText(getDate(start));
-		holder.endTime.setText(getDate(end));
-		holder.durationTime.setText(duration);
-	
+		
 
-		// generate the random bgcolor (not too dark)
+		PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(
+				ses.getImgColor(), PorterDuff.Mode.SRC_ATOP);
+		holder.fallIcon.setColorFilter(colorFilter);
+		holder.fallIcon.setBackgroundColor(ses.getBgColor());
 		
-		holder.fallIcon.setBackgroundColor(generateRandomBg());
-		
+		String duration = "";
 
 		if (ses.getEnd() == 0) // E' in esecuzione
 		{
 			holder.playButton.setVisibility(View.VISIBLE);
 			holder.durationTime.setVisibility(View.GONE);
 			holder.durationText.setVisibility(View.GONE);
-			holder.endTime.setText("In execution");
+			holder.endTime.setText(MainActivity.mContext
+					.getString(R.string.inExecution));
+		} else
+		{
+			holder.endTime.setText(getDate(end));
+			long millis = ses.getEnd() - ses.getStart();
+
+			long second = (millis / 1000) % 60;
+			long minute = (millis / (1000 * 60)) % 60;
+			long hour = (millis / (1000 * 60 * 60)) % 24;
+
+			duration = String.format("%02d:%02d:%02d", hour, minute, second);
 		}
+		
+		holder.durationTime.setText(duration);
 
 		holder.moreButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(final View v) {
 				// Creating the instance of PopupMenu
-				PopupMenu popup = new PopupMenu(v.getContext(), holder.moreButton);
+				PopupMenu popup = new PopupMenu(v.getContext(),
+						holder.moreButton);
 				// Inflating the Popup using xml file
 				popup.getMenuInflater().inflate(R.menu.more_menu,
 						popup.getMenu());
@@ -159,9 +167,32 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 				// registering popup with OnMenuItemClickListener
 				popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 					public boolean onMenuItemClick(MenuItem item) {
-						Toast.makeText(v.getContext(),
-								"You Clicked : " + item.getTitle(),
-								Toast.LENGTH_SHORT).show();
+						String selected = (String) item.getTitle();
+						DbManager databaseManager = new DbManager(
+								MainActivity.mContext);
+
+						if (selected == MainActivity.mContext
+								.getString(R.string.delete)) {
+							databaseManager.removeSession(ses.getId());
+							MainActivity.listViewValues.remove(position);
+							MainActivity.adapter.notifyDataSetChanged();
+							
+
+						}
+						if (selected == MainActivity.mContext
+								.getString(R.string.rename)) // rename
+						{
+						}
+
+						if (selected == MainActivity.mContext
+								.getString(R.string.stop)) // stop
+						{
+						}
+						if (selected == MainActivity.mContext
+								.getString(R.string.details)) // details
+						{
+						}
+
 						return true;
 					}
 				});
@@ -243,29 +274,53 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			return null;
 		}
 	}
-	
-	public static int generateRandomBg()
-	{
+
+	/**
+	 * This method generate a random thumbnail
+	 * 
+	 * @param v
+	 *            the ImageView
+	 * @return an array with 2 elements: color[0]: the Bgcolor, color[1] the
+	 *         image color
+	 */
+
+	public static int[] setRandomBg(ImageView v) {
 		Random rnd = new Random();
-		int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+		int[] color = new int[2];
+		color[0] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
 				rnd.nextInt(256));
-		
-		while(isColorDark(color))
-			color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
-					rnd.nextInt(256));
-			
+		color[1] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+				rnd.nextInt(256));
+
+		if ((isColorDark(color[0]) && isColorDark(color[1]))
+				|| (!isColorDark(color[0]) && !isColorDark(color[1]))) {
+			while (isColorDark(color[1]))
+				color[1] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+						rnd.nextInt(256));
+
+			while (!isColorDark(color[0]))
+				color[0] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+						rnd.nextInt(256));
+
+			PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(
+					color[1], PorterDuff.Mode.SRC_ATOP);
+			v.setColorFilter(colorFilter);
+		}
+
+		v.setBackgroundColor(color[0]);
+
 		return color;
 	}
-	
-	 private static boolean isColorDark(int color){
-		    double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
-		    if(darkness<0.5){
-		        return false; // It's a light color
-		    }else{
-		        return true; // It's a dark color
-		    }
+
+	private static boolean isColorDark(int color) {
+		double darkness = 1 - (0.299 * Color.red(color) + 0.587
+				* Color.green(color) + 0.114 * Color.blue(color)) / 255;
+		if (darkness < 0.5) {
+			return false; // It's a light color
+		} else {
+			return true; // It's a dark color
 		}
-	
+	}
 
 	/**
 	 * The holder for each ListView Session element

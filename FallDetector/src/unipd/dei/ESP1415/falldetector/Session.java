@@ -12,14 +12,21 @@ public class Session {
 	private long start; //timestamp
 	private long end; //timestamp
 	private int falls;
-	private String bgColor;
+	private int bgColor;
+	private int imgColor;
 	
 	
-	public String getBgColor() {
+	public int getBgColor() {
 		return bgColor;
 	}
-	public void setBgColor(String bgColor) {
+	public void setBgColor(int bgColor) {
 		this.bgColor = bgColor;
+	}
+	public int getImgColor() {
+		return imgColor;
+	}
+	public void setImgColor(int imgColor) {
+		this.imgColor = imgColor;
 	}
 	public int getFalls() {
 		return falls;

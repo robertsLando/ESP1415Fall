@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DbHelper extends SQLiteOpenHelper{
 	
 	public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Task.db";
+    public static final String DATABASE_NAME = "Session.db";
 
     /**
      *Calls SQLiteOpenHelper constructor to initialize a new database
