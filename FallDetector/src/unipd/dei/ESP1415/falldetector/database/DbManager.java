@@ -104,11 +104,11 @@ public class DbManager {
 		db = dbHelper.getWritableDatabase();
 		
 		//DELETE TABLES
-		db.execSQL(SessionDB.SessionTable.SQL_DELETE_ENTRIES);
-		db.execSQL(HelperDB.HelperTable.SQL_DELETE_ENTRIES);
+		db.execSQL(FallDataDB.FallDataTable.SQL_DELETE_ENTRIES);
 		db.execSQL(ReportedToDB.ReportedToTable.SQL_DELETE_ENTRIES);
 		db.execSQL(FallDB.FallTable.SQL_DELETE_ENTRIES);
-		db.execSQL(FallDataDB.FallDataTable.SQL_DELETE_ENTRIES);
+		db.execSQL(SessionDB.SessionTable.SQL_DELETE_ENTRIES);
+		db.execSQL(HelperDB.HelperTable.SQL_DELETE_ENTRIES);
 		
 		
 		//CEATE TABLES

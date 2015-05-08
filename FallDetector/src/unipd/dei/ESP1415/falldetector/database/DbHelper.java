@@ -56,11 +56,12 @@ public class DbHelper extends SQLiteOpenHelper {
 	 */
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-		db.execSQL(SessionDB.SessionTable.SQL_DELETE_ENTRIES);
-		db.execSQL(HelperDB.HelperTable.SQL_DELETE_ENTRIES);
+		db.execSQL(FallDataDB.FallDataTable.SQL_DELETE_ENTRIES);
 		db.execSQL(ReportedToDB.ReportedToTable.SQL_DELETE_ENTRIES);
 		db.execSQL(FallDB.FallTable.SQL_DELETE_ENTRIES);
-		db.execSQL(FallDataDB.FallDataTable.SQL_DELETE_ENTRIES);
+		db.execSQL(SessionDB.SessionTable.SQL_DELETE_ENTRIES);
+		db.execSQL(HelperDB.HelperTable.SQL_DELETE_ENTRIES);
+
 		onCreate(db);
 	}
 
