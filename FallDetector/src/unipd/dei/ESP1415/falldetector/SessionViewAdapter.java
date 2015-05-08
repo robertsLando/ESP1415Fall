@@ -33,7 +33,7 @@ import android.widget.Toast;
 public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 	private Activity activity; // the activity where the ListView is placed
-	private ArrayList<Session> sessionList; // the container
+	public ArrayList<Session> sessionList; // the container
 	private static LayoutInflater inflater = null; // calls external xml layout
 													// ()
 	private SessionViewHolder itemVisible = null;

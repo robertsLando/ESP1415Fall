@@ -177,6 +177,7 @@ public class MainActivity extends ActionBarActivity {
 								temp.setName(name);
 								temp.setBgColor(color[0]);
 								temp.setImgColor(color[1]);
+								temp.setStart(System.currentTimeMillis());
 								
 								DbManager databaseManager = new DbManager(mContext);
 								
