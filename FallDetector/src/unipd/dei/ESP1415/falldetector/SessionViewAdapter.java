@@ -174,7 +174,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 						if (selected == MainActivity.mContext
 								.getString(R.string.delete)) {
 							databaseManager.removeSession(ses.getId());
-							MainActivity.listViewValues.remove(position);
+							sessionList.remove(position);
 							MainActivity.adapter.notifyDataSetChanged();
 							
 

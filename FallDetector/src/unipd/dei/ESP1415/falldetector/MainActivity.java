@@ -27,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
 
 	ListView list; // the reference to the widget in main activity
 	public static SessionViewAdapter adapter; // the adapter for listview manage
-	public static ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
+	public ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
 	public static Context mContext;																	// container
 	private static FloatingActionButton fabButton;
 
