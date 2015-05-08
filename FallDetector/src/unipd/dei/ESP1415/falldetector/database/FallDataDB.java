@@ -37,7 +37,6 @@ public final class FallDataDB {
 		//TYPES STRINGS
 		private static final String TIMESTAMP_TYPE = " DATETIME"; 
 		private static final String INTEGER_TYPE = " INTEGER";
-		private static final String BIGINT_TYPE = " UNSIGNED BIG INT";
 		private static final String FLOAT_TYPE = " FLOAT";
 		private static final String COMMA_SEP = ",";
 		private static final String NOT_NULL = " NOT NULL";
@@ -52,7 +51,7 @@ public final class FallDataDB {
 		
 		
 		static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + FALLDATA_TABLE + " (" 
-				+ ID_COLUMN + BIGINT_TYPE + PRIMARY_KEY + " autoincrement" + COMMA_SEP
+				+ ID_COLUMN + INTEGER_TYPE + PRIMARY_KEY + " autoincrement" + COMMA_SEP
 				+ TIMESTAMP_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
 				+ ACCELERATION_COLUMN + FLOAT_TYPE + NOT_NULL + COMMA_SEP
 				+ FALLID_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP

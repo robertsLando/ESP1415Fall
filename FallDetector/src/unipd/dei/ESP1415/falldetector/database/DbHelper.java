@@ -33,11 +33,11 @@ public class DbHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
     	
     	try{
-    	db.execSQL(SessionDB.SessionTable.SQL_DELETE_ENTRIES); //for sessions manage
-        db.execSQL(HelperDB.HelperTable.SQL_DELETE_ENTRIES); //to manage the people to report the fall
-    	db.execSQL(FallDB.FallTable.SQL_DELETE_ENTRIES); //fall events in a session
-        db.execSQL(ReportedToDB.ReportedToTable.SQL_DELETE_ENTRIES); //relation between fall and helper
-        db.execSQL(FallDataDB.FallDataTable.SQL_DELETE_ENTRIES); //fall data for a fall event to create the graph
+    	db.execSQL(SessionDB.SessionTable.SQL_CREATE_ENTRIES); //for sessions manage
+        db.execSQL(HelperDB.HelperTable.SQL_CREATE_ENTRIES); //to manage the people to report the fall
+    	db.execSQL(FallDB.FallTable.SQL_CREATE_ENTRIES); //fall events in a session
+        db.execSQL(ReportedToDB.ReportedToTable.SQL_CREATE_ENTRIES); //relation between fall and helper
+        db.execSQL(FallDataDB.FallDataTable.SQL_CREATE_ENTRIES); //fall data for a fall event to create the graph
     	}catch(SQLException e)
     	{
     		Log.e("SQLException",e.getMessage());
