@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- These settings headers are only used on tablets. -->
+
+    <header
+        android:fragment="unipd.dei.ESP1415.falldetector.FallDetectorPreference$Session"
+        android:title="@string/session_pref" />
+    <header
+        android:fragment="unipd.dei.ESP1415.falldetector.FallDetectorPreference$ContactSetting"
+        android:title="@string/pref_contact_setting" />
+
+    <!-- These settings headers are only used on tablets. -->
+    <header
+        android:fragment="unipd.dei.ESP1415.falldetector.FallDetectorPreferences$NotificationPreferenceFragment"
+        android:title="@string/pref_notification_setting" />
+
+</preference-headers>

@@ -20,9 +20,20 @@
         android:summary="@string/pref_session_time_sum"
         android:title="@string/pref_session_time" />
 
-    <PreferenceCategory 
+    <PreferenceCategory
         android:key="contacts_setting"
         android:title="@string/pref_contact_setting" >
+        <Preference
+            android:key="contact_list_add"
+            android:summary="@string/pref_contact_list_sum"
+            android:title="@string/pref_contact_list" />
+
+        <MultiSelectListPreference
+            android:entries="@array/contactList"
+            android:key="contact_list_management"
+            android:selectable="true"
+            android:summary="@string/pref_contact_management_sum"
+            android:title="@string/pref_contact_management" />
     </PreferenceCategory>
 
 </PreferenceScreen>

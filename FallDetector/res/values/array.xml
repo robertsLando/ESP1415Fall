@@ -12,5 +12,7 @@
         <item >Normale</item>
         <item >Adatta all\'interfaccia utente</item>
     </string-array>
+    <string-array name="contactList">
+    </string-array>
     
 </resources>
