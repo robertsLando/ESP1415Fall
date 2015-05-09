@@ -21,11 +21,10 @@ public final class FallDB {
 		
 		/*CREATE TABLE fall (
 		 * _id INTEGER PRIMARY KEY autoincrement,
-		 * name TEXT NOT NULL,
-		 * start DATETIME NOT NULL,
-		 * end DATETIME NOT NULL,
+		 * location TEXT NOT NULL,
+		 * dateF DATETIME NOT NULL,
 		 * sessionID INTEGER NOT NULL,
-		 * FOREIGN KEY(sessionID) REFERENCES session(_id));*/
+		 * FOREIGN KEY(sessionID) REFERENCES session(_id))*/
 		
 		/*Android documentation suggest on every place where you work with IO,
 		 *  use different thread for disk manipulation.I suggest you should use one
@@ -45,9 +44,8 @@ public final class FallDB {
 		*/
 		
 		public static final String ID_COLUMN = "_id";
-		public static final String NAME_COLUMN = "name";
-		public static final String START_COLUMN = "start";
-		public static final String END_COLUMN = "end";
+		public static final String LOCATION_COLUMN = "location";
+		public static final String DATE_COLUMN = "dateF";
 		public static final String SESSIONID_COLUMN = "sessionID";
 		
 		
@@ -68,18 +66,16 @@ public final class FallDB {
 		
 		static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + FALL_TABLE + " (" 
 				+ ID_COLUMN + INTEGER_TYPE + PRIMARY_KEY + " autoincrement" + COMMA_SEP
-				+ NAME_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
-				+ START_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
-				+ END_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
+				+ LOCATION_COLUMN + TEXT_TYPE + NOT_NULL + COMMA_SEP
+				+ DATE_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
 				+ SESSIONID_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 				+ FOREIGN_KEY
 				+ ");";
 		
 		//references
 				public static final int ID = 0;
-				public static final int NAME = 1;
-				public static final int START = 2;
-				public static final int END = 3;
+				public static final int LOCATION = 1;
+				public static final int DATE = 2;
 				public static final int SESSIONID = 4;
 				
 		
