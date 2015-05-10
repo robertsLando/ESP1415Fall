@@ -35,8 +35,12 @@
     <string name="fallImageDescriptor">Thumbnail Image</string>
     <string name="pauseButtonDescriptor">Pause Button</string>
     <string name="playButtonDescriptor">Play Button</string>
-    <string name="error">An error occured</string>
+    <string name="error">An error occurred</string>
     <string name="errorEmptyName">Session name must be set!</string>
     <string name="inExecution">In execution...</string>
+    <string name="btnGraphDsc">Graph Viewer</string>
+    <string name="atText">at:</string>
+    <string name="RenameLbl">Rename:</string>
+    <string name="Play">Play</string>
 
 </resources>
