@@ -237,7 +237,7 @@ public class MainActivity extends ActionBarActivity {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			Intent intent = new Intent();
-            intent.setClassName(this, "FallDetectorPreferences");
+            intent.setClassName("unipd.dei.ESP1415.falldetector", "unipd.dei.ESP1415.falldetector.FallDetectorPreferences");
             startActivity(intent);
 
 			return true;
