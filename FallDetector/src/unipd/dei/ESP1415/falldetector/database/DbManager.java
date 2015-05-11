@@ -94,7 +94,7 @@ public class DbManager {
 
 		return -1;
 
-	}// addSessionAdvance
+	}
 
 	/**
 	 * Drops and recreates tables
@@ -175,7 +175,7 @@ public class DbManager {
 		db.update(SessionTable.SESSION_TABLE, values, SessionTable.ID_COLUMN + " = "
 				+ session.getId(), null);
 
-	}// addSession
+	}
 
 	
 	/**
@@ -196,6 +196,36 @@ public class DbManager {
 		}
 		
 		return date;
+
+	}
+	
+	/**
+	 * Add temporary datas to the database
+	 */
+	public void addTemp() {
+
+
+		db = dbHelper.getWritableDatabase();
+		// Create a new map of values
+		ContentValues values = new ContentValues();
+
+		// Insert values with associated column name
+		values.put(HelperDB.HelperTable.NAME_COLUMN, "Pippo");
+		values.put(HelperDB.HelperTable.SURNAME_COLUMN, "Palla");
+		values.put(HelperDB.HelperTable.EMAIL_COLUMN, "pippo.palla@gmail.com");
+		values.put(HelperDB.HelperTable.PRIORITY_COLUMN, 10);
+		
+
+		// Insert into the table the values
+		db.insert(HelperDB.HelperTable.HELPER_TABLE, null, values);
+		
+		values.put(HelperDB.HelperTable.NAME_COLUMN, "Mario");
+		values.put(HelperDB.HelperTable.SURNAME_COLUMN, "Rossi");
+		values.put(HelperDB.HelperTable.EMAIL_COLUMN, "mario.rossi@gmail.com");
+		values.put(HelperDB.HelperTable.PRIORITY_COLUMN, 3);
+		
+		// Insert into the table the values
+		db.insert(HelperDB.HelperTable.HELPER_TABLE, null, values);
 
 	}
 

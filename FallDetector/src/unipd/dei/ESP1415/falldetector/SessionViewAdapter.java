@@ -173,25 +173,25 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 						DbManager databaseManager = new DbManager(
 								MainActivity.mContext);
 
-						if (selected == MainActivity.mContext
-								.getString(R.string.delete)) {
+						if (selected.equals(MainActivity.mContext
+								.getString(R.string.delete))) {
 							databaseManager.removeSession(ses.getId());
 							sessionList.remove(position);
 							adapter.notifyDataSetChanged();
 							
 
 						}
-						if (selected == MainActivity.mContext
-								.getString(R.string.rename)) // rename
+						if (selected.equals(MainActivity.mContext
+								.getString(R.string.rename))) // rename
 						{
 						}
 
-						if (selected == MainActivity.mContext
-								.getString(R.string.stop)) // stop
+						if (selected.equals(MainActivity.mContext
+								.getString(R.string.stop))) // stop
 						{
 						}
-						if (selected == MainActivity.mContext
-								.getString(R.string.details)) // details
+						if (selected.equals(MainActivity.mContext
+								.getString(R.string.details))) // details
 						{
 						}
 
