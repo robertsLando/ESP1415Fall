@@ -7,6 +7,7 @@ import java.util.Random;
 
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,9 +21,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * The adapter for the list view
@@ -187,6 +191,55 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.rename))) // rename
 						{
+							// custom dialog
+							final Dialog dialog = new Dialog(v.getContext());
+							dialog.setContentView(R.layout.new_session_dialog);
+							dialog.setTitle(activity.getString(R.string.renameSession));
+				 
+							// set the custom dialog components - text, image and button
+							final EditText text = (EditText) dialog.findViewById(R.id.newSessionName);
+							final ImageView image = (ImageView) dialog.findViewById(R.id.newSessionImage);
+							
+							Button dialogOkButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+							Button dialogCancelButton = (Button) dialog.findViewById(R.id.dialogButtonCancel);
+							
+							text.setText(ses.getName());
+							image.setBackgroundColor(ses.getBgColor());
+							PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(
+									ses.getImgColor(), PorterDuff.Mode.SRC_ATOP);
+							image.setColorFilter(colorFilter);
+							
+							// if button is clicked, close the custom dialog
+							
+							dialogOkButton.setOnClickListener(new OnClickListener() {
+								
+								@Override
+								public void onClick(View v) {
+									
+									String name = text.getText().toString();
+									if(!name.equals(""))
+									{
+										ses.setName(name);
+										DbManager databaseManager = new DbManager(activity.getApplicationContext());
+										databaseManager.updateSession(ses);
+										sessionList.get(position).setName(name);
+										dialog.dismiss();
+									}
+									else
+										Toast.makeText(v.getContext(), activity.getString(R.string.errorEmptyName), Toast.LENGTH_SHORT).show();
+
+										
+								}
+							});//onCLickOkButton
+							dialogCancelButton.setOnClickListener(new OnClickListener() {
+								
+								@Override
+								public void onClick(View v) {
+									dialog.dismiss();
+									
+								}
+							});//OnclickCancelButton
+						 dialog.show();
 						}
 
 						if (selected.equals(MainActivity.mContext

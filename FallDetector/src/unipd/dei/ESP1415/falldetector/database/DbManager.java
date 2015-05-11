@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import unipd.dei.ESP1415.falldetector.Session;
+import unipd.dei.ESP1415.falldetector.database.HelperDB.HelperTable;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
 import android.content.ContentValues;
 import android.content.Context;
@@ -199,10 +200,13 @@ public class DbManager {
 
 	}
 	
+	
+	//******HELPER METHODS*****
+	
 	/**
 	 * Add temporary datas to the database
 	 */
-	public void addTemp() {
+	public void addTempHelpers() {
 
 
 		db = dbHelper.getWritableDatabase();
@@ -228,6 +232,26 @@ public class DbManager {
 		db.insert(HelperDB.HelperTable.HELPER_TABLE, null, values);
 
 	}
+	
+	/**
+	 * Gets helpers ordered by priority
+	 * 
+	 * @return A Cursor
+	 */
+	public Cursor getHelper() {
+		final String query = "SELECT * " + "FROM "
+				+ HelperTable.HELPER_TABLE  + " ORDER BY "
+				+ HelperTable.PRIORITY_COLUMN + " DESC";
+		db = dbHelper.getReadableDatabase();
+
+		Cursor c = db.rawQuery(query, null);
+
+		return c;
+
+	}
+	
+	
+	
 
 
 }// calss: dbManager
