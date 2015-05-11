@@ -26,6 +26,10 @@
             android:name=".FallEvent"
             android:label="@string/title_activity_fall_event" >
         </activity>
+        <activity
+            android:name=".FallDetectorPreferences"
+            android:label="@string/title_activity_fall_detector_preferences" >
+        </activity>
     </application>
 
 </manifest>

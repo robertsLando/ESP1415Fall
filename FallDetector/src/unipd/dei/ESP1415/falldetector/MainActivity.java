@@ -6,6 +6,7 @@ import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -235,6 +236,10 @@ public class MainActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			Intent intent = new Intent();
+            intent.setClassName(this, "FallDetectorPreferences");
+            startActivity(intent);
+
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

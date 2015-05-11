@@ -12,5 +12,20 @@
         <item >Normale</item>
         <item >Adatta all\'interfaccia utente</item>
     </string-array>
+    <string-array name="sessionDuration">
+        <item >30 minutes</item>
+        <item >1 hour</item>
+        <item >2 hour</item>
+        <item >3 hour</item>
+        <item >4 hour</item>
+    </string-array>
+    <string-array name="contactList"></string-array>
+    <string-array name="durationValue">
+        <item >1800</item>
+        <item >3600</item>
+        <item >7200</item>
+        <item >10800</item>
+        <item >14400</item>
+    </string-array>
     
 </resources>

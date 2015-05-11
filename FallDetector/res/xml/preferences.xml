@@ -4,25 +4,50 @@
     <PreferenceCategory
         android:key="session_settings"
         android:title="@string/session_pref" >
+        <ListPreference
+            android:defaultValue="SENSOR_DELAY_NORMAL"
+            android:entries="@array/sensorRate"
+            android:entryValues="@array/sensorRateValue"
+            android:key="accelerometer_settings"
+            android:summary="@string/pref_acc_sum"
+            android:title="@string/pref_acc" />
+        <ListPreference
+            android:defaultValue="3600"
+            android:entries="@array/sessionDuration"
+            android:entryValues="@array/durationValue"
+            android:key="session_duration"
+            android:summary="@string/pref_session_time_sum"
+            android:title="@string/pref_session_time" />
     </PreferenceCategory>
-
-    <ListPreference
-        android:defaultValue="SENSOR_DELAY_NORMAL"
-        android:entries="@array/sensorRate"
-        android:entryValues="@array/sensorRateValue"
-        android:key="accelerometer_settings"
-        android:selectable="true"
-        android:summary="@string/pref_acc_sum"
-        android:title="@string/pref_acc" />
-
-    <Preference
-        android:key="session_duration"
-        android:summary="@string/pref_session_time_sum"
-        android:title="@string/pref_session_time" />
-
-    <PreferenceCategory 
+    <PreferenceCategory
         android:key="contacts_setting"
         android:title="@string/pref_contact_setting" >
+        <Preference
+            android:key="contact_list_add"
+            android:summary="@string/pref_contact_list_sum"
+            android:title="@string/pref_contact_list" />
+
+        <MultiSelectListPreference
+            android:entries="@array/contactList"
+            android:key="contact_list_management"
+            android:selectable="true"
+            android:summary="@string/pref_contact_management_sum"
+            android:title="@string/pref_contact_management" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="notification_setting"
+        android:title="@string/pref_notification_setting" >
+        <CheckboxPreference
+            android:defaultValue="true"
+            android:key="pref_notification_ativate"
+            android:title="@string/pref_notification_enable" />
+
+        <com.src.unipd.dei.ESP1415.falldetector.DurationPreference
+            android:dialogMessage="Set the time"
+            android:key="notification_alarm"
+            android:negativeButtonText="@string/cancel"
+            android:positiveButtonText="@string/ok"
+            android:title="@string/pref_alarm_time" />
     </PreferenceCategory>
 
 </PreferenceScreen>
