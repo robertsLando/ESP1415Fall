@@ -111,8 +111,8 @@ public class MainActivity extends ActionBarActivity {
 
 			temp.setId(c.getInt(SessionTable.ID));
 			temp.setName(c.getString(SessionTable.NAME));
-			temp.setEnd(c.getLong(SessionTable.END)); // oggi
-			temp.setStart(c.getLong(SessionTable.START)); // domani
+			temp.setEnd(c.getLong(SessionTable.END)); 
+			temp.setStart(c.getLong(SessionTable.START)); 
 			temp.setBgColor(c.getInt(SessionTable.BGCOLOR));
 			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR)); 
 			temp.setFalls(c.getInt(SessionTable.FALLS));
