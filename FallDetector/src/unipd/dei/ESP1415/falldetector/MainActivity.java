@@ -101,7 +101,7 @@ public class MainActivity extends ActionBarActivity {
 		
 		DbManager databaseManager = new DbManager(mContext);
 	
-		
+		//ok
 		//databaseManager.updateDB(); //uncomment this line when update database 
 		
 		Cursor c = databaseManager.getSessions();
