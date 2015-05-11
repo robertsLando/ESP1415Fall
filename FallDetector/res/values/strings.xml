@@ -47,5 +47,9 @@
     <string name="pref_alarm_time">Set Alarm Time</string>
     <string name="pref_notification_enable">Enable notification</string>
     <string name="pref_ringtone">Ringtone</string>
+    <string name="btnGraphDsc">Graph Viewer</string>
+    <string name="atText">at:</string>
+    <string name="RenameLbl">Rename:</string>
+    <string name="Play">Play</string>
 
 </resources>

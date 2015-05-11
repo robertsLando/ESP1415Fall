@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
 
 	ListView list; // the reference to the widget in main activity
 	public static SessionViewAdapter adapter; // the adapter for listview manage
-	public static ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
+	public ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
 	public static Context mContext;																	// container
 	private static FloatingActionButton fabButton;
 
@@ -112,8 +112,8 @@ public class MainActivity extends ActionBarActivity {
 
 			temp.setId(c.getInt(SessionTable.ID));
 			temp.setName(c.getString(SessionTable.NAME));
-			temp.setEnd(c.getLong(SessionTable.END)); // oggi
-			temp.setStart(c.getLong(SessionTable.START)); // domani
+			temp.setEnd(c.getLong(SessionTable.END)); 
+			temp.setStart(c.getLong(SessionTable.START)); 
 			temp.setBgColor(c.getInt(SessionTable.BGCOLOR));
 			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR)); 
 			temp.setFalls(c.getInt(SessionTable.FALLS));
@@ -178,6 +178,7 @@ public class MainActivity extends ActionBarActivity {
 								temp.setName(name);
 								temp.setBgColor(color[0]);
 								temp.setImgColor(color[1]);
+								temp.setStart(System.currentTimeMillis());
 								
 								DbManager databaseManager = new DbManager(mContext);
 								

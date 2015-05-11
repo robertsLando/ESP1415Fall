@@ -32,10 +32,11 @@ import android.widget.TextView;
 public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 	private Activity activity; // the activity where the ListView is placed
-	private ArrayList<Session> sessionList; // the container
+	public ArrayList<Session> sessionList; // the container
 	private static LayoutInflater inflater = null; // calls external xml layout
 													// ()
 	private SessionViewHolder itemVisible = null;
+	private SessionViewAdapter adapter;
 
 	int i = 0;
 
@@ -45,6 +46,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		sessionList = data;
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		adapter = this;
 
 	}
 
@@ -173,8 +175,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 						if (selected == MainActivity.mContext
 								.getString(R.string.delete)) {
 							databaseManager.removeSession(ses.getId());
-							MainActivity.listViewValues.remove(position);
-							MainActivity.adapter.notifyDataSetChanged();
+							sessionList.remove(position);
+							adapter.notifyDataSetChanged();
 							
 
 						}
@@ -269,7 +271,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			return format.format(date);
 		} catch (Exception e) {
 			Log.e("Date format EXCEPTION",
-					"Something went wrong with date formatting");
+					e.getMessage());
 			return null;
 		}
 	}
