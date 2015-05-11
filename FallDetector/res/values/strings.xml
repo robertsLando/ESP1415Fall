@@ -26,7 +26,7 @@
     <string name="pref_acc_sum">Seleziona la frequenza di campionamento dei dati dell\'accelerometro</string>
     <string name="session_pref">OPZIONI SESSIONE</string>
     <string name="pref_session_time">Durata sessione</string>
-    <string name="pref_session_time_sum">Imposta la durata della sessione</string>
+    <string name="pref_session_time_sum">Imposta la durata massima della sessione</string>
     <string name="pref_contact_setting">IMPOSTAZIONI CONTATTI</string>
     <string name="newSession">NEW SESSION</string>
     <string name="cancel">Cancel</string>
@@ -35,14 +35,17 @@
     <string name="fallImageDescriptor">Thumbnail Image</string>
     <string name="pauseButtonDescriptor">Pause Button</string>
     <string name="playButtonDescriptor">Play Button</string>
-    <string name="pref_contact_list">Aggiungi un contatto</string>
-    <string name="pref_contact_list_sum">Premi per aggiungere un nuovo contatto</string>
-    <string name="pref_contact_management">Persone da contattare</string>
-    <string name="pref_contact_management_sum">Seleziona le persone che vuoi vengano contattate</string>
+    <string name="pref_contact_list">Add a contact</string>
+    <string name="pref_contact_list_sum">Add a new helper mail</string>
+    <string name="pref_contact_management">Chose the helpers</string>
+    <string name="pref_contact_management_sum">Select the people who can help you</string>
     <string name="pref_notification_setting">NOTIFICHE</string>
     <string name="title_activity_fall_detector_preferences">Settings</string>
     <string name="error">An error occured</string>
     <string name="errorEmptyName">Session name must be set!</string>
     <string name="inExecution">In execution...</string>
+    <string name="pref_alarm_time">Set Alarm Time</string>
+    <string name="pref_notification_enable">Enable notification</string>
+    <string name="pref_ringtone">Ringtone</string>
 
 </resources>
