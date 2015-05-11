@@ -30,6 +30,10 @@
             android:name=".FallDetectorPreferences"
             android:label="@string/title_activity_fall_detector_preferences" >
         </activity>
+        <activity
+            android:name=".SessionDetails"
+            android:label="@string/title_activity_session_details" >
+        </activity>
     </application>
 
 </manifest>

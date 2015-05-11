@@ -71,30 +71,7 @@
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/StartDateView"
             android:layout_toRightOf="@+id/StartDateView" />
-
-        <TextView
-            android:id="@+id/StartTimeView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/startDateTextView"
-            android:layout_toRightOf="@+id/startDateTextView"
-            android:text="@string/atText"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/startTimeTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/StartTimeView"
-            android:layout_toRightOf="@+id/StartTimeView" />
+    
     </RelativeLayout>
 
     <RelativeLayout

@@ -8,6 +8,7 @@ import java.util.Random;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -37,6 +38,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 													// ()
 	private SessionViewHolder itemVisible = null;
 	private SessionViewAdapter adapter;
+	public static final String NAME = "name";
+	public static final String START = "start";
+	public static final String END = "end";
 
 	int i = 0;
 
@@ -192,6 +196,15 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.details))) // details
 						{
+							
+							Intent myIntent = new Intent(v.getContext(), SessionDetails.class);
+							
+							myIntent.putExtra(NAME, ses.getName());
+							myIntent.putExtra(START, ses.getStart());
+							myIntent.putExtra(END, ses.getName());
+							
+							activity.startActivity(myIntent);
+							
 						}
 
 						return true;
@@ -263,7 +276,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	 *            the date to format
 	 * @return the date formatted
 	 */
-	private String getDate(Date date) {
+	public static String getDate(Date date) {
 
 		try {
 			SimpleDateFormat format = new SimpleDateFormat(

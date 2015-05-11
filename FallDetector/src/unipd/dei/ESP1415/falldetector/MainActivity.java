@@ -217,6 +217,7 @@ public class MainActivity extends ActionBarActivity {
 
 		return fabButton;
 	}// fabSetter
+	
 
 	public static FloatingActionButton getFAB() {
 		return fabButton;
