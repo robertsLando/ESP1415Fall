@@ -8,64 +8,35 @@ package unipd.dei.ESP1415.falldetector;
 
 public class Fall{
 	
-	private int fallNumber;
-	private String date; //we use Calendar class and we create a String
-	private String time; //the same of date
-	private double latitude; //we use LocationManager
-	private double longitude; //we use Location Manager
-	private int session; 
+	private long id;
+	private String location; 
+	private long datef; 
+	private int sessionID;
 	
-	//constructor
-    public Fall(int id,String date,String time,double latitude,double longitude, int session){
-    	this.fallNumber=id;
-    	this.date=date;
-    	this.time=time;
-    	this.latitude=latitude;
-    	this.longitude=longitude;
-    	this.session=session;
-    }
-    
-	public int getFallNumbe() {
-		return fallNumber;
+	public long getId() {
+		return id;
 	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	public long getDatef() {
+		return datef;
+	}
+	public void setDatef(long datef) {
+		this.datef = datef;
+	}
+	public int getSessionID() {
+		return sessionID;
+	}
+	public void setSessionID(int sessionID) {
+		this.sessionID = sessionID;
+	} 	
 	
-	public String getFallDate() {
-		return date;
-	}
 	
-	public void setFallDate(String date) {
-		this.date=date;
-	}
-	
-	public String getFallTime() {
-		return time;
-	}
-	
-	public void setFallTime(String time) {
-		this.time=time;
-	}
-	
-	public double getFallLatitude() {
-		return latitude;
-	}
-	
-	public void setFallLatitude(double latitude) {
-		this.latitude=latitude;
-	}
-	
-	public double getFallLongitude() {
-		return longitude;
-	}
-	
-	public void setFallLongitude(double longitude) {
-		this.longitude=longitude;
-	}
-	
-	public int getSession() {
-		return session;
-	}
-	
-	public void setFallSession(int session) {
-		this.session=session;
-	}
 }
