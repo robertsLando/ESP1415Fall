@@ -25,7 +25,7 @@ public class DbManager {
 	private DbHelper dbHelper;
 	private Context context;
 	private static SimpleDateFormat parser = new SimpleDateFormat(
-            "yyyy-MM-dd HH:mm:ss", Locale.US);
+			"yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	public DbManager(Context tempContext) {
 		context = tempContext;
@@ -73,11 +73,11 @@ public class DbManager {
 		values.put(SessionDB.SessionTable.BGCOLOR_COLUMN, session.getBgColor());
 		values.put(SessionDB.SessionTable.IMGCOLOR_COLUMN, session.getImgColor());
 		values.put(SessionDB.SessionTable.FALLS_COLUMN, 0);
-		
+
 
 		// Insert into the table the values
 		id = db.insert(SessionDB.SessionTable.SESSION_TABLE, null, values);
-		
+
 		if(id == -1) 
 			return id;
 
@@ -103,21 +103,21 @@ public class DbManager {
 	public void updateDB() {
 
 		db = dbHelper.getWritableDatabase();
-		
+
 		//DELETE TABLES
 		db.execSQL(FallDataDB.FallDataTable.SQL_DELETE_ENTRIES);
 		db.execSQL(ReportedToDB.ReportedToTable.SQL_DELETE_ENTRIES);
 		db.execSQL(FallDB.FallTable.SQL_DELETE_ENTRIES);
 		db.execSQL(SessionDB.SessionTable.SQL_DELETE_ENTRIES);
 		db.execSQL(HelperDB.HelperTable.SQL_DELETE_ENTRIES);
-		
-		
+
+
 		//CEATE TABLES
 		db.execSQL(SessionDB.SessionTable.SQL_CREATE_ENTRIES); //for sessions manage
-        db.execSQL(HelperDB.HelperTable.SQL_CREATE_ENTRIES); //to manage the people to report the fall
-    	db.execSQL(FallDB.FallTable.SQL_CREATE_ENTRIES); //fall events in a session
-        db.execSQL(ReportedToDB.ReportedToTable.SQL_CREATE_ENTRIES); //relation between fall and helper
-        db.execSQL(FallDataDB.FallDataTable.SQL_CREATE_ENTRIES); //fall data for a fall event to create the graph
+		db.execSQL(HelperDB.HelperTable.SQL_CREATE_ENTRIES); //to manage the people to report the fall
+		db.execSQL(FallDB.FallTable.SQL_CREATE_ENTRIES); //fall events in a session
+		db.execSQL(ReportedToDB.ReportedToTable.SQL_CREATE_ENTRIES); //relation between fall and helper
+		db.execSQL(FallDataDB.FallDataTable.SQL_CREATE_ENTRIES); //fall data for a fall event to create the graph
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class DbManager {
 	public void updateEnd(int ID) {
 
 		Long currentTimestamp = System.currentTimeMillis();
-		
+
 		db = dbHelper.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
@@ -141,7 +141,7 @@ public class DbManager {
 		db.update(SessionTable.SESSION_TABLE, values, SessionTable.ID_COLUMN + " = "
 				+ ID, null);
 	}
-	
+
 
 	/**
 	 * Remove a session from the database
@@ -171,14 +171,14 @@ public class DbManager {
 
 		// Insert values with associated column name
 		values.put(SessionDB.SessionTable.NAME_COLUMN, session.getName());
-		
+
 		// update database
 		db.update(SessionTable.SESSION_TABLE, values, SessionTable.ID_COLUMN + " = "
 				+ session.getId(), null);
 
 	}
 
-	
+
 	/**
 	 * Get a date (long) and convert it in String by using class Parser methods
 	 * @param longDate
@@ -187,22 +187,22 @@ public class DbManager {
 	public static String format(long longDate) {
 
 		String date = null;
-		
+
 		try {
-			
+
 			date = parser.format(longDate);
-			
+
 		} catch (IllegalArgumentException e) {
 			Log.e(e.getMessage(), "Error while formatting date");
 		}
-		
+
 		return date;
 
 	}
-	
-	
+
+
 	//******HELPER METHODS*****
-	
+
 	/**
 	 * Add temporary datas to the database
 	 */
@@ -218,21 +218,21 @@ public class DbManager {
 		values.put(HelperDB.HelperTable.SURNAME_COLUMN, "Palla");
 		values.put(HelperDB.HelperTable.EMAIL_COLUMN, "pippo.palla@gmail.com");
 		values.put(HelperDB.HelperTable.PRIORITY_COLUMN, 10);
-		
+
 
 		// Insert into the table the values
 		db.insert(HelperDB.HelperTable.HELPER_TABLE, null, values);
-		
+
 		values.put(HelperDB.HelperTable.NAME_COLUMN, "Mario");
 		values.put(HelperDB.HelperTable.SURNAME_COLUMN, "Rossi");
 		values.put(HelperDB.HelperTable.EMAIL_COLUMN, "mario.rossi@gmail.com");
 		values.put(HelperDB.HelperTable.PRIORITY_COLUMN, 3);
-		
+
 		// Insert into the table the values
 		db.insert(HelperDB.HelperTable.HELPER_TABLE, null, values);
 
 	}
-	
+
 	/**
 	 * Gets helpers ordered by priority
 	 * 
@@ -249,9 +249,79 @@ public class DbManager {
 		return c;
 
 	}
-	
-	
-	
+
+	//******FALLS METHODS*****
+
+	/**
+	 * Add temporary datas to the database
+	 */
+	public void addTempFalls(int sID) {
+
+		Long currentTimestamp = System.currentTimeMillis();
+
+		db = dbHelper.getWritableDatabase();
+		// Create a new map of values
+		ContentValues values = new ContentValues();
+
+		// Insert values with associated column name
+		values.put(FallDB.FallTable.ID_COLUMN, 1);
+		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
+		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp+1+"");
+		values.put(FallDB.FallTable.SESSIONID_COLUMN, sID);
+
+
+		// Insert into the table the values
+		db.insert(FallDB.FallTable.FALL_TABLE, null, values);
+
+		// Insert values with associated column name
+		values.put(FallDB.FallTable.ID_COLUMN, 2);
+		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
+		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp+2+"");
+		values.put(FallDB.FallTable.SESSIONID_COLUMN, 1);
+
+		// Insert into the table the values
+		db.insert(FallDB.FallTable.FALL_TABLE, null, values);
+
+		// Insert values with associated column name
+		values.put(FallDB.FallTable.ID_COLUMN, 3);
+		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
+		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp+3+"");
+		values.put(FallDB.FallTable.SESSIONID_COLUMN, 1);
+
+
+		// Insert into the table the values
+		db.insert(FallDB.FallTable.FALL_TABLE, null, values);
+
+		// Insert values with associated column name
+		values.put(FallDB.FallTable.ID_COLUMN, 2);
+		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
+		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp+1+"");
+		values.put(FallDB.FallTable.SESSIONID_COLUMN, 1);
+
+		// Insert into the table the values
+		db.insert(FallDB.FallTable.FALL_TABLE, null, values);
+
+	}
+
+	/**
+	 * Gets falls by given session
+	 * 
+	 * @return A Cursor
+	 */
+	public Cursor getFalls(int sId) {
+		
+		final String query = "SELECT * " + "FROM "
+				+ FallDB.FallTable.FALL_TABLE  + " WHERE "
+				+ FallDB.FallTable.SESSIONID_COLUMN + "="+sId;
+		db = dbHelper.getReadableDatabase();
+
+		Cursor c = db.rawQuery(query, null);
+
+		return c;
+
+	}
+
+
 
 
 }// calss: dbManager
