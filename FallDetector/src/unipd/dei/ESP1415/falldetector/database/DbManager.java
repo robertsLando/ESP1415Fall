@@ -255,7 +255,7 @@ public class DbManager {
 	/**
 	 * Add temporary datas to the database
 	 */
-	public void addTempFalls(int sID) {
+	public void addTempFalls(long sID) {
 
 		Long currentTimestamp = System.currentTimeMillis();
 
@@ -266,8 +266,8 @@ public class DbManager {
 		// Insert values with associated column name
 		values.put(FallDB.FallTable.ID_COLUMN, 1);
 		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
-		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp+1+"");
-		values.put(FallDB.FallTable.SESSIONID_COLUMN, sID);
+		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp);
+		values.put(FallDB.FallTable.SESSIONID_COLUMN, ""+sID);
 
 
 		// Insert into the table the values
@@ -276,8 +276,8 @@ public class DbManager {
 		// Insert values with associated column name
 		values.put(FallDB.FallTable.ID_COLUMN, 2);
 		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
-		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp+2+"");
-		values.put(FallDB.FallTable.SESSIONID_COLUMN, 1);
+		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp);
+		values.put(FallDB.FallTable.SESSIONID_COLUMN,""+sID);
 
 		// Insert into the table the values
 		db.insert(FallDB.FallTable.FALL_TABLE, null, values);
@@ -285,8 +285,8 @@ public class DbManager {
 		// Insert values with associated column name
 		values.put(FallDB.FallTable.ID_COLUMN, 3);
 		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
-		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp+3+"");
-		values.put(FallDB.FallTable.SESSIONID_COLUMN, 1);
+		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp);
+		values.put(FallDB.FallTable.SESSIONID_COLUMN,""+sID);
 
 
 		// Insert into the table the values
@@ -295,12 +295,12 @@ public class DbManager {
 		// Insert values with associated column name
 		values.put(FallDB.FallTable.ID_COLUMN, 2);
 		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
-		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp+1+"");
-		values.put(FallDB.FallTable.SESSIONID_COLUMN, 1);
+		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp);
+		values.put(FallDB.FallTable.SESSIONID_COLUMN,""+sID);
 
 		// Insert into the table the values
 		db.insert(FallDB.FallTable.FALL_TABLE, null, values);
-
+		
 	}
 
 	/**
@@ -308,11 +308,12 @@ public class DbManager {
 	 * 
 	 * @return A Cursor
 	 */
-	public Cursor getFalls(int sId) {
+	public Cursor getFalls(long sId) {//temporary parameter! to modify when we'll able to get real data
 		
 		final String query = "SELECT * " + "FROM "
 				+ FallDB.FallTable.FALL_TABLE  + " WHERE "
-				+ FallDB.FallTable.SESSIONID_COLUMN + "="+sId;
+				+ FallDB.FallTable.SESSIONID_COLUMN +" ="+sId;
+		
 		db = dbHelper.getReadableDatabase();
 
 		Cursor c = db.rawQuery(query, null);

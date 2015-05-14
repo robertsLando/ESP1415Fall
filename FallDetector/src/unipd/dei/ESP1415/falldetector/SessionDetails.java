@@ -5,6 +5,7 @@ import java.util.Date;
 
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
+import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +27,13 @@ public class SessionDetails extends Activity implements OnItemClickListener{
 	private Activity activity; // the activity where the ListView is placed
 	public static Context sdContext;
 	ListView list;
-	public ArrayList<String> listViewValues = new ArrayList<String>();
+	public ArrayList<Fall> fallList = new ArrayList<Fall>();
+	public FallViewAdapter adapter = null;
+	
+	public static final String ID = "id";
+	public static final String LOCATION = "location";
+	public static final String DATE = "datef";
+	public static final String SESSIONID = "sessionID";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,20 +44,20 @@ public class SessionDetails extends Activity implements OnItemClickListener{
 		
 		Intent myIntent = getIntent();
 		
-		int sId = myIntent.getIntExtra(SessionViewAdapter.ID, -1);
+		long sId = myIntent.getLongExtra(SessionViewAdapter.ID, -1);
 		
 		/**
 		 * set of instructions regarding the initialization of the list view
 		 * which contains all the falls in this session
 		 */
 		setListData(sId);
-		ArrayAdapter<String> arrAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, listViewValues);
+		
+		this.adapter = new FallViewAdapter(this,
+				R.layout.fall_list_item_layout, this.fallList);
 		
 		list = (ListView) findViewById(R.id.sessionListView);
-		list.setAdapter(arrAdapter);
-		list.setOnItemClickListener(this);
-
+		list.setAdapter(adapter);
+		
 		TextView currentSessionName = (TextView) findViewById(R.id.CourrentSessionName);
 		TextView sessionStartDate = (TextView) findViewById(R.id.startDateTextView);
 		
@@ -70,12 +77,14 @@ public class SessionDetails extends Activity implements OnItemClickListener{
 		/**Object clickedObj = parent.getItemAtPosition(position);
 		Log.i("[onItemClick]", clickedObj.toString());*/
 		
+		final Fall fl = (Fall) fallList.get(position);
+		
 		Intent myIntent = new Intent(v.getContext(), FallEvent.class);
 
-		/**myIntent.putExtra(ID, ses.getId());
-		myIntent.putExtra(NAME, ses.getName());
-		myIntent.putExtra(START, ses.getStart());
-		myIntent.putExtra(END, ses.getName());*/
+		myIntent.putExtra(ID, fl.getId());
+		myIntent.putExtra(LOCATION, fl.getLocation());
+		myIntent.putExtra(DATE, fl.getDatef());
+		myIntent.putExtra(SESSIONID, fl.getSessionID());
 
 		activity.startActivity(myIntent);
 		
@@ -100,16 +109,8 @@ public class SessionDetails extends Activity implements OnItemClickListener{
 		return super.onOptionsItemSelected(item);
 	}
 	
-	/**private String[] fillStringArrayWithData() {
-		String[] a = new String[('Z' - 'A' + 1)];
-		for (int i = 0; i < a.length; ++i) {
-			char[] c = { (char) ('A' + i) };
-			a[i] = new String(c);
-		}
-		return a;
-	}*/
 
-	public void setListData(int sID) {
+	public void setListData(long sID) {
 		
 		DbManager databaseManager = new DbManager(sdContext);
 
@@ -118,15 +119,17 @@ public class SessionDetails extends Activity implements OnItemClickListener{
 		databaseManager.addTempFalls(sID);
 
 		Cursor c = databaseManager.getFalls(sID);
-
-		int i = 0;
-		String temp = ""+i+" ";
 		
 		while(c.moveToNext()){
 			
-			temp = c.getString(FallTable.DATE);
-			i++;
-			listViewValues.add(temp);			
+			final Fall temp = new Fall();
+
+			temp.setId(c.getInt(FallTable.ID));
+			temp.setLocation(c.getString(FallTable.LOCATION));
+			temp.setDatef(c.getLong(FallTable.DATE)); 
+			//temp.setSessionID(c.getInt(FallTable.SESSIONID));
+			
+			fallList.add(temp);		
 		}
 
 	}
