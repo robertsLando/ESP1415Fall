@@ -10,11 +10,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,10 +38,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	// ()
 	private SessionViewHolder itemVisible = null;
 	private SessionViewAdapter adapter;
-	public static final String NAME = "name";
-	public static final String START = "start";
-	public static final String END = "end";
-	public static final String ID = "id";
+	public static final String SESSION = "session";
 
 	int i = 0;
 
@@ -246,13 +239,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 								.getString(R.string.details))) // details
 						{
 
-							Intent myIntent = new Intent(v.getContext(), SessionDetails.class);
-
-							myIntent.putExtra(ID, ses.getId());
-							myIntent.putExtra(NAME, ses.getName());
-							myIntent.putExtra(START, ses.getStart());
-							myIntent.putExtra(END, ses.getName());
-
+							Intent myIntent = new Intent(v.getContext(), SessionDetails.class);						
+						    myIntent.putExtra(SESSION, ses);  
 							activity.startActivity(myIntent);
 
 						}

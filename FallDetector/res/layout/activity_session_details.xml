@@ -16,6 +16,7 @@
             android:layout_marginRight="5dp"
             android:contentDescription="@string/fallImageDescriptor"
             android:src="@drawable/ic_fall" />
+        
 
         <TextView
             android:id="@+id/CourrentSessionName"
@@ -79,35 +80,55 @@
         android:layout_height="wrap_content" >
 
         <TextView
-            android:id="@+id/renameLabel"
+            android:id="@+id/nameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="15dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:text="@string/RenameLbl"
+            android:text="@string/nameLbl"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
             android:id="@+id/newSessionName"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/renameLabel"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@+id/nameLabel"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="10dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-            android:layout_toEndOf="@+id/renameLabel"
-            android:layout_toRightOf="@+id/renameLabel"
+            android:layout_toEndOf="@+id/nameLabel"
+            android:layout_toRightOf="@+id/nameLabel"
+            android:enabled="false"
             android:hint="@string/hintSession"
-            android:inputType="text"
             android:textAppearance="?android:attr/textAppearanceMedium" >
+
         </EditText>
+        
+         <ImageView
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/newSessionName"
+            android:layout_toEndOf="@+id/newSessionName"
+            android:src="@drawable/ic_action_edit" />
+       
+         <ImageView
+            android:id="@+id/doneButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+             android:layout_toRightOf="@+id/newSessionName"
+            android:layout_toEndOf="@+id/newSessionName"
+            android:src="@drawable/ic_action_accept"
+           android:visibility="gone" />
+        
     </RelativeLayout>
 
     <RelativeLayout

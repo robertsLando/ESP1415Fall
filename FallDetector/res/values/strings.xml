@@ -50,7 +50,7 @@
     <string name="pref_ringtone">Ringtone</string>
     <string name="btnGraphDsc">Graph Viewer</string>
     <string name="atText">at:</string>
-    <string name="RenameLbl">Rename:</string>
+    <string name="nameLbl">Name:</string>
     <string name="Play">Play</string>
     <string name="title_activity_session_details">SessionDetails</string>
 

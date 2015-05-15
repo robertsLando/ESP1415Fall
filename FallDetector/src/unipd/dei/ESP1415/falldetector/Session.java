@@ -1,11 +1,15 @@
 package unipd.dei.ESP1415.falldetector;
 
+import java.io.Serializable;
+
 /**
  * This class describes the elements parameters of the ListView in main activity 
  * @author daniellando
  *
  */
-public class Session {
+
+@SuppressWarnings("serial") 
+public class Session implements Serializable{
 	
 	private long id;
 	private String name;

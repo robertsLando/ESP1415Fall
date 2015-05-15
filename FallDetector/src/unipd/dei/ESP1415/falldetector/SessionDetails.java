@@ -5,23 +5,23 @@ import java.util.Date;
 
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
-import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class SessionDetails extends ActionBarActivity implements OnItemClickListener{
 	
@@ -35,6 +35,7 @@ public class SessionDetails extends ActionBarActivity implements OnItemClickList
 	public static final String LOCATION = "location";
 	public static final String DATE = "datef";
 	public static final String SESSIONID = "sessionID";
+	private Session currentSession;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,17 +47,16 @@ public class SessionDetails extends ActionBarActivity implements OnItemClickList
 		//getSupportActionBar().setHomeAsUpIndicator(
 		//		R.drawable.ic_action_remove_white);
 				
-		sdContext = this.getBaseContext();
-		
+		sdContext = this.getBaseContext();	
 		Intent myIntent = getIntent();
+		currentSession = (Session) myIntent.getSerializableExtra(SessionViewAdapter.SESSION);
 		
-		long sId = myIntent.getLongExtra(SessionViewAdapter.ID, -1);
 		
-		/**
+		/*
 		 * set of instructions regarding the initialization of the list view
 		 * which contains all the falls in this session
 		 */
-		setListData(sId);
+		setListData(currentSession.getId());
 		
 		this.adapter = new FallViewAdapter(this,
 				R.layout.fall_list_item_layout, this.fallList);
@@ -64,23 +64,61 @@ public class SessionDetails extends ActionBarActivity implements OnItemClickList
 		list = (ListView) findViewById(R.id.sessionListView);
 		list.setAdapter(adapter);
 		
-		TextView currentSessionName = (TextView) findViewById(R.id.CourrentSessionName);
+		final TextView currentSessionName = (TextView) findViewById(R.id.CourrentSessionName);
 		TextView sessionStartDate = (TextView) findViewById(R.id.startDateTextView);
+		ImageView image = (ImageView) findViewById(R.id.courrentSessionImage);
+		final ImageView btnEdit = (ImageView) findViewById(R.id.editButton);
+		final ImageView btnDone = (ImageView) findViewById(R.id.doneButton);
+		final EditText newSessionName = (EditText) findViewById(R.id.newSessionName);
 		
-		long timestamp = myIntent.getLongExtra(SessionViewAdapter.START, 0);
+		
+		btnEdit.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+					btnEdit.setVisibility(View.GONE);
+					btnDone.setVisibility(View.VISIBLE);
+					newSessionName.setEnabled(true);
+			}
+		});
+		
+		btnDone.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
 
-		Date sessionDate = new Date(timestamp);
+				btnDone.setVisibility(View.GONE);
+				btnEdit.setVisibility(View.VISIBLE);
+				newSessionName.setEnabled(false);
+				String name = newSessionName.getText().toString();
+				if(!name.equals(""))
+				{
+					currentSession.setName(name);
+					DbManager databaseManager = new DbManager(v.getContext());
+					databaseManager.updateSession(currentSession);
+					currentSessionName.setText(currentSession.getName());
+				}
+				else
+					Toast.makeText(v.getContext(), activity.getString(R.string.errorEmptyName), Toast.LENGTH_SHORT).show();
+
+				
+			}
+		});
+		
+		Utilities.setThumbnail(image, currentSession.getBgColor(), currentSession.getImgColor());
+
+		Date sessionDate = new Date(currentSession.getStart());
 		
 		sessionStartDate.setText(Utilities.getDate(sessionDate));
-		currentSessionName.setText(myIntent.getStringExtra(SessionViewAdapter.NAME));
-
-
+		currentSessionName.setText(currentSession.getName());
+		newSessionName.setText(currentSession.getName());
 
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-		/**Object clickedObj = parent.getItemAtPosition(position);
+		/*Object clickedObj = parent.getItemAtPosition(position);
 		Log.i("[onItemClick]", clickedObj.toString());*/
 		
 		final Fall fl = (Fall) fallList.get(position);
@@ -122,6 +160,8 @@ public class SessionDetails extends ActionBarActivity implements OnItemClickList
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	
 	
 
 	public void setListData(long sID) {
