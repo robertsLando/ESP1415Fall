@@ -23,7 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SessionDetails extends ActionBarActivity implements OnItemClickListener{
+public class SessionDetails extends ActionBarActivity{
 	
 	private Activity activity; // the activity where the ListView is placed
 	public static Context sdContext;
@@ -114,17 +114,16 @@ public class SessionDetails extends ActionBarActivity implements OnItemClickList
 
 	}
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+	
+	public void onItemClick(int position, View v) {
 		/*Object clickedObj = parent.getItemAtPosition(position);
 		Log.i("[onItemClick]", clickedObj.toString());*/
 		
 		final Fall fl = (Fall) fallList.get(position);
-		
 		Intent myIntent = new Intent(v.getContext(), FallEvent.class);
 
 		myIntent.putExtra(FALL, fl);
-		activity.startActivity(myIntent);
+		startActivity(myIntent);
 		
 	}
 	

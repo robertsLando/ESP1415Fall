@@ -2,10 +2,12 @@ package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
 
+import unipd.dei.ESP1415.falldetector.SessionViewAdapter.SessionViewHolder;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
@@ -45,6 +47,24 @@ public class FallViewAdapter extends ArrayAdapter<Fall>{
 			TextView fallTimeTextView = (TextView) v.findViewById(R.id.fallTimeTextView);
 			fallTimeTextView.setText(""+c.getDatef());
 		}
+		
+		v.setOnClickListener(new OnItemClickListener(position));
+		
 		return v;
+	}
+	
+	private class OnItemClickListener implements OnClickListener {
+		private int mPosition;
+
+		OnItemClickListener(int position) {
+			mPosition = position;
+		}
+
+		@Override
+		public void onClick(View myView) {
+
+			SessionDetails sct = (SessionDetails) context;
+			sct.onItemClick(mPosition, myView);
+		}
 	}
 }
