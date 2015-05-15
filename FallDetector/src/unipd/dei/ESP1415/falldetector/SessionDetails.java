@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +23,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 
-public class SessionDetails extends Activity implements OnItemClickListener{
+public class SessionDetails extends ActionBarActivity implements OnItemClickListener{
 	
 	private Activity activity; // the activity where the ListView is placed
 	public static Context sdContext;
@@ -39,6 +40,11 @@ public class SessionDetails extends Activity implements OnItemClickListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_session_details);
+		
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		//getSupportActionBar().setHomeAsUpIndicator(
+		//		R.drawable.ic_action_remove_white);
 				
 		sdContext = this.getBaseContext();
 		
@@ -65,7 +71,7 @@ public class SessionDetails extends Activity implements OnItemClickListener{
 
 		Date sessionDate = new Date(timestamp);
 		
-		sessionStartDate.setText(SessionViewAdapter.getDate(sessionDate));
+		sessionStartDate.setText(Utilities.getDate(sessionDate));
 		currentSessionName.setText(myIntent.getStringExtra(SessionViewAdapter.NAME));
 
 
@@ -95,6 +101,14 @@ public class SessionDetails extends Activity implements OnItemClickListener{
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.session_details, menu);
 		return true;
+	}
+	
+	@Override
+	public void onBackPressed() {
+		Intent intent = new Intent();
+	    intent.setAction(Intent.ACTION_MAIN);
+	    intent.addCategory(Intent.CATEGORY_HOME);
+	    startActivity(intent);
 	}
 
 	@Override

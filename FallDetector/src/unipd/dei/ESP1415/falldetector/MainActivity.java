@@ -160,7 +160,7 @@ public class MainActivity extends ActionBarActivity {
 					
 					final int[] color;
 					
-					color = SessionViewAdapter.setRandomBg(image);
+					color = Utilities.setRandomBg(image);
 					
 					Button dialogOkButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
 					Button dialogCancelButton = (Button) dialog.findViewById(R.id.dialogButtonCancel);

@@ -132,13 +132,11 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		// Set the value of the widgets
 		holder.sessionName.setText(ses.getName());
 		holder.falls.setText(String.valueOf(ses.getFalls()));
-		holder.startTime.setText(getDate(start));
+		holder.startTime.setText(Utilities.getDate(start));
 
 
-		PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(
-				ses.getImgColor(), PorterDuff.Mode.SRC_ATOP);
-		holder.fallIcon.setColorFilter(colorFilter);
-		holder.fallIcon.setBackgroundColor(ses.getBgColor());
+		Utilities.setThumbnail(holder.fallIcon, ses.getBgColor(), ses.getImgColor());
+		
 
 		String duration = "";
 
@@ -151,7 +149,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					.getString(R.string.inExecution));
 		} else
 		{
-			holder.endTime.setText(getDate(end));
+			holder.endTime.setText(Utilities.getDate(end));
 			long millis = ses.getEnd() - ses.getStart();
 
 			long second = (millis / 1000) % 60;
@@ -205,10 +203,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							Button dialogCancelButton = (Button) dialog.findViewById(R.id.dialogButtonCancel);
 
 							text.setText(ses.getName());
-							image.setBackgroundColor(ses.getBgColor());
-							PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(
-									ses.getImgColor(), PorterDuff.Mode.SRC_ATOP);
-							image.setColorFilter(colorFilter);
+							Utilities.setThumbnail(image, ses.getBgColor(), ses.getImgColor());
 
 							// if button is clicked, close the custom dialog
 
@@ -324,72 +319,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		}
 	}
 
-	/**
-	 * A method to get a date in the format dd-MM-yyyy HH:mm:ss
-	 * 
-	 * @param date
-	 *            the date to format
-	 * @return the date formatted
-	 */
-	public static String getDate(Date date) {
-
-		try {
-			SimpleDateFormat format = new SimpleDateFormat(
-					"dd-MM-yyyy HH:mm:ss");
-			return format.format(date);
-		} catch (Exception e) {
-			Log.e("Date format EXCEPTION",
-					e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * This method generate a random thumbnail
-	 * 
-	 * @param v
-	 *            the ImageView
-	 * @return an array with 2 elements: color[0]: the Bgcolor, color[1] the
-	 *         image color
-	 */
-
-	public static int[] setRandomBg(ImageView v) {
-		Random rnd = new Random();
-		int[] color = new int[2];
-		color[0] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
-				rnd.nextInt(256));
-		color[1] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
-				rnd.nextInt(256));
-
-		if ((isColorDark(color[0]) && isColorDark(color[1]))
-				|| (!isColorDark(color[0]) && !isColorDark(color[1]))) {
-			while (isColorDark(color[1]))
-				color[1] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
-						rnd.nextInt(256));
-
-			while (!isColorDark(color[0]))
-				color[0] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
-						rnd.nextInt(256));
-
-			PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(
-					color[1], PorterDuff.Mode.SRC_ATOP);
-			v.setColorFilter(colorFilter);
-		}
-
-		v.setBackgroundColor(color[0]);
-
-		return color;
-	}
-
-	private static boolean isColorDark(int color) {
-		double darkness = 1 - (0.299 * Color.red(color) + 0.587
-				* Color.green(color) + 0.114 * Color.blue(color)) / 255;
-		if (darkness < 0.5) {
-			return false; // It's a light color
-		} else {
-			return true; // It's a dark color
-		}
-	}
 
 	/**
 	 * The holder for each ListView Session element
