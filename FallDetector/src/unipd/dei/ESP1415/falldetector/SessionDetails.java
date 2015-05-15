@@ -31,10 +31,8 @@ public class SessionDetails extends ActionBarActivity implements OnItemClickList
 	public ArrayList<Fall> fallList = new ArrayList<Fall>();
 	public FallViewAdapter adapter = null;
 	
-	public static final String ID = "id";
-	public static final String LOCATION = "location";
-	public static final String DATE = "datef";
-	public static final String SESSIONID = "sessionID";
+	public static final String FALL = "fall";
+	
 	private Session currentSession;
 
 	@Override
@@ -125,11 +123,7 @@ public class SessionDetails extends ActionBarActivity implements OnItemClickList
 		
 		Intent myIntent = new Intent(v.getContext(), FallEvent.class);
 
-		myIntent.putExtra(ID, fl.getId());
-		myIntent.putExtra(LOCATION, fl.getLocation());
-		myIntent.putExtra(DATE, fl.getDatef());
-		myIntent.putExtra(SESSIONID, fl.getSessionID());
-
+		myIntent.putExtra(FALL, fl);
 		activity.startActivity(myIntent);
 		
 	}
@@ -141,23 +135,23 @@ public class SessionDetails extends ActionBarActivity implements OnItemClickList
 		return true;
 	}
 	
-	@Override
-	public void onBackPressed() {
-		Intent intent = new Intent();
-	    intent.setAction(Intent.ACTION_MAIN);
-	    intent.addCategory(Intent.CATEGORY_HOME);
-	    startActivity(intent);
-	}
+
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
+		switch (item.getItemId()) {
+	    case android.R.id.home:
+	    	Intent intent = new Intent(this.getBaseContext(),MainActivity.class);
+		    startActivity(intent);
+
+	        break;
+
+	    default:
+	        break;
+	    }
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -170,7 +164,7 @@ public class SessionDetails extends ActionBarActivity implements OnItemClickList
 
 		//ok
 		//databaseManager.updateDB(); //uncomment this line when update database
-		databaseManager.addTempFalls(sID);
+		//databaseManager.addTempFalls(sID);
 
 		Cursor c = databaseManager.getFalls(sID);
 		

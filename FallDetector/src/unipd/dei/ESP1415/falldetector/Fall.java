@@ -1,12 +1,15 @@
 package unipd.dei.ESP1415.falldetector;
 
+import java.io.Serializable;
+
 /**
  This class describes the parameters of the ListView we use in the User Interface 2
  where we have to show the list of all falls the person had during the session.
  @author federicobergamin
 */
 
-public class Fall{
+@SuppressWarnings("serial") 
+public class Fall implements Serializable{
 	
 	private long id;
 	private String location; 

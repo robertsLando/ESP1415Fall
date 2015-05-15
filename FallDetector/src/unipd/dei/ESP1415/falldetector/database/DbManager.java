@@ -264,7 +264,6 @@ public class DbManager {
 		ContentValues values = new ContentValues();
 
 		// Insert values with associated column name
-		values.put(FallDB.FallTable.ID_COLUMN, 1);
 		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
 		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp);
 		values.put(FallDB.FallTable.SESSIONID_COLUMN, ""+sID);
@@ -274,7 +273,6 @@ public class DbManager {
 		db.insert(FallDB.FallTable.FALL_TABLE, null, values);
 
 		// Insert values with associated column name
-		values.put(FallDB.FallTable.ID_COLUMN, 2);
 		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
 		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp);
 		values.put(FallDB.FallTable.SESSIONID_COLUMN,""+sID);
@@ -283,7 +281,6 @@ public class DbManager {
 		db.insert(FallDB.FallTable.FALL_TABLE, null, values);
 
 		// Insert values with associated column name
-		values.put(FallDB.FallTable.ID_COLUMN, 3);
 		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
 		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp);
 		values.put(FallDB.FallTable.SESSIONID_COLUMN,""+sID);
@@ -293,7 +290,6 @@ public class DbManager {
 		db.insert(FallDB.FallTable.FALL_TABLE, null, values);
 
 		// Insert values with associated column name
-		values.put(FallDB.FallTable.ID_COLUMN, 2);
 		values.put(FallDB.FallTable.LOCATION_COLUMN, "Padova");
 		values.put(FallDB.FallTable.DATE_COLUMN, ""+currentTimestamp);
 		values.put(FallDB.FallTable.SESSIONID_COLUMN,""+sID);

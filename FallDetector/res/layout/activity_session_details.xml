@@ -104,7 +104,9 @@
             android:layout_toRightOf="@+id/nameLabel"
             android:enabled="false"
             android:hint="@string/hintSession"
-            android:textAppearance="?android:attr/textAppearanceMedium" >
+            android:textAppearance="?android:attr/textAppearanceMedium" 
+            android:maxLines="1"
+            android:maxLength="50">
 
         </EditText>
         
