@@ -31,8 +31,7 @@ public class FallEvent extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		switch (item.getItemId()) {
 	    case android.R.id.home:
-	    	Intent intent = new Intent(this.getBaseContext(),MainActivity.class);
-		    startActivity(intent);
+	    	finish();
 
 	        break;
 
