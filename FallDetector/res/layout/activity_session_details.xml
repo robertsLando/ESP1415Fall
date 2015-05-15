@@ -105,8 +105,8 @@
             android:enabled="false"
             android:hint="@string/hintSession"
             android:textAppearance="?android:attr/textAppearanceMedium" 
-            android:maxLines="1"
-            android:maxLength="50">
+            android:lines="1"
+            android:maxLength="20">
 
         </EditText>
         
