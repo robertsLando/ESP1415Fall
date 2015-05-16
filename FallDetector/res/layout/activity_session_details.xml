@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -104,6 +106,8 @@
             android:hint="@string/hintSession"
             android:lines="1"
             android:maxLength="20"
+            android:nextFocusLeft="@id/newSessionName"
+            android:nextFocusUp="@id/newSessionName"
             android:textAppearance="?android:attr/textAppearanceMedium" >
         </EditText>
 
