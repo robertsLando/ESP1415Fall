@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -68,7 +69,21 @@ public class SessionDetails extends ActionBarActivity{
 		final ImageView btnEdit = (ImageView) findViewById(R.id.editButton);
 		final ImageView btnDone = (ImageView) findViewById(R.id.doneButton);
 		final EditText newSessionName = (EditText) findViewById(R.id.newSessionName);
-		
+		final Button btnDelete = (Button) findViewById(R.id.courrentSessionBtnDelete);
+
+		btnDelete.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v){
+				
+				DbManager databaseManager = new DbManager(sdContext);
+				databaseManager.removeSession(currentSession.getId());
+				adapter.notifyDataSetChanged();	
+				
+				Intent myIntent = new Intent(v.getContext(), MainActivity.class);
+				startActivity(myIntent);
+			}
+		});
 		
 		btnEdit.setOnClickListener(new OnClickListener() {
 			
@@ -162,7 +177,7 @@ public class SessionDetails extends ActionBarActivity{
 
 		//ok
 		//databaseManager.updateDB(); //uncomment this line when update database
-		//databaseManager.addTempFalls(sID);
+		databaseManager.addTempFalls(sID);
 
 		Cursor c = databaseManager.getFalls(sID);
 		

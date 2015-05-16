@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import unipd.dei.ESP1415.falldetector.Session;
+import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
 import unipd.dei.ESP1415.falldetector.database.HelperDB.HelperTable;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
 import android.content.ContentValues;
@@ -152,6 +153,7 @@ public class DbManager {
 	public int removeSession(long ID) {
 
 		db = dbHelper.getWritableDatabase();
+		db.delete(FallTable.FALL_TABLE, FallTable.SESSIONID_COLUMN + " = " + ID, null);
 		return db.delete(SessionTable.SESSION_TABLE, SessionTable.ID_COLUMN + " = " + ID, null);
 	}
 
