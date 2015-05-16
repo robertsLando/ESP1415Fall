@@ -78,7 +78,7 @@ public class SessionDetails extends ActionBarActivity{
 				
 				DbManager databaseManager = new DbManager(sdContext);
 				databaseManager.removeSession(currentSession.getId());
-				adapter.notifyDataSetChanged();	
+				//adapter.notifyDataSetChanged();	
 				
 				Intent myIntent = new Intent(v.getContext(), MainActivity.class);
 				startActivity(myIntent);
