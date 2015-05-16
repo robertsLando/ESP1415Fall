@@ -321,4 +321,4 @@ public class DbManager {
 
 
 
-}// calss: dbManager
+}// class: dbManager

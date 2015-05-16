@@ -39,15 +39,17 @@
         android:title="@string/pref_notification_setting" >
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="pref_notification_ativate"
+            android:key="pref_notification_activate"
             android:title="@string/pref_notification_enable" />
 
         <unipd.dei.ESP1415.falldetector.SetAlarmPreference
             android:dialogMessage="Set the time"
             android:key="notification_alarm"
+            android:enabled="true"
             android:negativeButtonText="@string/cancel"
             android:positiveButtonText="@string/ok"
-            android:title="@string/pref_alarm_time" />
+            android:title="@string/pref_alarm_time"
+            android:dependency="pref_notification_activate" />
     </PreferenceCategory>
 
 </PreferenceScreen>

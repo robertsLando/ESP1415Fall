@@ -3,49 +3,50 @@ package unipd.dei.ESP1415.falldetector;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import unipd.dei.ESP1415.falldetector.MyNotificationBroadcastReceiver;
 
 public class SetAlarmPreference extends DialogPreference {
-	// per riuscire nelle Settings a far immettere all'utente l'ora
-	// per la notifica
+	// we create this preference to permit the user to set the time for the
+	// notification
 
-	private int hour = 0; // salviamo quante ore vuole che la sessione duri
-	private int minute = 0; // salviamo quanti minuti deve durare la sessione
+	private int hour = 0;
+	private int minute = 0;
 	private TimePicker timePicker = null;
-	public String alarmTime = ""; // stringa da andare poi ad
-													// aggiornare il database
-	private Calendar calendar; // calendario per usare i metodi e fa vedere
-								// all\'apertura l\'ora esatta
+	public String alarmTime = ""; // string for the toast
+	private Calendar calendar; // calendar to show the right hour to the user
+								// when he opens the TimePicker
 
-	// costruttore della nostra classe
+	// constructor
 	public SetAlarmPreference(Context ctxt, AttributeSet attrs) {
 		super(ctxt, attrs);
 		calendar = new GregorianCalendar();
 	}
 
-	// creiamo cosa si deve mostrare quando si apre la view
+	// we crate the TimePicker we have to show to the user
 	@Override
 	protected View onCreateDialogView() {
 		timePicker = new TimePicker(getContext());
 		return timePicker;
 	}
 
-	// passiamo i valori iniziali al Dialog
+	// initial values
 	protected void onBindDialogView(View v) {
 		super.onBindDialogView(v);
-		// se è la prima volta che \l'utente inserisce l\'ora mostriamo l\'ora
-		// esatta
+		// if it\'s the first time we show the right hour
 		if ((hour == 0) && (minute == 0)) {
 			timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
 			timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
 		}
-		// altrimenti passiamo l\'ultimo orario che aveva inserito per l\'ultima
-		// sveglia
+		// then we show the time of the last alarm
 		else {
 			timePicker.setCurrentHour(hour);
 			timePicker.setCurrentMinute(minute);
@@ -53,24 +54,38 @@ public class SetAlarmPreference extends DialogPreference {
 
 	}
 
-	// ora dobbiamo dire cosa fare quando l\'utente chiude il dialog, questo
-	// comportamento dipende
-	// se preme il tasto ok (positiveResult = true) oppure se preme il tasto
-	// cancel (positiveResult = false)
+	// what happen when the user closed the dialog
 	protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
+		super.onDialogClosed(positiveResult);
 
-        if (positiveResult){
-        	hour = timePicker.getCurrentHour();
-        	minute = timePicker.getCurrentMinute();
-        	alarmTime = hour+":"+minute;
-        	
-        	//dobbiamo andare a modificare l'orario della sveglia nel database
-        	//TODO
-        	
-        	//creiamo un toast che avvisa l'utente cha ha impostato l'ora per la sveglia
-        	Toast.makeText(super.getContext(), "You set your alarm!", Toast.LENGTH_SHORT).show();
-        }
+		if (positiveResult) {
+			hour = timePicker.getCurrentHour();
+			minute = timePicker.getCurrentMinute();
+			alarmTime = hour + ":" + minute;
+
+			// set the alarm to start at the time of user decided
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(System.currentTimeMillis());
+			calendar.set(Calendar.HOUR_OF_DAY, hour);
+			calendar.set(Calendar.MINUTE, minute);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+
+			long when = calendar.getTimeInMillis();
+			Intent notificationIntent = new Intent(getContext(),
+					MyNotificationBroadcastReceiver.class);
+			PendingIntent notificationPendingIntent = PendingIntent
+					.getBroadcast(getContext(), 0, notificationIntent,0);
+			AlarmManager mAlarmManager = (AlarmManager) getContext()
+					.getSystemService(Context.ALARM_SERVICE);
+			mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, when, AlarmManager.INTERVAL_DAY,
+					notificationPendingIntent);
+
+			// create a toast
+			Toast.makeText(super.getContext(),
+					"You set the notification at " + alarmTime + " !",
+					Toast.LENGTH_SHORT).show();
+		}
 	}
 
 }
