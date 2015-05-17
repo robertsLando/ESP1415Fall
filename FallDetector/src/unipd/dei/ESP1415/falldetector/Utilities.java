@@ -30,7 +30,41 @@ public class Utilities {
 			return null;
 		}
 	}
-
+	
+	/**
+	 * A method to get a date in the format dd-MM-yyyy without time
+	 * 
+	 * @param date
+	 *            the date to format
+	 * @return the date formatted
+	 */	
+	public static String getOnlyDate(Date date){
+		try{
+			SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+			return format.format(date);
+		}catch (Exception e) {
+			Log.e("Date format EXCEPTION", e.getMessage());
+			return null;
+			}
+	}
+	
+	/**
+	 * A method to get the time in the format HH:mm:ss
+	 * 
+	 * @param date
+	 *            the date to format
+	 * @return the time formatted
+	 */
+	public static String getOnlyTime(Date date){
+		try{
+			SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+			return format.format(date);
+		}catch (Exception e) {
+			Log.e("Date format EXCEPTION", e.getMessage());
+			return null;
+		}
+	}
+		
 	/**
 	 * This method generate a random thumbnail
 	 * 

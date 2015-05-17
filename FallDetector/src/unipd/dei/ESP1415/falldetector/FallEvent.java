@@ -1,12 +1,19 @@
 package unipd.dei.ESP1415.falldetector;
 
+import java.util.Date;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class FallEvent extends ActionBarActivity {
+	
+	private Fall currentFall;
+	public static Context sdContext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -15,6 +22,27 @@ public class FallEvent extends ActionBarActivity {
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
+		
+		sdContext = this.getBaseContext();	
+		Intent myIntent = getIntent();
+		currentFall = (Fall) myIntent.getSerializableExtra(SessionDetails.FALL);
+		
+		final TextView dateFall = (TextView) findViewById(R.id.day);
+		final TextView timeFall = (TextView) findViewById(R.id.hour);
+		final TextView latitudeFall = (TextView) findViewById(R.id.latitudeCoordinates);
+		final TextView longitudeFall = (TextView) findViewById(R.id.longitudeCoordinates);
+		
+		Date fallDate = new Date(currentFall.getDatef());
+		
+		dateFall.setText(Utilities.getOnlyDate(fallDate));
+		timeFall.setText(Utilities.getOnlyTime(fallDate));
+		/**
+		  *LEFT TO IMPLEMENT CORRECTLY
+		  * 
+		  *latitudeFall.setText();	
+		  *longitudeFall.setText(Utilities.getOnlyTime();
+		  */	
+		
 	}
 
 	@Override
