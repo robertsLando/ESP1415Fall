@@ -26,8 +26,8 @@ public class SetAlarmPreference extends DialogPreference {
 								// when he opens the TimePicker
 
 	// constructor
-	public SetAlarmPreference(Context ctxt, AttributeSet attrs) {
-		super(ctxt, attrs);
+	public SetAlarmPreference(Context context, AttributeSet attrs) {
+		super(context, attrs);
 		calendar = new GregorianCalendar();
 	}
 
@@ -54,7 +54,7 @@ public class SetAlarmPreference extends DialogPreference {
 
 	}
 
-	// what happen when the user closed the dialog
+	// what happens when the user closes the dialog
 	protected void onDialogClosed(boolean positiveResult) {
 		super.onDialogClosed(positiveResult);
 
