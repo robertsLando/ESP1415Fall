@@ -4,6 +4,7 @@ package unipd.dei.ESP1415.falldetector.database;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import unipd.dei.ESP1415.falldetector.Helper;
 import unipd.dei.ESP1415.falldetector.Session;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
 import unipd.dei.ESP1415.falldetector.database.HelperDB.HelperTable;
@@ -251,6 +252,41 @@ public class DbManager {
 		return c;
 
 	}
+	
+	
+	/**
+	 * Add a Helper into the database
+	 * 
+	 * @param helper
+	 *            Helper to insert
+	 * @return 1 if the helper has been correctly inserted, else -1
+	 */
+	public long addHelper(Helper helper) {
+
+		long id;
+
+		db = dbHelper.getWritableDatabase();
+		// Create a new map of values
+		ContentValues values = new ContentValues();
+
+		// Insert values with associated column name
+		values.put(HelperDB.HelperTable.EMAIL_COLUMN, helper.getEmail());
+		values.put(HelperDB.HelperTable.NAME_COLUMN, helper.getName());
+		values.put(HelperDB.HelperTable.SURNAME_COLUMN, helper.getSurname());
+		values.put(HelperDB.HelperTable.PRIORITY_COLUMN, helper.getPriority());
+		
+
+		// Insert into the table the values
+		id = db.insert(SessionDB.SessionTable.SESSION_TABLE, null, values);
+
+		if(id == -1) 
+			return id;
+
+		return 1;
+
+	}
+
+
 
 	//******FALLS METHODS*****
 
@@ -319,7 +355,8 @@ public class DbManager {
 		return c;
 
 	}
-
+    
+	
 
 
 

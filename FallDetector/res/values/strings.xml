@@ -60,5 +60,6 @@
     <string name="set_surname">surname</string>
     <string name="set_mail">e-mail</string>
     <string name="set_priority">Priority</string>
+    <string name="add">Add</string>
 
 </resources>
