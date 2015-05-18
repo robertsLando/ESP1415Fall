@@ -277,7 +277,7 @@ public class DbManager {
 		
 
 		// Insert into the table the values
-		id = db.insert(SessionDB.SessionTable.SESSION_TABLE, null, values);
+		id = db.insert(HelperDB.HelperTable.HELPER_TABLE, null, values);
 
 		if(id == -1) 
 			return id;

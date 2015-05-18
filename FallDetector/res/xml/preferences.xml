@@ -25,7 +25,6 @@
         <unipd.dei.ESP1415.falldetector.AddHelperPreference
             android:key="contact_list_add"
             android:summary="@string/pref_contact_list_sum"
-            android:title="@string/pref_contact_list"
             android:negativeButtonText="@string/cancel"
             android:positiveButtonText="@string/add"/>
 

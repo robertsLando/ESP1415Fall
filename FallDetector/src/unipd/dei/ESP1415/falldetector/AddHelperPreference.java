@@ -1,11 +1,15 @@
 package unipd.dei.ESP1415.falldetector;
 
+import java.lang.reflect.InvocationTargetException;
+
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowAnimationFrameStats;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -22,12 +26,19 @@ public class AddHelperPreference extends DialogPreference {
 	private Dialog addContact;
 	private Context mContext;
 
+	private EditText textName;
+	private EditText textSurname;
+	private EditText textEmail;
+	private Spinner setPriority;
+	
 	// constructor
 	public AddHelperPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mContext = context;
 		addContact = new Dialog(mContext);
 		setDialogLayoutResource(R.layout.add_contact_dialog);
+		addContact.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setPersistent(false);
 		
 		
 	}
@@ -35,56 +46,59 @@ public class AddHelperPreference extends DialogPreference {
 	
 
 	// initial values
-	protected void onBindDialogView(View v) {
-		super.onBindDialogView(v);
-		name="";
-		surname="";
-		email="";
-		priority=-1;
+	protected void onBindDialogView(View view) {
+		super.onBindDialogView(view);
+		
+		textName = (EditText) view.findViewById(R.id.addHelperName);
+		textSurname = (EditText) view.findViewById(R.id.addHelperSurname);
+		textEmail = (EditText) view.findViewById(R.id.addHelperEmail);
+		setPriority = (Spinner) view.findViewById(R.id.addHelperPrioritySpinner);   	
+		
 	}
 	
 	//what happens when the user closes the dialog and he clicks on positive button
 	protected void onDialogClosed(boolean positiveResult) {
 		super.onDialogClosed(positiveResult);
 		
-		final EditText textName = (EditText) addContact.findViewById(R.id.name);
-		final EditText textSurname = (EditText) addContact.findViewById(R.id.surname);
-		final EditText textEmail = (EditText) addContact.findViewById(R.id.email);
-	    final Spinner setPriority = (Spinner) addContact.findViewById(R.id.priority_spinner);
-		
 		
 		if(positiveResult) {
-			if(textName.getText().toString().equals("")){
+			
+		    surname = textSurname.getText().toString();
+		    name = textName.getText().toString();
+		    email = textEmail.getText().toString();
+		    priority = setPriority.getSelectedItemId();
+			
+			if(name == null || name.equals("")){
 				Toast.makeText(mContext,
 						"You MUST insert a name",
 						Toast.LENGTH_SHORT).show();
+				addContact.dismiss();
 			}
-			else
-				name = textName.getText().toString();
 			
-			if(textSurname.getText().toString().equals("")){
+			if(surname == null || surname.equals("")){
 				Toast.makeText(mContext,
 						"You MUST insert a surname",
 						Toast.LENGTH_SHORT).show();
+				addContact.dismiss();
 			}
-			else
-				surname = textSurname.getText().toString();
 			
-			if(textEmail.getText().toString().equals("")){
+			
+			if(email == null || email.equals("")){
 				Toast.makeText(mContext,
 						"You MUST insert an email",
 						Toast.LENGTH_SHORT).show();
+				addContact.dismiss();
 				
 			}
-			else
-				email = textEmail.getText().toString();
+			
+			
 			if(priority == -1 || setPriority.getSelectedItemId()== AdapterView.INVALID_ROW_ID){
 				Toast.makeText(mContext,
 						"You MUST select a priority",
 						Toast.LENGTH_SHORT).show();
+				addContact.dismiss();
 			}
-			else
-			    priority = setPriority.getSelectedItemId();
+		
 			
 			Helper temp = new Helper();
 			temp.setEmail(email);
@@ -104,6 +118,6 @@ public class AddHelperPreference extends DialogPreference {
 		}//endPositiveResult
 		else
 			addContact.dismiss();
-			
+				
 	}
 }
