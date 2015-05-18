@@ -26,7 +26,7 @@ public class MyNotificationBroadcastReceiver extends BroadcastReceiver {
 		// prepare the Notification
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				context)
-				.setSmallIcon(R.drawable.ic_fall)
+				.setSmallIcon(R.drawable.ic_launcher)
 				.setContentTitle(context.getResources().getString(R.string.notification_title))
 				.setContentText(context.getResources().getString(R.string.notification_text))
 				.setAutoCancel(true);

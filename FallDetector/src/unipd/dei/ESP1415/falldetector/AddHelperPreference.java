@@ -27,10 +27,12 @@ public class AddHelperPreference extends DialogPreference {
 		super(context, attrs);
 		mContext = context;
 		addContact = new Dialog(mContext);
-		addContact.setContentView(R.layout.add_contact_dialog);
+		setDialogLayoutResource(R.layout.add_contact_dialog);
 		
 		
 	}
+	
+	
 
 	// initial values
 	protected void onBindDialogView(View v) {
