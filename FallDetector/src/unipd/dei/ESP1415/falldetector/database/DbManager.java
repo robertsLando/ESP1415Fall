@@ -62,7 +62,6 @@ public class DbManager {
 	public long addSession(Session session) {
 
 		long id;
-		Long currentTimestamp = System.currentTimeMillis();
 
 		db = dbHelper.getWritableDatabase();
 		// Create a new map of values
@@ -70,7 +69,7 @@ public class DbManager {
 
 		// Insert values with associated column name
 		values.put(SessionDB.SessionTable.NAME_COLUMN, session.getName());
-		values.put(SessionDB.SessionTable.START_COLUMN, currentTimestamp);
+		values.put(SessionDB.SessionTable.START_COLUMN, 0);
 		values.put(SessionDB.SessionTable.END_COLUMN, 0);
 		values.put(SessionDB.SessionTable.BGCOLOR_COLUMN, session.getBgColor());
 		values.put(SessionDB.SessionTable.IMGCOLOR_COLUMN, session.getImgColor());
@@ -128,7 +127,7 @@ public class DbManager {
 	 * @param ID
 	 *            The ID of the session in the database
 	 */
-	public void updateEnd(int ID) {
+	public void updateEnd(long ID) {
 
 		Long currentTimestamp = System.currentTimeMillis();
 
@@ -138,6 +137,28 @@ public class DbManager {
 
 		// Insert values with associated column name
 		values.put(SessionDB.SessionTable.END_COLUMN, currentTimestamp);
+
+		// update database
+		db.update(SessionTable.SESSION_TABLE, values, SessionTable.ID_COLUMN + " = "
+				+ ID, null);
+	}
+	
+	/**
+	 * Updates Session status
+	 * 
+	 * @param ID
+	 *            The ID of the session in the database
+	 */
+	public void updateStart(long ID) {
+
+		Long currentTimestamp = System.currentTimeMillis();
+
+		db = dbHelper.getWritableDatabase();
+
+		ContentValues values = new ContentValues();
+
+		// Insert values with associated column name
+		values.put(SessionDB.SessionTable.START_COLUMN, currentTimestamp);
 
 		// update database
 		db.update(SessionTable.SESSION_TABLE, values, SessionTable.ID_COLUMN + " = "

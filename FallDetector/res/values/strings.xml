@@ -61,5 +61,6 @@
     <string name="set_mail">e-mail</string>
     <string name="set_priority">Priority</string>
     <string name="add">Add</string>
+    <string name="toStart">Press play to start</string>
 
 </resources>

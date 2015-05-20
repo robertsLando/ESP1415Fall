@@ -2,14 +2,18 @@ package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
 
+import unipd.dei.ESP1415.falldetector.FallService.MyBinder;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.Menu;
@@ -29,8 +33,9 @@ public class MainActivity extends ActionBarActivity {
 	ListView list; // the reference to the widget in main activity
 	public static SessionViewAdapter adapter; // the adapter for listview manage
 	public ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
-	public static Context mContext;																	// container
+	public static Context mContext; // container
 	private static FloatingActionButton fabButton;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +55,16 @@ public class MainActivity extends ActionBarActivity {
 		// create a new adapter for the listview
 		adapter = new SessionViewAdapter(this, listViewValues);
 		list.setAdapter(adapter);
-		
-		//to hide action button when scrolling
+
+		// to hide action button when scrolling
 		list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
-			
+
 				switch (scrollState) {
 				case OnScrollListener.SCROLL_STATE_IDLE:
-					fabButton.showFloatingActionButton();					
+					fabButton.showFloatingActionButton();
 					break;
 				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
 					fabButton.hideFloatingActionButton();
@@ -68,17 +73,15 @@ public class MainActivity extends ActionBarActivity {
 					fabButton.hideFloatingActionButton();
 					break;
 				}
-					
 
 			}
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				if(visibleItemCount == totalItemCount)
+				if (visibleItemCount == totalItemCount)
 					return;
-					
-				
+
 			}
 		});
 
@@ -87,35 +90,33 @@ public class MainActivity extends ActionBarActivity {
 	public void setListData() {
 
 		/*
-		for (int i = 0; i < 20; i++) {
+		 * for (int i = 0; i < 20; i++) {
+		 * 
+		 * final Session temp = new Session();
+		 * 
+		 * temp.setName("NomeSessioneeeeeeeeee"); temp.setEnd(0); // oggi
+		 * temp.setStart(1430489157); // domani temp.setFalls(1000);
+		 * 
+		 * listViewValues.add(temp); }
+		 */
 
-			final Session temp = new Session();
-
-			temp.setName("NomeSessioneeeeeeeeee");
-			temp.setEnd(0); // oggi
-			temp.setStart(1430489157); // domani
-			temp.setFalls(1000);
-
-			listViewValues.add(temp);
-		}*/
-		
 		DbManager databaseManager = new DbManager(mContext);
-	
-		
-		//databaseManager.updateDB(); //uncomment this line when update database 
-		
+
+		// databaseManager.updateDB(); //uncomment this line when update
+		// database
+
 		Cursor c = databaseManager.getSessions();
-		
-		while(c.moveToNext()){
-			
+
+		while (c.moveToNext()) {
+
 			final Session temp = new Session();
 
 			temp.setId(c.getInt(SessionTable.ID));
 			temp.setName(c.getString(SessionTable.NAME));
-			temp.setEnd(c.getLong(SessionTable.END)); 
-			temp.setStart(c.getLong(SessionTable.START)); 
+			temp.setEnd(c.getLong(SessionTable.END));
+			temp.setStart(c.getLong(SessionTable.START));
 			temp.setBgColor(c.getInt(SessionTable.BGCOLOR));
-			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR)); 
+			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR));
 			temp.setFalls(c.getInt(SessionTable.FALLS));
 
 			listViewValues.add(temp);
@@ -148,76 +149,79 @@ public class MainActivity extends ActionBarActivity {
 		fabButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-					
-					// custom dialog
-					final Dialog dialog = new Dialog(v.getContext());
-					dialog.setContentView(R.layout.new_session_dialog);
-					dialog.setTitle(getString(R.string.newSession));
-		 
-					// set the custom dialog components - text, image and button
-					final EditText text = (EditText) dialog.findViewById(R.id.newSessionName);
-					final ImageView image = (ImageView) dialog.findViewById(R.id.newSessionImage);
-					
-					final int[] color;
-					
-					color = Utilities.setRandomBg(image);
-					
-					Button dialogOkButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-					Button dialogCancelButton = (Button) dialog.findViewById(R.id.dialogButtonCancel);
-					// if button is clicked, close the custom dialog
-					
-					dialogOkButton.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							
-							Session temp = new Session();
-							String name = text.getText().toString();
-							if(!name.equals(""))
-							{
-								temp.setName(name);
-								temp.setBgColor(color[0]);
-								temp.setImgColor(color[1]);
-								temp.setStart(System.currentTimeMillis());
-								
-								DbManager databaseManager = new DbManager(mContext);
-								
-								long id = databaseManager.addSession(temp);
-								
-								if(id >= 0)
-								{
-									temp.setId(id);
-									listViewValues.add(temp);
-								}
-								
-								else 
-									Toast.makeText(v.getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-								
-								dialog.dismiss();
-							}
-							else
-								Toast.makeText(v.getContext(), getString(R.string.errorEmptyName), Toast.LENGTH_SHORT).show();
 
-								
-						}
-					});
-					dialogCancelButton.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
+				// custom dialog
+				final Dialog dialog = new Dialog(v.getContext());
+				dialog.setContentView(R.layout.new_session_dialog);
+				dialog.setTitle(getString(R.string.newSession));
+
+				// set the custom dialog components - text, image and button
+				final EditText text = (EditText) dialog
+						.findViewById(R.id.newSessionName);
+				final ImageView image = (ImageView) dialog
+						.findViewById(R.id.newSessionImage);
+
+				final int[] color;
+
+				color = Utilities.setRandomBg(image);
+
+				Button dialogOkButton = (Button) dialog
+						.findViewById(R.id.dialogButtonOK);
+				Button dialogCancelButton = (Button) dialog
+						.findViewById(R.id.dialogButtonCancel);
+				// if button is clicked, close the custom dialog
+
+				dialogOkButton.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+
+						Session temp = new Session();
+						String name = text.getText().toString();
+						if (!name.equals("")) {
+							temp.setName(name);
+							temp.setBgColor(color[0]);
+							temp.setImgColor(color[1]);
+							temp.setStart(0);
+
+							DbManager databaseManager = new DbManager(mContext);
+
+							long id = databaseManager.addSession(temp);
+
+							if (id >= 0) {
+								temp.setId(id);
+								listViewValues.add(temp);
+							}
+
+							else
+								Toast.makeText(v.getContext(),
+										getString(R.string.error),
+										Toast.LENGTH_SHORT).show();
+
 							dialog.dismiss();
-							
-						}
-					});
-				 dialog.show();
-					
+						} else
+							Toast.makeText(v.getContext(),
+									getString(R.string.errorEmptyName),
+									Toast.LENGTH_SHORT).show();
+
+					}
+				});
+				dialogCancelButton.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+
+					}
+				});
+				dialog.show();
+
 			}// onCLick FabButton
-			
+
 		});// setOnClickListener FabButon
 
 		return fabButton;
 	}// fabSetter
-	
 
 	public static FloatingActionButton getFAB() {
 		return fabButton;
@@ -238,11 +242,13 @@ public class MainActivity extends ActionBarActivity {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			Intent intent = new Intent();
-            intent.setClassName("unipd.dei.ESP1415.falldetector", "unipd.dei.ESP1415.falldetector.FallDetectorPreferences");
-            startActivity(intent);
+			intent.setClassName("unipd.dei.ESP1415.falldetector",
+					"unipd.dei.ESP1415.falldetector.FallDetectorPreferences");
+			startActivity(intent);
 
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
 }

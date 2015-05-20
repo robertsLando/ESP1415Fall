@@ -1,15 +1,18 @@
 package unipd.dei.ESP1415.falldetector;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
 
+import unipd.dei.ESP1415.falldetector.FallService.MyBinder;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -39,6 +42,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private SessionViewHolder itemVisible = null;
 	private SessionViewAdapter adapter;
 	public static final String SESSION = "session";
+	private FallService mBoundService;
+	private boolean mServiceBound = false;
+	private boolean isRunning = false;
 
 	int i = 0;
 
@@ -94,6 +100,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					.findViewById(R.id.startTime);
 			holder.endTime = (TextView) mySessionView
 					.findViewById(R.id.endTime);
+			holder.endText = (TextView) mySessionView.findViewById(R.id.end);
 			holder.durationTime = (TextView) mySessionView
 					.findViewById(R.id.durationTime);
 
@@ -109,6 +116,10 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					.findViewById(R.id.moreButton);
 			holder.durationText = (TextView) mySessionView
 					.findViewById(R.id.duration);
+			holder.chrono = (TextView) mySessionView
+					.findViewById(R.id.chronometer);
+
+			holder.elapsedTime = 0;
 
 			mySessionView.setTag(holder);
 
@@ -121,28 +132,42 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		Date start = new Date(ses.getStart());
 		Date end = new Date(ses.getEnd());
 
-
 		// Set the value of the widgets
 		holder.sessionName.setText(ses.getName());
 		holder.falls.setText(String.valueOf(ses.getFalls()));
-		holder.startTime.setText(Utilities.getDate(start));
 
-
-		Utilities.setThumbnail(holder.fallIcon, ses.getBgColor(), ses.getImgColor());
-		
+		Utilities.setThumbnail(holder.fallIcon, ses.getBgColor(),
+				ses.getImgColor());
 
 		String duration = "";
 
-		if (ses.getEnd() == 0) // E' in esecuzione
-		{
+		if (ses.getEnd() == 0) {
 			holder.playButton.setVisibility(View.VISIBLE);
 			holder.durationTime.setVisibility(View.GONE);
 			holder.durationText.setVisibility(View.GONE);
-			holder.endTime.setText(MainActivity.mContext
-					.getString(R.string.inExecution));
-		} else
-		{
+			holder.endTime.setVisibility(View.GONE);
+			holder.endText.setVisibility(View.INVISIBLE);
+		} else {
+
+			holder.chrono.setVisibility(View.GONE);
+			holder.endTime.setVisibility(View.VISIBLE);
+			holder.endText.setVisibility(View.VISIBLE);
 			holder.endTime.setText(Utilities.getDate(end));
+			long millis = ses.getEnd() - ses.getStart();
+
+			long second = (millis / 1000) % 60;
+			long minute = (millis / (1000 * 60)) % 60;
+			long hour = (millis / (1000 * 60 * 60)) % 24;
+
+			duration = String.format("%02d:%02d:%02d", hour, minute, second);
+		}
+
+		if (ses.getStart() == 0) // Hasn't been started yet
+		{
+			holder.startTime.setText(MainActivity.mContext
+					.getString(R.string.toStart));
+		} else {
+			holder.startTime.setText(Utilities.getDate(start));
 			long millis = ses.getEnd() - ses.getStart();
 
 			long second = (millis / 1000) % 60;
@@ -178,7 +203,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							sessionList.remove(position);
 							adapter.notifyDataSetChanged();
 
-
 						}
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.rename))) // rename
@@ -186,61 +210,84 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							// custom dialog
 							final Dialog dialog = new Dialog(v.getContext());
 							dialog.setContentView(R.layout.new_session_dialog);
-							dialog.setTitle(activity.getString(R.string.renameSession));
+							dialog.setTitle(activity
+									.getString(R.string.renameSession));
 
-							// set the custom dialog components - text, image and button
-							final EditText text = (EditText) dialog.findViewById(R.id.newSessionName);
-							final ImageView image = (ImageView) dialog.findViewById(R.id.newSessionImage);
+							// set the custom dialog components - text, image
+							// and button
+							final EditText text = (EditText) dialog
+									.findViewById(R.id.newSessionName);
+							final ImageView image = (ImageView) dialog
+									.findViewById(R.id.newSessionImage);
 
-							Button dialogOkButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-							Button dialogCancelButton = (Button) dialog.findViewById(R.id.dialogButtonCancel);
+							Button dialogOkButton = (Button) dialog
+									.findViewById(R.id.dialogButtonOK);
+							Button dialogCancelButton = (Button) dialog
+									.findViewById(R.id.dialogButtonCancel);
 
 							text.setText(ses.getName());
-							Utilities.setThumbnail(image, ses.getBgColor(), ses.getImgColor());
+							Utilities.setThumbnail(image, ses.getBgColor(),
+									ses.getImgColor());
 
 							// if button is clicked, close the custom dialog
 
-							dialogOkButton.setOnClickListener(new OnClickListener() {
+							dialogOkButton
+									.setOnClickListener(new OnClickListener() {
 
-								@Override
-								public void onClick(View v) {
+										@Override
+										public void onClick(View v) {
 
-									String name = text.getText().toString();
-									if(!name.equals(""))
-									{
-										ses.setName(name);
-										DbManager databaseManager = new DbManager(activity.getApplicationContext());
-										databaseManager.updateSession(ses);
-										sessionList.get(position).setName(name);
-										dialog.dismiss();
-									}
-									else
-										Toast.makeText(v.getContext(), activity.getString(R.string.errorEmptyName), Toast.LENGTH_SHORT).show();
+											String name = text.getText()
+													.toString();
+											if (!name.equals("")) {
+												ses.setName(name);
+												DbManager databaseManager = new DbManager(
+														activity.getApplicationContext());
+												databaseManager
+														.updateSession(ses);
+												sessionList.get(position)
+														.setName(name);
+												dialog.dismiss();
+											} else
+												Toast.makeText(
+														v.getContext(),
+														activity.getString(R.string.errorEmptyName),
+														Toast.LENGTH_SHORT)
+														.show();
 
+										}
+									});// onCLickOkButton
+							dialogCancelButton
+									.setOnClickListener(new OnClickListener() {
 
-								}
-							});//onCLickOkButton
-							dialogCancelButton.setOnClickListener(new OnClickListener() {
+										@Override
+										public void onClick(View v) {
+											dialog.dismiss();
 
-								@Override
-								public void onClick(View v) {
-									dialog.dismiss();
-
-								}
-							});//OnclickCancelButton
+										}
+									});// OnclickCancelButton
 							dialog.show();
 						}
 
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.stop))) // stop
 						{
+							if (mServiceBound) {
+								activity.unbindService(mServiceConnection);
+								mServiceBound = false;
+							}
+							Intent intent = new Intent(v.getContext(),
+									FallService.class);
+							activity.stopService(intent);
+
 						}
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.details))) // details
 						{
 
-							Intent myIntent = new Intent(v.getContext(), SessionDetails.class);						
-						    myIntent.putExtra(SESSION, ses);  
+							Intent myIntent = new Intent(v.getContext(),
+									SessionDetails.class);
+							myIntent.putExtra(SESSION, ses);
 							activity.startActivity(myIntent);
 
 						}
@@ -259,9 +306,53 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			public void onClick(View v) {
 				holder.pauseButton.setVisibility(View.VISIBLE);
 				holder.playButton.setVisibility(View.GONE);
+				if (ses.getStart() == 0) {
 
-			}
-		});
+					// save the start time in the db
+					DbManager dbmanager = new DbManager(v.getContext());
+					dbmanager.updateStart(ses.getId());
+					// update the list item
+					ses.setStart(System.currentTimeMillis());
+					sessionList.get(position).setStart(ses.getStart());
+
+					// start the service
+					Intent intent = new Intent(v.getContext(),
+							FallService.class);
+					activity.startService(intent);
+
+					// bind the service
+					activity.bindService(intent, mServiceConnection,
+							Context.BIND_AUTO_CREATE);
+
+				}// start == 0
+
+				else {
+					if (mServiceBound)
+						mBoundService.resume();
+				}
+
+				isRunning = true;
+
+				// start the thread that updates the value of the elapsed time
+				// every second
+				new Thread(new Runnable() {
+					public void run() {
+						while (isRunning) {
+							if (mServiceBound) {
+								holder.chrono.setText(mBoundService
+										.getTimestamp());
+							}
+							try {
+								Thread.sleep(1000); // update every second
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}).start();
+
+			}// onClick playButton
+		});// OnClickListener playButton
 
 		holder.pauseButton.setOnClickListener(new OnClickListener() {
 
@@ -269,6 +360,11 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			public void onClick(View v) {
 				holder.playButton.setVisibility(View.VISIBLE);
 				holder.pauseButton.setVisibility(View.GONE);
+				holder.elapsedTime = SystemClock.elapsedRealtime();
+				isRunning = false;
+				if (mServiceBound) {
+					mBoundService.pause();
+				}
 
 			}
 		});
@@ -307,7 +403,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		}
 	}
 
-
 	/**
 	 * The holder for each ListView Session element
 	 * 
@@ -320,6 +415,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		public TextView falls;
 		public TextView startTime;
 		public TextView endTime;
+		public TextView endText;
 		public TextView durationTime;
 		public TextView durationText;
 		public RelativeLayout expandable;
@@ -327,7 +423,25 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		public ImageView pauseButton;
 		public ImageView moreButton;
 		public ImageView fallIcon;
+		public TextView chrono;
+
+		public long elapsedTime;
 
 	}
+
+	private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mServiceBound = false;
+		}
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			MyBinder myBinder = (MyBinder) service;
+			mBoundService = myBinder.getService();
+			mServiceBound = true;
+		}
+	};
 
 }
