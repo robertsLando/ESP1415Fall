@@ -300,7 +300,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					}
 				});
 
-				if (ses.getEnd() != 0)
+				if (ses.getEnd() != 0 || ses.getStart() == 0)
 					popup.getMenu().getItem(2).setVisible(false); // hide stop
 																	// if ended
 				popup.show(); // showing popup menu
