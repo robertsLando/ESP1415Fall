@@ -50,13 +50,14 @@ public class FallService extends Service {
 		mChronometer.stop();
 	}
 
-	public String getTimestamp() {
+	public long getTimestamp() {
 		elapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
-		int hours = (int) (elapsedMillis / 3600000);
+		/*int hours = (int) (elapsedMillis / 3600000);
 		int minutes = (int) (elapsedMillis - hours * 3600000) / 60000;
 		int seconds = (int) (elapsedMillis - hours * 3600000 - minutes * 60000) / 1000;
-		int millis = (int) (elapsedMillis - hours * 3600000 - minutes * 60000 - seconds * 1000);
-		return hours + ":" + minutes + ":" + seconds + ":" + millis;
+		return hours + ":" + minutes + ":" + seconds;*/
+		
+		return elapsedMillis;
 	}
 
 	public void pause() {

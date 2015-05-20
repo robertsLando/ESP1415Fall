@@ -166,6 +166,7 @@ public class SessionDetails extends ActionBarActivity{
 	    default:
 	        break;
 	    }
+		
 		return super.onOptionsItemSelected(item);
 	}
 	

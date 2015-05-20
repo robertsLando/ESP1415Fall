@@ -42,10 +42,18 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private SessionViewHolder itemVisible = null;
 	private SessionViewAdapter adapter;
 	public static final String SESSION = "session";
-	private FallService mBoundService;
-	private boolean mServiceBound = false;
+	private FallService mBoundService; // the instance of the service
+	private boolean mServiceBound = false; // bind of service true = service is
+											// bounded (mainactivity) false =
+											// not buonded
 	private boolean isRunning = false;
-	private ServiceConnection mServiceConnection = new ServiceConnection() {
+	private ServiceConnection mServiceConnection = new ServiceConnection() { // monitoring
+																				// the
+																				// state
+																				// of
+																				// an
+																				// application
+																				// service
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
@@ -59,7 +67,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			mServiceBound = true;
 		}
 	};
-
 
 	public SessionViewAdapter(Activity mactivity, ArrayList<Session> data) {
 
@@ -78,12 +85,12 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 	@Override
 	public Object getItem(int position) {
-		return position;
+		return sessionList.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		return position;
+		return sessionList.get(position).getId();
 	}
 
 	@Override
@@ -152,9 +159,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		Utilities.setThumbnail(holder.fallIcon, ses.getBgColor(),
 				ses.getImgColor());
 
-		String duration = "";
-
-		if (ses.getEnd() == 0) {
+		if (ses.getEnd() == 0) { // not ended
 			holder.playButton.setVisibility(View.VISIBLE);
 			holder.durationTime.setVisibility(View.GONE);
 			holder.durationText.setVisibility(View.GONE);
@@ -162,35 +167,15 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			holder.endText.setVisibility(View.INVISIBLE);
 		} else {
 
-			holder.chrono.setVisibility(View.GONE);
-			holder.endTime.setVisibility(View.VISIBLE);
-			holder.endText.setVisibility(View.VISIBLE);
-			holder.endTime.setText(Utilities.getDate(end));
-			long millis = ses.getEnd() - ses.getStart();
-
-			long second = (millis / 1000) % 60;
-			long minute = (millis / (1000 * 60)) % 60;
-			long hour = (millis / (1000 * 60 * 60)) % 24;
-
-			duration = String.format("%02d:%02d:%02d", hour, minute, second);
+			displayDuration(holder, ses);
 		}
 
 		if (ses.getStart() == 0) // Hasn't been started yet
 		{
 			holder.startTime.setText(MainActivity.mContext
 					.getString(R.string.toStart));
-		} else {
+		} else
 			holder.startTime.setText(Utilities.getDate(start));
-			long millis = ses.getEnd() - ses.getStart();
-
-			long second = (millis / 1000) % 60;
-			long minute = (millis / (1000 * 60)) % 60;
-			long hour = (millis / (1000 * 60 * 60)) % 24;
-
-			duration = String.format("%02d:%02d:%02d", hour, minute, second);
-		}
-
-		holder.durationTime.setText(duration);
 
 		holder.moreButton.setOnClickListener(new OnClickListener() {
 
@@ -216,7 +201,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							sessionList.remove(position);
 							adapter.notifyDataSetChanged();
 
-						}
+						}// delete
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.rename))) // rename
 						{
@@ -280,7 +265,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 										}
 									});// OnclickCancelButton
 							dialog.show();
-						}
+
+						}// rename
 
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.stop))) // stop
@@ -293,22 +279,33 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 									FallService.class);
 							activity.stopService(intent);
 
-						}
+							// update end
+							databaseManager = new DbManager(v.getContext());
+							sessionList.get(position).setEnd(
+									System.currentTimeMillis());
+							databaseManager.updateEnd(ses.getId());
+							adapter.notifyDataSetChanged();
+							displayDuration(holder, ses);
+
+						} // stop
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.details))) // details
 						{
 
 							displayDetails(v.getContext(), ses);
 
-						}
+						}// details
 
 						return true;
 					}
 				});
 
+				if (ses.getEnd() != 0)
+					popup.getMenu().getItem(2).setVisible(false); // hide stop
+																	// if ended
 				popup.show(); // showing popup menu
 			}
-		}); // closing the setOnClickListener method
+		}); // closing the setOnClickListener method on more button
 
 		holder.playButton.setOnClickListener(new OnClickListener() {
 
@@ -316,18 +313,19 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			public void onClick(View v) {
 				holder.pauseButton.setVisibility(View.VISIBLE);
 				holder.playButton.setVisibility(View.GONE);
-				
-				if(!mServiceBound)
-				{
+
+				// the service hasn't been already bounded
+				if (!mServiceBound) {
 					// start the service
-					Intent intent = new Intent(MainActivity.mContext,FallService.class);
+					Intent intent = new Intent(MainActivity.mContext,
+							FallService.class);
 					activity.startService(intent);
 
 					// bind the service
 					activity.bindService(intent, mServiceConnection,
 							Context.BIND_AUTO_CREATE);
 				}
-				
+
 				if (ses.getStart() == 0) {
 
 					// save the start time in the db
@@ -336,35 +334,22 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					// update the list item
 					ses.setStart(System.currentTimeMillis());
 					sessionList.get(position).setStart(ses.getStart());
-					holder.startTime.setText(Utilities.getDate(new Date(System.currentTimeMillis())));
-
+					holder.startTime.setText(Utilities.getDate(new Date(System
+							.currentTimeMillis())));
 
 				}// start == 0
 
 				else {
-					if (mServiceBound)
-						mBoundService.resume();
+					if (holder.elapsedTime > 0)
+						if (mServiceBound)
+							mBoundService.resume();
 				}
 
 				isRunning = true;
 
 				// start the thread that updates the value of the elapsed time
 				// every second
-				new Thread(new Runnable() {
-					public void run() {
-						while (isRunning) {
-							if (mServiceBound) {
-								holder.chrono.setText(mBoundService
-										.getTimestamp());
-							}
-							try {
-								Thread.sleep(1000); // update every second
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-				}).start();
+				new Thread(new MyRunner(holder)).start();
 
 			}// onClick playButton
 		});// OnClickListener playButton
@@ -376,8 +361,10 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 				holder.playButton.setVisibility(View.VISIBLE);
 				holder.pauseButton.setVisibility(View.GONE);
 				holder.elapsedTime = SystemClock.elapsedRealtime();
+
 				isRunning = false;
 				if (mServiceBound) {
+					holder.elapsedTime = mBoundService.getTimestamp();
 					mBoundService.pause();
 				}
 
@@ -418,13 +405,50 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			sct.onItemClick(mPosition);
 		}
 	}
-	
-	private void displayDetails(Context c, Session ses)
-	{
-		Intent myIntent = new Intent(c,
-				SessionDetails.class);
+
+	private void displayDetails(Context c, Session ses) {
+		Intent myIntent = new Intent(c, SessionDetails.class);
 		myIntent.putExtra(SESSION, ses);
 		activity.startActivity(myIntent);
+	}
+
+	private void displayDuration(SessionViewHolder holder, Session ses) {
+		holder.chrono.setVisibility(View.GONE);
+		holder.endTime.setVisibility(View.VISIBLE);
+		holder.endText.setVisibility(View.VISIBLE);
+		holder.playButton.setVisibility(View.GONE);
+		holder.durationTime.setVisibility(View.VISIBLE);
+		holder.durationText.setVisibility(View.VISIBLE);
+		holder.endTime.setText(Utilities.getDate(new Date(ses.getEnd())));
+		long millis = ses.getEnd() - ses.getStart();
+
+		String duration = Utilities.getTime(millis);
+		holder.durationTime.setText(duration);
+	}
+
+	private class MyRunner implements Runnable {
+
+		SessionViewHolder holder;
+
+		public MyRunner(SessionViewHolder holder) {
+			this.holder = holder;
+		}
+
+		@Override
+		public void run() {
+			while (isRunning) {
+				if (mServiceBound) {
+					holder.chrono.setText(Utilities.getTime(mBoundService
+							.getTimestamp()));
+				}
+				try {
+					Thread.sleep(500); // update every half second
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -452,6 +476,5 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		public long elapsedTime;
 
 	}
-
 
 }

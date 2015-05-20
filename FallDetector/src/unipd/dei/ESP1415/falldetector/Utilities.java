@@ -31,6 +31,15 @@ public class Utilities {
 		}
 	}
 	
+	public static String getTime(long millis)
+	{
+		long second = (millis / 1000) % 60;
+		long minute = (millis / (1000 * 60)) % 60;
+		long hour = (millis / (1000 * 60 * 60)) % 24;
+
+		return String.format("%02d:%02d:%02d", hour, minute, second);
+	}
+	
 	/**
 	 * A method to get a date in the format dd-MM-yyyy without time
 	 * 
