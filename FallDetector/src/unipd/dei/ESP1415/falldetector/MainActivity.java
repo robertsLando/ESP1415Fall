@@ -128,8 +128,8 @@ public class MainActivity extends ActionBarActivity {
 		Session temp = (Session) listViewValues.get(mPosition);
 
 		// Show the alert
-		Toast.makeText(this, "Hai premuto l'elemento: " + temp.getName(),
-				Toast.LENGTH_LONG).show();
+//		Toast.makeText(this, "Hai premuto l'elemento: " + temp.getName(),
+//				Toast.LENGTH_LONG).show();
 
 	}
 

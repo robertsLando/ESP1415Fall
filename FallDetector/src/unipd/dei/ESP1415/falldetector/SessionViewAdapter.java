@@ -45,8 +45,21 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private FallService mBoundService;
 	private boolean mServiceBound = false;
 	private boolean isRunning = false;
+	private ServiceConnection mServiceConnection = new ServiceConnection() {
 
-	int i = 0;
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mServiceBound = false;
+		}
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			MyBinder myBinder = (MyBinder) service;
+			mBoundService = myBinder.getService();
+			mServiceBound = true;
+		}
+	};
+
 
 	public SessionViewAdapter(Activity mactivity, ArrayList<Session> data) {
 
@@ -285,10 +298,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 								.getString(R.string.details))) // details
 						{
 
-							Intent myIntent = new Intent(v.getContext(),
-									SessionDetails.class);
-							myIntent.putExtra(SESSION, ses);
-							activity.startActivity(myIntent);
+							displayDetails(v.getContext(), ses);
 
 						}
 
@@ -310,8 +320,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 				if(!mServiceBound)
 				{
 					// start the service
-					Intent intent = new Intent(v.getContext(),
-							FallService.class);
+					Intent intent = new Intent(MainActivity.mContext,FallService.class);
 					activity.startService(intent);
 
 					// bind the service
@@ -327,6 +336,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					// update the list item
 					ses.setStart(System.currentTimeMillis());
 					sessionList.get(position).setStart(ses.getStart());
+					holder.startTime.setText(Utilities.getDate(new Date(System.currentTimeMillis())));
 
 
 				}// start == 0
@@ -395,6 +405,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 				holder.expandable.setVisibility(View.VISIBLE);
 				itemVisible = holder;
 			} else if (itemVisible == holder) {
+				displayDetails(myView.getContext(), sessionList.get(mPosition));
 				holder.expandable.setVisibility(View.GONE);
 				itemVisible = null;
 			} else {
@@ -406,6 +417,14 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			MainActivity sct = (MainActivity) activity;
 			sct.onItemClick(mPosition);
 		}
+	}
+	
+	private void displayDetails(Context c, Session ses)
+	{
+		Intent myIntent = new Intent(c,
+				SessionDetails.class);
+		myIntent.putExtra(SESSION, ses);
+		activity.startActivity(myIntent);
 	}
 
 	/**
@@ -434,19 +453,5 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 	}
 
-	private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			mServiceBound = false;
-		}
-
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			MyBinder myBinder = (MyBinder) service;
-			mBoundService = myBinder.getService();
-			mServiceBound = true;
-		}
-	};
 
 }

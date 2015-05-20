@@ -158,7 +158,8 @@ public class SessionDetails extends ActionBarActivity{
 		// as you specify a parent activity in AndroidManifest.xml.
 		switch (item.getItemId()) {
 	    case android.R.id.home:
-	    	finish();
+	    	Intent intent = new Intent(this, MainActivity.class);
+	    	startActivity(intent);
 
 	        break;
 
