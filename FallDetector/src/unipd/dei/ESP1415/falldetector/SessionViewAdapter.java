@@ -306,6 +306,19 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			public void onClick(View v) {
 				holder.pauseButton.setVisibility(View.VISIBLE);
 				holder.playButton.setVisibility(View.GONE);
+				
+				if(!mServiceBound)
+				{
+					// start the service
+					Intent intent = new Intent(v.getContext(),
+							FallService.class);
+					activity.startService(intent);
+
+					// bind the service
+					activity.bindService(intent, mServiceConnection,
+							Context.BIND_AUTO_CREATE);
+				}
+				
 				if (ses.getStart() == 0) {
 
 					// save the start time in the db
@@ -315,14 +328,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					ses.setStart(System.currentTimeMillis());
 					sessionList.get(position).setStart(ses.getStart());
 
-					// start the service
-					Intent intent = new Intent(v.getContext(),
-							FallService.class);
-					activity.startService(intent);
-
-					// bind the service
-					activity.bindService(intent, mServiceConnection,
-							Context.BIND_AUTO_CREATE);
 
 				}// start == 0
 

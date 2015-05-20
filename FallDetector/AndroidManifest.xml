@@ -40,7 +40,7 @@
             android:label="@string/title_activity_session_details" >
         </activity>
         
-         <service android:name="unipd.dei.ESP1415.falldetctor.FallService" >
+         <service android:name="unipd.dei.ESP1415.falldetector.FallService" >
         </service>
     </application>
 
