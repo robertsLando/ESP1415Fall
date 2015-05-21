@@ -30,8 +30,7 @@
             android:positiveButtonText="@string/add"
             android:windowNoTitle="true" />
 
-        <MultiSelectListPreference
-            android:entries="@array/contactList"
+        <unipd.dei.ESP1415.falldetector.SelectHelperPreference
             android:key="contact_list_management"
             android:selectable="true"
             android:summary="@string/pref_contact_management_sum"
