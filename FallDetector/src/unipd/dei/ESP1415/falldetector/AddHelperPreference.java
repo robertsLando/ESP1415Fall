@@ -1,15 +1,13 @@
 package unipd.dei.ESP1415.falldetector;
 
-import java.lang.reflect.InvocationTargetException;
-
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowAnimationFrameStats;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -36,15 +34,11 @@ public class AddHelperPreference extends DialogPreference {
 		super(context, attrs);
 		mContext = context;
 		addContact = new Dialog(mContext);
-		setDialogLayoutResource(R.layout.add_contact_dialog);
 		addContact.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setDialogLayoutResource(R.layout.add_contact_dialog);
 		setPersistent(false);
-		
-		
 	}
 	
-	
-
 	// initial values
 	protected void onBindDialogView(View view) {
 		super.onBindDialogView(view);

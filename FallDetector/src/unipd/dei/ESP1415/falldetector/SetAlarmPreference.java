@@ -1,5 +1,7 @@
 package unipd.dei.ESP1415.falldetector;
 
+
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -12,7 +14,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import unipd.dei.ESP1415.falldetector.MyNotificationBroadcastReceiver;
 
 public class SetAlarmPreference extends DialogPreference {
 	// we create this preference to permit the user to set the time for the
@@ -21,9 +22,9 @@ public class SetAlarmPreference extends DialogPreference {
 	private int hour = 0;
 	private int minute = 0;
 	private TimePicker timePicker = null;
-	public String alarmTime = ""; // string for the toast
+	public String alarmCustomTime = ""; // string for the toast
 	private Calendar calendar; // calendar to show the right hour to the user
-								// when he opens the TimePicker
+								// alarmTime he opens the TimePicker
 
 	// constructor
 	public SetAlarmPreference(Context context, AttributeSet attrs) {
@@ -54,37 +55,49 @@ public class SetAlarmPreference extends DialogPreference {
 
 	}
 
-	// what happens when the user closes the dialog
+	// what happens alarmTime the user closes the dialog
 	protected void onDialogClosed(boolean positiveResult) {
 		super.onDialogClosed(positiveResult);
 
 		if (positiveResult) {
 			hour = timePicker.getCurrentHour();
 			minute = timePicker.getCurrentMinute();
-			alarmTime = hour + ":" + minute;
+			alarmCustomTime = hour + ":" + minute;
 
 			// set the alarm to start at the time of user decided
 			Calendar calendar = Calendar.getInstance();
+			
+			//current time
+			long currentTime = calendar.getTimeInMillis();
+			
+			//alarm time
 			calendar.setTimeInMillis(System.currentTimeMillis());
 			calendar.set(Calendar.HOUR_OF_DAY, hour);
 			calendar.set(Calendar.MINUTE, minute);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND, 0);
 
-			long when = calendar.getTimeInMillis();
+			long alarmTime = calendar.getTimeInMillis();
 			Intent notificationIntent = new Intent(getContext(),
 					MyNotificationBroadcastReceiver.class);
 			PendingIntent notificationPendingIntent = PendingIntent
 					.getBroadcast(getContext(), 0, notificationIntent,0);
 			AlarmManager mAlarmManager = (AlarmManager) getContext()
 					.getSystemService(Context.ALARM_SERVICE);
-			mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, when, AlarmManager.INTERVAL_DAY,
+			
+			//to compare two time we use the class Timestamp
+			Timestamp currentTimestamp = new Timestamp(currentTime);
+			Timestamp alarmTimestamp = new Timestamp(alarmTime);
+			
+			if(alarmTimestamp.after(currentTimestamp)){
+			mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY,
 					notificationPendingIntent);
 
 			// create a toast
 			Toast.makeText(super.getContext(),
-					"You set the notification at " + alarmTime + " !",
+					"You set the notification at " + alarmCustomTime + " !",
 					Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 

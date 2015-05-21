@@ -27,7 +27,8 @@
             android:title="@string/add_contact"
             android:summary="@string/pref_contact_list_sum"
             android:negativeButtonText="@string/cancel"
-            android:positiveButtonText="@string/add"/>
+            android:positiveButtonText="@string/add"
+            android:windowNoTitle="true" />
 
         <MultiSelectListPreference
             android:entries="@array/contactList"
