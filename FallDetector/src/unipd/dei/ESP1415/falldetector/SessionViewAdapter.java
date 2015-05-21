@@ -46,6 +46,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private boolean mServiceBound = false; // bind of service true = service is
 											// bounded (mainactivity) false =
 											// not buonded
+	private boolean mServiceStarted = false;
 	private boolean isRunning = false;
 	private ServiceConnection mServiceConnection = new ServiceConnection() { // monitoring
 																				// the
@@ -298,11 +299,14 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 						return true;
 					}
-				});
+				}); // popup listener
 
 				if (ses.getEnd() != 0 || ses.getStart() == 0)
 					popup.getMenu().getItem(2).setVisible(false); // hide stop
 																	// if ended
+																	// or not
+																	// started
+																	// yet
 				popup.show(); // showing popup menu
 			}
 		}); // closing the setOnClickListener method on more button
@@ -316,10 +320,15 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 				// the service hasn't been already bounded
 				if (!mServiceBound) {
-					// start the service
-					Intent intent = new Intent(MainActivity.mContext,
+
+					Intent intent = new Intent(activity.getApplicationContext(),
 							FallService.class);
-					activity.startService(intent);
+					
+					if (!mServiceStarted) {
+						// start the service
+						activity.startService(intent);
+						mServiceStarted = true;
+					}
 
 					// bind the service
 					activity.bindService(intent, mServiceConnection,
@@ -349,6 +358,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 				// start the thread that updates the value of the elapsed time
 				// every second
+				
 				new Thread(new MyRunner(holder)).start();
 
 			}// onClick playButton
@@ -425,7 +435,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		String duration = Utilities.getTime(millis);
 		holder.durationTime.setText(duration);
 	}
-
+	
+	
 	private class MyRunner implements Runnable {
 
 		SessionViewHolder holder;
@@ -438,9 +449,16 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		public void run() {
 			while (isRunning) {
 				if (mServiceBound) {
-					holder.chrono.setText(Utilities.getTime(mBoundService
-							.getTimestamp()));
-				}
+					activity.runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							holder.chrono.setText(Utilities.getTime(mBoundService
+									.getTimestamp()));
+						}
+					}); //runuithread
+				}//if bound
+				
 				try {
 					Thread.sleep(500); // update every half second
 				} catch (InterruptedException e) {

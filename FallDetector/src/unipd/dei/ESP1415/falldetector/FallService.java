@@ -52,20 +52,17 @@ public class FallService extends Service {
 
 	public long getTimestamp() {
 		elapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
-		/*int hours = (int) (elapsedMillis / 3600000);
-		int minutes = (int) (elapsedMillis - hours * 3600000) / 60000;
-		int seconds = (int) (elapsedMillis - hours * 3600000 - minutes * 60000) / 1000;
-		return hours + ":" + minutes + ":" + seconds;*/
-		
 		return elapsedMillis;
 	}
 
 	public void pause() {
-		elapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
+		elapsedMillis = mChronometer.getBase() -SystemClock.elapsedRealtime() ;
+		mChronometer.stop();
 	}
 
 	public void resume() {
-		mChronometer.setBase(mChronometer.getBase() + elapsedMillis);
+		mChronometer.setBase(SystemClock.elapsedRealtime() + elapsedMillis);
+		mChronometer.start();
 	}
 
 	public class MyBinder extends Binder {
