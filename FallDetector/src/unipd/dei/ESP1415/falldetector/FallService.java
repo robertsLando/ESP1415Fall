@@ -22,12 +22,11 @@ public class FallService extends Service {
 		mChronometer = new Chronometer(this);
 		mChronometer.setBase(SystemClock.elapsedRealtime());
 		mChronometer.start();
-		elapsedMillis = 0;
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.v(LOG_TAG, "in onBind");
+		Log.v(LOG_TAG, "in onBind"); 
 		return mBinder;
 	}
 
@@ -53,6 +52,10 @@ public class FallService extends Service {
 	public long getTimestamp() {
 		elapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
 		return elapsedMillis;
+	}
+	
+	public void setTime(long timestamp) {
+		elapsedMillis = timestamp;
 	}
 
 	public void pause() {

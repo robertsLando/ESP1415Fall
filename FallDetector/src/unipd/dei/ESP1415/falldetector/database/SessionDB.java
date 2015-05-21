@@ -33,6 +33,8 @@ public final class SessionDB {
 		public static final String FALLS_COLUMN = "falls";
 		public static final String START_COLUMN = "start";
 		public static final String END_COLUMN = "end";
+		public static final String TIMEELAPSED_COLUMN = "timeElapsed";
+		public static final String ISRUNNING_COLUMN = "isRunning";
 		
 		
 		//TYPES STRINGS
@@ -53,7 +55,9 @@ public final class SessionDB {
 				+ IMGCOLOR_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 				+ FALLS_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 				+ START_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
-				+ END_COLUMN + TIMESTAMP_TYPE + NOT_NULL
+				+ END_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
+				+ TIMEELAPSED_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+				+ ISRUNNING_COLUMN + INTEGER_TYPE + NOT_NULL
 				+ ");";
 		
 		//references
@@ -64,6 +68,9 @@ public final class SessionDB {
 				public static final int FALLS = 4;
 				public static final int START = 5;
 				public static final int END = 6;
+				public static final int TIMEELAPSED = 7;
+				public static final int ISRUNNING = 8;
+				
 				
 		
 		//DELETE

@@ -74,6 +74,8 @@ public class DbManager {
 		values.put(SessionDB.SessionTable.BGCOLOR_COLUMN, session.getBgColor());
 		values.put(SessionDB.SessionTable.IMGCOLOR_COLUMN, session.getImgColor());
 		values.put(SessionDB.SessionTable.FALLS_COLUMN, 0);
+		values.put(SessionDB.SessionTable.TIMEELAPSED_COLUMN, 0);
+		values.put(SessionDB.SessionTable.ISRUNNING_COLUMN, 0);
 
 
 		// Insert into the table the values
@@ -137,6 +139,7 @@ public class DbManager {
 
 		// Insert values with associated column name
 		values.put(SessionDB.SessionTable.END_COLUMN, currentTimestamp);
+		values.put(SessionDB.SessionTable.ISRUNNING_COLUMN, 0);
 
 		// update database
 		db.update(SessionTable.SESSION_TABLE, values, SessionTable.ID_COLUMN + " = "
@@ -159,12 +162,52 @@ public class DbManager {
 
 		// Insert values with associated column name
 		values.put(SessionDB.SessionTable.START_COLUMN, currentTimestamp);
+		values.put(SessionDB.SessionTable.ISRUNNING_COLUMN, 1);
 
 		// update database
 		db.update(SessionTable.SESSION_TABLE, values, SessionTable.ID_COLUMN + " = "
 				+ ID, null);
 	}
 
+	/**
+	 * Updates Session status
+	 * 
+	 * @param ID
+	 *            The ID of the session in the database
+	 */
+	public void updateTimeElapsed(long ID, long timestamp) {
+
+		db = dbHelper.getWritableDatabase();
+
+		ContentValues values = new ContentValues();
+		
+		values.put(SessionDB.SessionTable.TIMEELAPSED_COLUMN, timestamp);
+
+		// update database
+		db.update(SessionTable.SESSION_TABLE, values, SessionTable.ID_COLUMN + " = "
+				+ ID, null);
+	}
+
+	/**
+	 * Updates Session status
+	 * 
+	 * @param ID
+	 *            The ID of the session in the database
+	 */
+	public void updateStatus(long ID, boolean stat) {
+
+		int status = (stat)? 1 : 0;
+		
+		db = dbHelper.getWritableDatabase();
+
+		ContentValues values = new ContentValues();
+		
+		values.put(SessionDB.SessionTable.ISRUNNING_COLUMN, status);
+
+		// update database
+		db.update(SessionTable.SESSION_TABLE, values, SessionTable.ID_COLUMN + " = "
+				+ ID, null);
+	}
 
 	/**
 	 * Remove a session from the database

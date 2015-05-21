@@ -102,7 +102,7 @@ public class MainActivity extends ActionBarActivity {
 
 		DbManager databaseManager = new DbManager(mContext);
 
-		// databaseManager.updateDB(); //uncomment this line when update
+		//databaseManager.updateDB(); //uncomment this line when update
 		// database
 
 		Cursor c = databaseManager.getSessions();
@@ -118,6 +118,8 @@ public class MainActivity extends ActionBarActivity {
 			temp.setBgColor(c.getInt(SessionTable.BGCOLOR));
 			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR));
 			temp.setFalls(c.getInt(SessionTable.FALLS));
+			temp.setTimeElapsed(c.getInt(SessionTable.TIMEELAPSED));
+			temp.setRunning((c.getInt(SessionTable.TIMEELAPSED) == 1)? true : false);
 
 			listViewValues.add(temp);
 		}
@@ -232,6 +234,19 @@ public class MainActivity extends ActionBarActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	
+	@Override
+	public void onPause() {
+	    super.onPause(); 
+	    
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		
 	}
 
 	@Override

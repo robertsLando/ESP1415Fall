@@ -18,8 +18,22 @@ public class Session implements Serializable{
 	private int falls;
 	private int bgColor;
 	private int imgColor;
+	private long timeElapsed;
+	private boolean isRunning;
 	
 	
+	public boolean isRunning() {
+		return isRunning;
+	}
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
+	}
+	public long getTimeElapsed() {
+		return timeElapsed;
+	}
+	public void setTimeElapsed(long timeElapsed) {
+		this.timeElapsed = timeElapsed;
+	}
 	public int getBgColor() {
 		return bgColor;
 	}
