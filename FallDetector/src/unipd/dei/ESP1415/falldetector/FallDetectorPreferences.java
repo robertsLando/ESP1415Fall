@@ -1,9 +1,10 @@
 package unipd.dei.ESP1415.falldetector;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import unipd.dei.ESP1415.falldetector.SettingFragment; 
 
 public class FallDetectorPreferences extends Activity {
 
@@ -16,6 +17,15 @@ public class FallDetectorPreferences extends Activity {
         .commit();
 		
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+		
+		//now we have to save all the values in a SharedPreferences
+		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		
+		
+
+		
 	}
 	
 	

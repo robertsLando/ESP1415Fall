@@ -3,7 +3,6 @@ package unipd.dei.ESP1415.falldetector;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.app.Dialog;
 import android.content.Context;
-import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
