@@ -7,10 +7,13 @@ import unipd.dei.ESP1415.falldetector.FallService.MyBinder;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v7.widget.PopupMenu;
@@ -40,12 +43,14 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private static LayoutInflater inflater = null; // calls external xml layout
 	// ()
 	private SessionViewHolder itemVisible = null;
+	public SessionViewHolder itemRunning = null;
 	private SessionViewAdapter adapter;
 	public static final String SESSION = "session";
 	private FallService mBoundService; // the instance of the service
-	private boolean mServiceBound = false; // bind of service true = service is
+	public boolean mServiceBound = false; // bind of service true = service is
 											// bounded (mainactivity) false =
 											// not buonded
+	private Thread chronoThread;
 	private boolean mServiceStarted = false;
 	private boolean isRunning = false;
 	private ServiceConnection mServiceConnection = new ServiceConnection() { // monitoring
@@ -140,7 +145,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			holder.chrono = (TextView) mySessionView
 					.findViewById(R.id.chronometer);
 
-			holder.elapsedTime = 0;
 
 			mySessionView.setTag(holder);
 
@@ -161,11 +165,19 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 				ses.getImgColor());
 
 		if (ses.getEnd() == 0) { // not ended
+
+			holder.pauseButton.setVisibility(View.GONE);
+			holder.chrono.setVisibility(View.VISIBLE);
+			holder.chrono.setText(Utilities.getTime(ses.getTimeElapsed()));
+			holder.endTime.setVisibility(View.GONE);	
+			holder.endText.setVisibility(View.INVISIBLE);
 			holder.playButton.setVisibility(View.VISIBLE);
 			holder.durationTime.setVisibility(View.GONE);
 			holder.durationText.setVisibility(View.GONE);
-			holder.endTime.setVisibility(View.GONE);
-			holder.endText.setVisibility(View.INVISIBLE);
+			holder.expandable.setVisibility(View.VISIBLE);
+			itemVisible = holder;
+			mySessionView.setBackgroundColor(Color.GREEN);
+			
 		} else {
 
 			displayDuration(holder, ses);
@@ -177,6 +189,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					.getString(R.string.toStart));
 		} else
 			holder.startTime.setText(Utilities.getDate(start));
+		
 
 		holder.moreButton.setOnClickListener(new OnClickListener() {
 
@@ -201,6 +214,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							databaseManager.removeSession(ses.getId());
 							sessionList.remove(position);
 							adapter.notifyDataSetChanged();
+							if(ses.getEnd() == 0) //the user have deleted the session to complete
+								MainActivity.completeSession(); //show the fab
 
 						}// delete
 						if (selected.equals(MainActivity.mContext
@@ -285,8 +300,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							sessionList.get(position).setEnd(
 									System.currentTimeMillis());
 							databaseManager.updateEnd(ses.getId());
-							adapter.notifyDataSetChanged();
 							displayDuration(holder, ses);
+							MainActivity.completeSession();//show fab
+							adapter.notifyDataSetChanged();				
 
 						} // stop
 						if (selected.equals(MainActivity.mContext
@@ -321,9 +337,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 				// the service hasn't been already bounded
 				if (!mServiceBound) {
 
-					Intent intent = new Intent(activity.getApplicationContext(),
-							FallService.class);
-					
+					Intent intent = new Intent(
+							activity.getApplicationContext(), FallService.class);
+
 					if (!mServiceStarted) {
 						// start the service
 						activity.startService(intent);
@@ -333,6 +349,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					// bind the service
 					activity.bindService(intent, mServiceConnection,
 							Context.BIND_AUTO_CREATE);
+					
+						
 				}
 
 				if (ses.getStart() == 0) {
@@ -345,21 +363,29 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					sessionList.get(position).setStart(ses.getStart());
 					holder.startTime.setText(Utilities.getDate(new Date(System
 							.currentTimeMillis())));
+					
 
 				}// start == 0
 
 				else {
-					if (holder.elapsedTime > 0)
+					if (ses.getTimeElapsed() > 0)
 						if (mServiceBound)
 							mBoundService.resume();
 				}
 
 				isRunning = true;
+				itemRunning = holder;
 
 				// start the thread that updates the value of the elapsed time
 				// every second
+				chronoThread = new Thread(new MyRunner(holder));
 				
-				new Thread(new MyRunner(holder)).start();
+				chronoThread.start();
+				
+				//update session status in sessionlist and database
+				sessionList.get(position).setRunning(true);
+				DbManager databaseManager = new DbManager(v.getContext());
+				databaseManager.updateStatus(ses.getId(), true);
 
 			}// onClick playButton
 		});// OnClickListener playButton
@@ -370,11 +396,17 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			public void onClick(View v) {
 				holder.playButton.setVisibility(View.VISIBLE);
 				holder.pauseButton.setVisibility(View.GONE);
-				holder.elapsedTime = SystemClock.elapsedRealtime();
 
+				itemRunning = null;
 				isRunning = false;
+
 				if (mServiceBound) {
-					holder.elapsedTime = mBoundService.getTimestamp();
+					long timeelapsed = mBoundService.getTimestamp();
+					sessionList.get(position).setTimeElapsed(timeelapsed);
+					sessionList.get(position).setRunning(false);
+					DbManager databaseManager = new DbManager(v.getContext());
+					databaseManager.updateTimeElapsed(ses.getId(), timeelapsed);
+					databaseManager.updateStatus(ses.getId(), false);
 					mBoundService.pause();
 				}
 
@@ -435,8 +467,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		String duration = Utilities.getTime(millis);
 		holder.durationTime.setText(duration);
 	}
-	
-	
+
 	private class MyRunner implements Runnable {
 
 		SessionViewHolder holder;
@@ -447,18 +478,21 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 		@Override
 		public void run() {
+			
 			while (isRunning) {
 				if (mServiceBound) {
-					activity.runOnUiThread(new Runnable() {
-						
+					activity.runOnUiThread(new Runnable() { // to avoid problem
+															// with UI textview
+															// update
+
 						@Override
 						public void run() {
-							holder.chrono.setText(Utilities.getTime(mBoundService
-									.getTimestamp()));
+							holder.chrono.setText(Utilities
+									.getTime(mBoundService.getTimestamp()));
 						}
-					}); //runuithread
-				}//if bound
-				
+					}); // runOnUithread
+				}// if bound
+
 				try {
 					Thread.sleep(500); // update every half second
 				} catch (InterruptedException e) {
@@ -491,7 +525,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		public ImageView fallIcon;
 		public TextView chrono;
 
-		public long elapsedTime;
 
 	}
 

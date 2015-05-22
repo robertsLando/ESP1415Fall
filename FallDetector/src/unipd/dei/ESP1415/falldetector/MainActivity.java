@@ -35,7 +35,7 @@ public class MainActivity extends ActionBarActivity {
 	public ArrayList<Session> listViewValues = new ArrayList<Session>(); // the
 	public static Context mContext; // container
 	private static FloatingActionButton fabButton;
-	
+	private static boolean sessionToComplete = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +62,18 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-				switch (scrollState) {
-				case OnScrollListener.SCROLL_STATE_IDLE:
-					fabButton.showFloatingActionButton();
-					break;
-				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-					fabButton.hideFloatingActionButton();
-					break;
-				case OnScrollListener.SCROLL_STATE_FLING:
-					fabButton.hideFloatingActionButton();
-					break;
+				if (!sessionToComplete) {
+					switch (scrollState) {
+					case OnScrollListener.SCROLL_STATE_IDLE:
+						fabButton.showFloatingActionButton();
+						break;
+					case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+						fabButton.hideFloatingActionButton();
+						break;
+					case OnScrollListener.SCROLL_STATE_FLING:
+						fabButton.hideFloatingActionButton();
+						break;
+					}
 				}
 
 			}
@@ -118,18 +120,35 @@ public class MainActivity extends ActionBarActivity {
 			temp.setBgColor(c.getInt(SessionTable.BGCOLOR));
 			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR));
 			temp.setFalls(c.getInt(SessionTable.FALLS));
-
+			temp.setTimeElapsed(c.getInt(SessionTable.TIMEELAPSED));
+			temp.setRunning((c.getInt(SessionTable.TIMEELAPSED) == 1) ? true
+					: false);
+			
+			if(temp.getEnd() == 0) //there is a session to complete so I can't start another one
+			{
+				fabButton.hideFloatingActionButton();
+				sessionToComplete = true;
+				listViewValues.add(0,temp); //it must be the first one
+			}
+			
+			else
 			listViewValues.add(temp);
 		}
 
+	}
+	
+	public static void completeSession()
+	{
+		fabButton.showFloatingActionButton();
+		sessionToComplete = false;
 	}
 
 	public void onItemClick(int mPosition) {
 		Session temp = (Session) listViewValues.get(mPosition);
 
 		// Show the alert
-//		Toast.makeText(this, "Hai premuto l'elemento: " + temp.getName(),
-//				Toast.LENGTH_LONG).show();
+		// Toast.makeText(this, "Hai premuto l'elemento: " + temp.getName(),
+		// Toast.LENGTH_LONG).show();
 
 	}
 
@@ -190,7 +209,7 @@ public class MainActivity extends ActionBarActivity {
 
 							if (id >= 0) {
 								temp.setId(id);
-								listViewValues.add(temp);
+								listViewValues.add(0, temp);
 							}
 
 							else
@@ -199,6 +218,9 @@ public class MainActivity extends ActionBarActivity {
 										Toast.LENGTH_SHORT).show();
 
 							dialog.dismiss();
+							fabButton.hideFloatingActionButton();
+							sessionToComplete = true;
+							
 						} else
 							Toast.makeText(v.getContext(),
 									getString(R.string.errorEmptyName),
@@ -232,6 +254,18 @@ public class MainActivity extends ActionBarActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+
 	}
 
 	@Override

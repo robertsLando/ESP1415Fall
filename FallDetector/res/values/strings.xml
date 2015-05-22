@@ -55,6 +55,7 @@
     <string name="title_activity_session_details">SessionDetails</string>
     <string name="notification_title">Start a New Session</string>
     <string name="notification_text">Touch to begin a new session</string>
+    <string name="notification_started">New session has been started</string>
     <string name="add_contact">Add a contact</string>
     <string name="set_name">name</string>
     <string name="set_surname">surname</string>

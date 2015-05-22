@@ -37,7 +37,7 @@ public class Utilities {
 		long minute = (millis / (1000 * 60)) % 60;
 		long hour = (millis / (1000 * 60 * 60)) % 24;
 
-		return String.format("%02d:%02d:%02d", hour, minute, second);
+		return String.format("%02dh %02dm %02ds", hour, minute, second);
 	}
 	
 	/**
