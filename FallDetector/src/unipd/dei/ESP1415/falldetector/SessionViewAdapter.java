@@ -13,6 +13,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v7.widget.PopupMenu;
@@ -165,16 +166,17 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 		if (ses.getEnd() == 0) { // not ended
 
-			if (ses.getTimeElapsed() != 0) {
-				holder.chrono.setText(Utilities.getTime(ses.getTimeElapsed()));
-				holder.pauseButton.setVisibility(View.GONE);
-			} else {	
-				holder.endTime.setVisibility(View.GONE);
-				holder.endText.setVisibility(View.INVISIBLE);
-			}
+			holder.pauseButton.setVisibility(View.GONE);
+			holder.chrono.setVisibility(View.VISIBLE);
+			holder.chrono.setText(Utilities.getTime(ses.getTimeElapsed()));
+			holder.endTime.setVisibility(View.GONE);	
+			holder.endText.setVisibility(View.INVISIBLE);
 			holder.playButton.setVisibility(View.VISIBLE);
 			holder.durationTime.setVisibility(View.GONE);
 			holder.durationText.setVisibility(View.GONE);
+			holder.expandable.setVisibility(View.VISIBLE);
+			itemVisible = holder;
+			mySessionView.setBackgroundColor(Color.GREEN);
 			
 		} else {
 
@@ -212,6 +214,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							databaseManager.removeSession(ses.getId());
 							sessionList.remove(position);
 							adapter.notifyDataSetChanged();
+							if(ses.getEnd() == 0) //the user have deleted the session to complete
+								MainActivity.completeSession(); //show the fab
 
 						}// delete
 						if (selected.equals(MainActivity.mContext
@@ -296,8 +300,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							sessionList.get(position).setEnd(
 									System.currentTimeMillis());
 							databaseManager.updateEnd(ses.getId());
-							adapter.notifyDataSetChanged();
 							displayDuration(holder, ses);
+							MainActivity.completeSession();//show fab
+							adapter.notifyDataSetChanged();				
 
 						} // stop
 						if (selected.equals(MainActivity.mContext
