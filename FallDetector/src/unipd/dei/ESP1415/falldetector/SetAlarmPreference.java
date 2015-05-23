@@ -19,8 +19,8 @@ public class SetAlarmPreference extends DialogPreference {
 	// we create this preference to permit the user to set the time for the
 	// notification
 
-	private int hour = 0;
-	private int minute = 0;
+	private int hour = -1;
+	private int minute = -1;
 	private TimePicker timePicker = null;
 	public String alarmCustomTime = ""; // string for the toast
 	private Calendar calendar; // calendar to show the right hour to the user
@@ -43,7 +43,7 @@ public class SetAlarmPreference extends DialogPreference {
 	protected void onBindDialogView(View v) {
 		super.onBindDialogView(v);
 		// if it\'s the first time we show the right hour
-		if ((hour == 0) && (minute == 0)) {
+		if ((hour == -1) && (minute == -1)) {
 			timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
 			timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
 		}

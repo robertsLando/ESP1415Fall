@@ -33,6 +33,8 @@
         <unipd.dei.ESP1415.falldetector.SelectHelperPreference
             android:key="contact_list_management"
             android:selectable="true"
+            android:negativeButtonText="@string/cancel"
+            android:positiveButtonText="@string/ok"
             android:summary="@string/pref_contact_management_sum"
             android:title="@string/pref_contact_management" />
     </PreferenceCategory>
