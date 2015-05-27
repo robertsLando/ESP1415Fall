@@ -139,11 +139,6 @@ public class MainActivity extends ActionBarActivity {
 		sessionToComplete = false;
 	}
 
-	public void onItemClick(int mPosition) {
-		
-	//TODO
-	}
-
 	@SuppressWarnings("deprecation")
 	private FloatingActionButton fabSetter() {
 		// Set ad final otherwise there are problem on the Listener

@@ -61,7 +61,7 @@ public class FallService extends Service {
 	}
 
 	public void pause() {
-		elapsedMillis = mChronometer.getBase() -SystemClock.elapsedRealtime() ;
+		elapsedMillis = mChronometer.getBase() - SystemClock.elapsedRealtime() ;
 		mChronometer.stop();
 	}
 

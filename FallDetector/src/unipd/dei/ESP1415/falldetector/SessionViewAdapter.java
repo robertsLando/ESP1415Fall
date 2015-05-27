@@ -181,8 +181,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			if (ses.isRunning())
 				startChronometer(ses, holder, mySessionView.getContext(),
 						position);
-			
-			else 
+
+			else
 				holder.chrono.setText(Utilities.getTime(ses.getTimeElapsed()));
 
 		} else {
@@ -217,12 +217,29 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.delete))) {
+
+							// remove the session from the database
 							databaseManager.removeSession(ses.getId());
+
+							// remove the session from the listview
 							sessionList.remove(position);
 							adapter.notifyDataSetChanged();
-							if (ses.getEnd() == 0) // the user have deleted the
+
+							if (ses.getEnd() == 0) {// the user have deleted the
 													// session to complete
+
 								MainActivity.completeSession(); // show the fab
+																// button
+
+								// UNBIND and STOP service
+								if (mServiceBound) {
+									activity.unbindService(mServiceConnection);
+									mServiceBound = false;
+								}
+								Intent intent = new Intent(v.getContext(),
+										FallService.class);
+								activity.stopService(intent);
+							}
 
 						}// delete
 						if (selected.equals(MainActivity.mContext
@@ -407,8 +424,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 				itemVisible = holder;
 			}
 
-			MainActivity sct = (MainActivity) activity;
-			sct.onItemClick(mPosition);
 		}
 	}
 

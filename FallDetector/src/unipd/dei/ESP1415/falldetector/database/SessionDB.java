@@ -19,12 +19,13 @@ public final class SessionDB {
 		
 		/*CREATE TABLE session (
 		 * _id INTEGER PRIMARY KEY autoincrement,
-		 * name TEXT NOT NULL,
-		 * bgcolor INTEGER NOT NULL,
+		 * name TEXT NOT NULL,bgcolor INTEGER NOT NULL,
 		 * imgcolor INTEGER NOT NULL,
 		 * falls INTEGER NOT NULL,
 		 * start DATETIME NOT NULL,
-		 * end DATETIME NOT NULL);*/
+		 * end DATETIME NOT NULL,
+		 * timeElapsed INTEGER NOT NULL,
+		 * isRunning INTEGER NOT NULL);*/
 		
 		public static final String ID_COLUMN = "_id";
 		public static final String NAME_COLUMN = "name";
