@@ -2,20 +2,17 @@ package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 import unipd.dei.ESP1415.falldetector.FallService.MyBinder;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -45,7 +42,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private SessionViewHolder itemVisible = null;
 	public SessionViewHolder itemRunning = null;
 	private SessionViewAdapter adapter;
-	public static final String SESSION = "session";
+
 	private FallService mBoundService; // the instance of the service
 	public boolean mServiceBound = false; // bind of service true = service is
 											// bounded (mainactivity) false =
@@ -53,6 +50,11 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private Thread chronoThread;
 	private boolean mServiceStarted = false;
 	private boolean isRunning = false;
+
+	// Intent string constants
+	public static final String SESSION = "session";
+	public static final String ELAPSED = "elapsed";
+
 	private ServiceConnection mServiceConnection = new ServiceConnection() { // monitoring
 																				// the
 																				// state
@@ -105,6 +107,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(final int position, View mySessionView, ViewGroup parent) {
 
@@ -145,7 +148,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			holder.chrono = (TextView) mySessionView
 					.findViewById(R.id.chronometer);
 
-
 			mySessionView.setTag(holder);
 
 		} else
@@ -155,7 +157,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		final Session ses = (Session) sessionList.get(position);
 
 		Date start = new Date(ses.getStart());
-		Date end = new Date(ses.getEnd());
+		
 
 		// Set the value of the widgets
 		holder.sessionName.setText(ses.getName());
@@ -169,7 +171,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			holder.pauseButton.setVisibility(View.GONE);
 			holder.chrono.setVisibility(View.VISIBLE);
 			holder.chrono.setText(Utilities.getTime(ses.getTimeElapsed()));
-			holder.endTime.setVisibility(View.GONE);	
+			holder.endTime.setVisibility(View.GONE);
 			holder.endText.setVisibility(View.INVISIBLE);
 			holder.playButton.setVisibility(View.VISIBLE);
 			holder.durationTime.setVisibility(View.GONE);
@@ -178,6 +180,10 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			itemVisible = holder;
 			mySessionView.setBackgroundColor(Color.GREEN);
 			
+			if(ses.isRunning())
+				startChronometer(ses, holder, mySessionView.getContext(), position);
+			
+
 		} else {
 
 			displayDuration(holder, ses);
@@ -189,7 +195,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 					.getString(R.string.toStart));
 		} else
 			holder.startTime.setText(Utilities.getDate(start));
-		
 
 		holder.moreButton.setOnClickListener(new OnClickListener() {
 
@@ -214,8 +219,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							databaseManager.removeSession(ses.getId());
 							sessionList.remove(position);
 							adapter.notifyDataSetChanged();
-							if(ses.getEnd() == 0) //the user have deleted the session to complete
-								MainActivity.completeSession(); //show the fab
+							if (ses.getEnd() == 0) // the user have deleted the
+													// session to complete
+								MainActivity.completeSession(); // show the fab
 
 						}// delete
 						if (selected.equals(MainActivity.mContext
@@ -301,8 +307,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 									System.currentTimeMillis());
 							databaseManager.updateEnd(ses.getId());
 							displayDuration(holder, ses);
-							MainActivity.completeSession();//show fab
-							adapter.notifyDataSetChanged();				
+							MainActivity.completeSession();// show fab
+							adapter.notifyDataSetChanged();
 
 						} // stop
 						if (selected.equals(MainActivity.mContext
@@ -331,61 +337,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 			@Override
 			public void onClick(View v) {
-				holder.pauseButton.setVisibility(View.VISIBLE);
-				holder.playButton.setVisibility(View.GONE);
-
-				// the service hasn't been already bounded
-				if (!mServiceBound) {
-
-					Intent intent = new Intent(
-							activity.getApplicationContext(), FallService.class);
-
-					if (!mServiceStarted) {
-						// start the service
-						activity.startService(intent);
-						mServiceStarted = true;
-					}
-
-					// bind the service
-					activity.bindService(intent, mServiceConnection,
-							Context.BIND_AUTO_CREATE);
-					
-						
-				}
-
-				if (ses.getStart() == 0) {
-
-					// save the start time in the db
-					DbManager dbmanager = new DbManager(v.getContext());
-					dbmanager.updateStart(ses.getId());
-					// update the list item
-					ses.setStart(System.currentTimeMillis());
-					sessionList.get(position).setStart(ses.getStart());
-					holder.startTime.setText(Utilities.getDate(new Date(System
-							.currentTimeMillis())));
-					
-
-				}// start == 0
-
-				else {
-					if (ses.getTimeElapsed() > 0)
-						if (mServiceBound)
-							mBoundService.resume();
-				}
-
-				isRunning = true;
-				itemRunning = holder;
-
-				// start the thread that updates the value of the elapsed time
-				// every second
-				chronoThread = new Thread(new MyRunner(holder));
-				
-				chronoThread.start();
-				
-				//update session status in sessionlist and database
-				sessionList.get(position).setRunning(true);
-				DbManager databaseManager = new DbManager(v.getContext());
-				databaseManager.updateStatus(ses.getId(), true);
+				startChronometer(ses, holder, v.getContext(), position);
 
 			}// onClick playButton
 		});// OnClickListener playButton
@@ -402,12 +354,17 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 				if (mServiceBound) {
 					long timeelapsed = mBoundService.getTimestamp();
+					mBoundService.pause();
+					
+					//update the session in the sessionList
 					sessionList.get(position).setTimeElapsed(timeelapsed);
 					sessionList.get(position).setRunning(false);
+					
+					//update the session in the db
 					DbManager databaseManager = new DbManager(v.getContext());
 					databaseManager.updateTimeElapsed(ses.getId(), timeelapsed);
 					databaseManager.updateStatus(ses.getId(), false);
-					mBoundService.pause();
+					
 				}
 
 			}
@@ -419,6 +376,12 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 	}
 
+	/**
+	 * This class implements OnClickListener class to handle the click event on
+	 * ListView Items
+	 * 
+	 * @author daniellando
+	 */
 	private class OnItemClickListener implements OnClickListener {
 		private int mPosition;
 
@@ -448,12 +411,29 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		}
 	}
 
+	/**
+	 * This method is used to start details activity
+	 * 
+	 * @param c
+	 *            The context
+	 * @param ses
+	 *            The Session to display
+	 */
 	private void displayDetails(Context c, Session ses) {
 		Intent myIntent = new Intent(c, SessionDetails.class);
 		myIntent.putExtra(SESSION, ses);
 		activity.startActivity(myIntent);
 	}
 
+	/**
+	 * This method display duration TextViews and hide the play/pause button and
+	 * chrono
+	 * 
+	 * @param holder
+	 *            The view holder
+	 * @param ses
+	 *            The Session object associated to the holder
+	 */
 	private void displayDuration(SessionViewHolder holder, Session ses) {
 		holder.chrono.setVisibility(View.GONE);
 		holder.endTime.setVisibility(View.VISIBLE);
@@ -462,38 +442,115 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		holder.durationTime.setVisibility(View.VISIBLE);
 		holder.durationText.setVisibility(View.VISIBLE);
 		holder.endTime.setText(Utilities.getDate(new Date(ses.getEnd())));
-		long millis = ses.getEnd() - ses.getStart();
 
-		String duration = Utilities.getTime(millis);
+		String duration = Utilities.getTime(ses.getTimeElapsed());
 		holder.durationTime.setText(duration);
 	}
+	
+	/**
+	 * Start the chronometer of FallService class
+	 * @param ses The session associated 
+	 * @param holder The session view holder
+	 * @param c The context
+	 * @param position The position of the session in the listview
+	 */
+	public void startChronometer(Session ses, SessionViewHolder holder, Context c, int position)
+	{
+		holder.pauseButton.setVisibility(View.VISIBLE);
+		holder.playButton.setVisibility(View.GONE);
 
+		// the service hasn't been already bounded
+		if (!mServiceBound) {
+
+			Intent intent = new Intent(
+					activity.getApplicationContext(), FallService.class);
+
+			if (!mServiceStarted) {
+				// start the service
+				activity.startService(intent);
+				mServiceStarted = true;
+			}
+
+			intent.putExtra(ELAPSED, ses.getTimeElapsed());
+
+			// bind the service
+			activity.bindService(intent, mServiceConnection,
+					Context.BIND_AUTO_CREATE);
+		}
+
+		if (ses.getStart() == 0) {
+
+			// save the start time in the db
+			DbManager dbmanager = new DbManager(c);
+			dbmanager.updateStart(ses.getId());
+			// update the list item
+			ses.setStart(System.currentTimeMillis());
+			sessionList.get(position).setStart(ses.getStart());
+			holder.startTime.setText(Utilities.getDate(new Date(System
+					.currentTimeMillis())));
+
+		}// start == 0
+
+		else {
+			if (ses.getTimeElapsed() > 0)
+				if (mServiceBound)
+					mBoundService.resume();
+		}
+
+		isRunning = true;
+		itemRunning = holder;
+
+		// start the thread that updates the value of the elapsed time
+		// every second
+		chronoThread = new Thread(new MyRunner(holder, ses));
+
+		chronoThread.start();
+
+		// update session status in sessionlist and database
+		sessionList.get(position).setRunning(true);
+		DbManager databaseManager = new DbManager(c);
+		databaseManager.updateStatus(ses.getId(), true);
+	}
+
+	/**
+	 * This class implements the Runnable class to manage the Chronometer of the
+	 * FallService with a thread that updates chrono TextView
+	 * 
+	 * @author daniellando
+	 *
+	 */
 	private class MyRunner implements Runnable {
 
 		SessionViewHolder holder;
+		
+		long time;
+		
 
-		public MyRunner(SessionViewHolder holder) {
+		public MyRunner(SessionViewHolder holder, Session ses) {
 			this.holder = holder;
+			
 		}
 
 		@Override
 		public void run() {
-			
+
 			while (isRunning) {
 				if (mServiceBound) {
+
 					activity.runOnUiThread(new Runnable() { // to avoid problem
 															// with UI textview
 															// update
 
 						@Override
 						public void run() {
-							holder.chrono.setText(Utilities
-									.getTime(mBoundService.getTimestamp()));
+							time = mBoundService.getTimestamp();
+							holder.chrono.setText(Utilities.getTime(time));
 						}
 					}); // runOnUithread
 				}// if bound
 
 				try {
+
 					Thread.sleep(500); // update every half second
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -509,7 +566,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	 * @author daniellando
 	 *
 	 */
-	public static class SessionViewHolder {
+	private class SessionViewHolder {
 
 		public TextView sessionName;
 		public TextView falls;
@@ -524,7 +581,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		public ImageView moreButton;
 		public ImageView fallIcon;
 		public TextView chrono;
-
 
 	}
 

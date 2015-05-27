@@ -124,7 +124,7 @@ public class DbManager {
 	}
 
 	/**
-	 * Updates Session status has been terminated
+	 * Updates Session status when has been terminated
 	 * 
 	 * @param ID
 	 *            The ID of the session in the database
@@ -147,7 +147,7 @@ public class DbManager {
 	}
 	
 	/**
-	 * Updates Session status
+	 * Updates Session Start time column
 	 * 
 	 * @param ID
 	 *            The ID of the session in the database
@@ -170,7 +170,7 @@ public class DbManager {
 	}
 
 	/**
-	 * Updates Session status
+	 * Updates Session TimeElapsed column
 	 * 
 	 * @param ID
 	 *            The ID of the session in the database
@@ -189,14 +189,14 @@ public class DbManager {
 	}
 
 	/**
-	 * Updates Session status
+	 * Updates Session isRunning column
 	 * 
 	 * @param ID
 	 *            The ID of the session in the database
 	 */
 	public void updateStatus(long ID, boolean stat) {
 
-		int status = (stat)? 1 : 0;
+		int status = (stat)? 1 : 0; //1 if stat == true 0 if stat == false
 		
 		db = dbHelper.getWritableDatabase();
 

@@ -27,6 +27,7 @@ public class FallService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.v(LOG_TAG, "in onBind"); 
+		setTime(intent.getLongExtra(SessionViewAdapter.ELAPSED, 0));
 		return mBinder;
 	}
 
@@ -56,6 +57,7 @@ public class FallService extends Service {
 	
 	public void setTime(long timestamp) {
 		elapsedMillis = timestamp;
+		mChronometer.setBase(mChronometer.getBase() - timestamp);
 	}
 
 	public void pause() {

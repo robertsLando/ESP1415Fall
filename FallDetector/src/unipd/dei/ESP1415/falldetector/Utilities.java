@@ -2,6 +2,7 @@ package unipd.dei.ESP1415.falldetector;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 import android.graphics.Color;
@@ -37,7 +38,7 @@ public class Utilities {
 		long minute = (millis / (1000 * 60)) % 60;
 		long hour = (millis / (1000 * 60 * 60)) % 24;
 
-		return String.format("%02dh %02dm %02ds", hour, minute, second);
+		return String.format(Locale.ITALIAN,"%02dh %02dm %02ds", hour, minute, second);
 	}
 	
 	/**

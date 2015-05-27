@@ -2,9 +2,7 @@ package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import unipd.dei.ESP1415.falldetector.SessionViewAdapter.SessionViewHolder;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -37,6 +34,7 @@ public class FallViewAdapter extends ArrayAdapter<Fall> {
 	}
 	
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// performance issue (see Google I/O video in references)
