@@ -157,7 +157,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		final Session ses = (Session) sessionList.get(position);
 
 		Date start = new Date(ses.getStart());
-		
 
 		// Set the value of the widgets
 		holder.sessionName.setText(ses.getName());
@@ -170,7 +169,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 			holder.pauseButton.setVisibility(View.GONE);
 			holder.chrono.setVisibility(View.VISIBLE);
-			holder.chrono.setText(Utilities.getTime(ses.getTimeElapsed()));
 			holder.endTime.setVisibility(View.GONE);
 			holder.endText.setVisibility(View.INVISIBLE);
 			holder.playButton.setVisibility(View.VISIBLE);
@@ -179,10 +177,13 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			holder.expandable.setVisibility(View.VISIBLE);
 			itemVisible = holder;
 			mySessionView.setBackgroundColor(Color.GREEN);
+
+			if (ses.isRunning())
+				startChronometer(ses, holder, mySessionView.getContext(),
+						position);
 			
-			if(ses.isRunning())
-				startChronometer(ses, holder, mySessionView.getContext(), position);
-			
+			else 
+				holder.chrono.setText(Utilities.getTime(ses.getTimeElapsed()));
 
 		} else {
 
@@ -355,16 +356,16 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 				if (mServiceBound) {
 					long timeelapsed = mBoundService.getTimestamp();
 					mBoundService.pause();
-					
-					//update the session in the sessionList
+
+					// update the session in the sessionList
 					sessionList.get(position).setTimeElapsed(timeelapsed);
 					sessionList.get(position).setRunning(false);
-					
-					//update the session in the db
+
+					// update the session in the db
 					DbManager databaseManager = new DbManager(v.getContext());
 					databaseManager.updateTimeElapsed(ses.getId(), timeelapsed);
 					databaseManager.updateStatus(ses.getId(), false);
-					
+
 				}
 
 			}
@@ -446,24 +447,29 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		String duration = Utilities.getTime(ses.getTimeElapsed());
 		holder.durationTime.setText(duration);
 	}
-	
+
 	/**
 	 * Start the chronometer of FallService class
-	 * @param ses The session associated 
-	 * @param holder The session view holder
-	 * @param c The context
-	 * @param position The position of the session in the listview
+	 * 
+	 * @param ses
+	 *            The session associated
+	 * @param holder
+	 *            The session view holder
+	 * @param c
+	 *            The context
+	 * @param position
+	 *            The position of the session in the listview
 	 */
-	public void startChronometer(Session ses, SessionViewHolder holder, Context c, int position)
-	{
+	public void startChronometer(Session ses, SessionViewHolder holder,
+			Context c, int position) {
 		holder.pauseButton.setVisibility(View.VISIBLE);
 		holder.playButton.setVisibility(View.GONE);
 
 		// the service hasn't been already bounded
 		if (!mServiceBound) {
 
-			Intent intent = new Intent(
-					activity.getApplicationContext(), FallService.class);
+			Intent intent = new Intent(activity.getApplicationContext(),
+					FallService.class);
 
 			if (!mServiceStarted) {
 				// start the service
@@ -500,16 +506,16 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		isRunning = true;
 		itemRunning = holder;
 
+		// update session status in sessionlist and database
+		sessionList.get(position).setRunning(true);
+		DbManager databaseManager = new DbManager(c);
+		databaseManager.updateStatus(ses.getId(), true);
+
 		// start the thread that updates the value of the elapsed time
 		// every second
 		chronoThread = new Thread(new MyRunner(holder, ses));
 
 		chronoThread.start();
-
-		// update session status in sessionlist and database
-		sessionList.get(position).setRunning(true);
-		DbManager databaseManager = new DbManager(c);
-		databaseManager.updateStatus(ses.getId(), true);
 	}
 
 	/**
@@ -522,13 +528,12 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private class MyRunner implements Runnable {
 
 		SessionViewHolder holder;
-		
+
 		long time;
-		
 
 		public MyRunner(SessionViewHolder holder, Session ses) {
 			this.holder = holder;
-			
+
 		}
 
 		@Override

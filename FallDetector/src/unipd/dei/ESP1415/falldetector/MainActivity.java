@@ -117,7 +117,7 @@ public class MainActivity extends ActionBarActivity {
 			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR));
 			temp.setFalls(c.getInt(SessionTable.FALLS));
 			temp.setTimeElapsed(c.getInt(SessionTable.TIMEELAPSED));
-			temp.setRunning((c.getInt(SessionTable.TIMEELAPSED) == 1) ? true
+			temp.setRunning((c.getInt(SessionTable.ISRUNNING) == 1) ? true
 					: false);
 
 			if (temp.getEnd() == 0) // there is a session to complete so I can't
