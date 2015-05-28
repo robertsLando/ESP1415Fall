@@ -1,19 +1,34 @@
 package unipd.dei.ESP1415.falldetector;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Chronometer;
 
-public class FallService extends Service {
+public class FallService extends Service implements SensorEventListener {
 
 	private static String LOG_TAG = "BoundService";
 	private IBinder mBinder = new MyBinder();
 	private Chronometer mChronometer;
 	long elapsedMillis;
+
+	//thomasgagliardi
+	public double ax,ay,az;
+	public double a_norm;
+	public int i=0;
+	static int BUFF_SIZE=50;
+	static public double[] window = new double[BUFF_SIZE];
+	double sigma=0.5,th=10,th1=5,th2=2;
+	private SensorManager sensorManager;
+	public static String fall_state,post_state;
 
 	@Override
 	public void onCreate() {
@@ -22,6 +37,11 @@ public class FallService extends Service {
 		mChronometer = new Chronometer(this);
 		mChronometer.setBase(SystemClock.elapsedRealtime());
 		mChronometer.start();
+
+		//thomasgagliardi
+		sensorManager=(SensorManager) getSystemService(SENSOR_SERVICE);
+		sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
+		initialize();
 	}
 
 	@Override
@@ -54,7 +74,7 @@ public class FallService extends Service {
 		elapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
 		return elapsedMillis;
 	}
-	
+
 	public void setTime(long timestamp) {
 		elapsedMillis = timestamp;
 		mChronometer.setBase(mChronometer.getBase() - timestamp);
@@ -74,6 +94,116 @@ public class FallService extends Service {
 		FallService getService() {
 			return FallService.this;
 		}
+	}
+
+	/**
+	 * thomas gagliardi
+	 */
+
+	@Override
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
+	}
+
+	@SuppressLint("ParserError")
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		if (event.sensor.getType()==Sensor.TYPE_ACCELEROMETER){
+			ax=event.values[0];
+			ay=event.values[1];
+			az=event.values[2];
+			AddData(ax,ay,az);
+			posture_recognition(window,ay);
+			fall_recognition(window);
+			SystemState(fall_state,post_state);	
+			if(!fall_state.equalsIgnoreCase(post_state)){
+				fall_state=post_state;
+			}
+		}
+	}
+
+	private void initialize() {
+		// TODO Auto-generated method stub
+		for(i=0;i<BUFF_SIZE;i++){
+			window[i]=0;
+		}
+		fall_state="none";
+		post_state="none";
+	}
+
+	private void fall_recognition(double[] window1)
+	{
+		int l = window1.length;
+		int f = 0;
+		double tMin = 100, tMax = 0;
+
+		for(int i = 0; i<l; i++)
+			if(window[i] > tMax)
+				tMax = window[i];
+
+		for(int i = 0; i<l; i++)
+			if(window[i] < tMin)
+				tMin = window[i];
+		
+		if((tMax - tMin) > (2 * 9.81))
+			fall_state = "fall";
+		else
+			fall_state = "none";
+	}
+	
+	private void posture_recognition(double[] window2,double ay2) {
+		// TODO Auto-generated method stub
+		int zrc=compute_zrc(window2);
+		if(zrc==0){
+
+			if(Math.abs(ay2)<th1){
+				post_state="sitting";
+			}else{
+				post_state="standing";
+			}
+
+		}else{
+
+			if(zrc>th2){
+				post_state="walking";
+			}else{
+				post_state="none";
+			}
+		}
+	}
+	
+	private int compute_zrc(double[] window2) {
+		// TODO Auto-generated method stub
+		int count=0;
+		for(i=1;i<=BUFF_SIZE-1;i++){
+
+			if((window2[i]-th)<sigma && (window2[i-1]-th)>sigma){
+				count=count+1;
+			}
+		}
+		return count;
+	}
+	
+	private void SystemState(String fall_state1,String post_state1) {
+		// TODO Auto-generated method stub
+
+		//Fall !!
+		if(!fall_state1.equalsIgnoreCase(post_state1)){
+			if(fall_state1.equalsIgnoreCase("fall") || fall_state1.equalsIgnoreCase("none")){
+				if(post_state1.equalsIgnoreCase("none")){
+					//call SendEmail
+				}
+			}
+		}
+	}
+	
+	private void AddData(double ax2, double ay2, double az2) {
+		// TODO Auto-generated method stub
+		a_norm=Math.sqrt(ax*ax+ay*ay+az*az);
+		for(i=0;i<=BUFF_SIZE-2;i++){
+			window[i]=window[i+1];
+		}
+		window[BUFF_SIZE-1]=a_norm;
+
 	}
 
 }
