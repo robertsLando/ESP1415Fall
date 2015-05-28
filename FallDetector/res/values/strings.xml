@@ -63,5 +63,14 @@
     <string name="set_priority">Priority</string>
     <string name="add">Add</string>
     <string name="toStart">Press play to start</string>
+    <string name="title_activity_send_email">SendEmail</string>
+    <string name="HelpMessage">Please help me,\nI fell at -Hour-\nin -location-</string> 
+    <string name="to">TO</string>
+    <string name="message">Message</string>
+    <string name="Cc">Cc</string>
+    <string name="Bcc">Bcc</string>
+    <string name="Sbj">Subject</string>
+    <string name="Title">Email Sender</string>
+    <string name="sendBtn">Send</string>
 
 </resources>
