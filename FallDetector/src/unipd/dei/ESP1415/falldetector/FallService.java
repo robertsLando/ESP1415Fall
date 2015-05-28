@@ -1,7 +1,9 @@
 package unipd.dei.ESP1415.falldetector;
 
+import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -29,6 +31,8 @@ public class FallService extends Service implements SensorEventListener {
 	double sigma=0.5,th=10,th1=5,th2=2;
 	private SensorManager sensorManager;
 	public static String fall_state,post_state;
+	public static Context fsContext;
+	public static final String FALL = "fall";
 
 	@Override
 	public void onCreate() {
@@ -143,13 +147,13 @@ public class FallService extends Service implements SensorEventListener {
 		for(int i = 0; i<l; i++)
 			if(window[i] < tMin)
 				tMin = window[i];
-		
+
 		if((tMax - tMin) > (2 * 9.81))
 			fall_state = "fall";
 		else
 			fall_state = "none";
 	}
-	
+
 	private void posture_recognition(double[] window2,double ay2) {
 		// TODO Auto-generated method stub
 		int zrc=compute_zrc(window2);
@@ -170,7 +174,7 @@ public class FallService extends Service implements SensorEventListener {
 			}
 		}
 	}
-	
+
 	private int compute_zrc(double[] window2) {
 		// TODO Auto-generated method stub
 		int count=0;
@@ -182,7 +186,7 @@ public class FallService extends Service implements SensorEventListener {
 		}
 		return count;
 	}
-	
+
 	private void SystemState(String fall_state1,String post_state1) {
 		// TODO Auto-generated method stub
 
@@ -191,11 +195,16 @@ public class FallService extends Service implements SensorEventListener {
 			if(fall_state1.equalsIgnoreCase("fall") || fall_state1.equalsIgnoreCase("none")){
 				if(post_state1.equalsIgnoreCase("none")){
 					//call SendEmail
+					
+					Fall fl = createFall();
+					Intent myIntent = new Intent(fsContext, SessionDetails.class);
+					myIntent.putExtra(FALL, fl);
+					startActivity(myIntent);
 				}
 			}
 		}
 	}
-	
+
 	private void AddData(double ax2, double ay2, double az2) {
 		// TODO Auto-generated method stub
 		a_norm=Math.sqrt(ax*ax+ay*ay+az*az);
@@ -206,4 +215,21 @@ public class FallService extends Service implements SensorEventListener {
 
 	}
 
+	private Fall createFall(){
+		Fall temp = new Fall();
+		/*
+		String name = text.getText().toString();
+		
+		if (!name.equals("")) {
+			temp.setName(name);
+			temp.setBgColor(color[0]);
+			temp.setImgColor(color[1]);
+			temp.setStart(0);
+
+			DbManager databaseManager = new DbManager(fsContext);
+
+			//long id = databaseManager.addFall(temp);  NEED TO CREATE THE METHOD
+		}*/
+		return temp;
+	}
 }

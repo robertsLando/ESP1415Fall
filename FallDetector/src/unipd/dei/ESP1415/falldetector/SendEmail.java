@@ -18,11 +18,16 @@ public class SendEmail extends Activity {
 	EditText textBcc;
 	EditText textSubject;
 	EditText textMessage;
+	
+	private Fall newFall;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_send_email);
+		
+		Intent myIntent = getIntent();
+		newFall = (Fall) myIntent.getSerializableExtra(FallService.FALL);
 		
 		buttonSend = (Button) findViewById(R.id.buttonSend);
 		textTo = (EditText) findViewById(R.id.editTextTo);
