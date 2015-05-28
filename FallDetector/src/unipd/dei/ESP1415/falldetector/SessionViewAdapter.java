@@ -454,6 +454,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		holder.endTime.setVisibility(View.VISIBLE);
 		holder.endText.setVisibility(View.VISIBLE);
 		holder.playButton.setVisibility(View.GONE);
+		holder.pauseButton.setVisibility(View.GONE);
 		holder.durationTime.setVisibility(View.VISIBLE);
 		holder.durationText.setVisibility(View.VISIBLE);
 		holder.endTime.setText(Utilities.getDate(new Date(ses.getEnd())));
