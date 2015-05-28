@@ -29,8 +29,6 @@ public class FallEvent extends ActionBarActivity {
 		
 		final TextView dateFall = (TextView) findViewById(R.id.day);
 		final TextView timeFall = (TextView) findViewById(R.id.hour);
-		final TextView latitudeFall = (TextView) findViewById(R.id.latitudeCoordinates);
-		final TextView longitudeFall = (TextView) findViewById(R.id.longitudeCoordinates);
 		
 		Date fallDate = new Date(currentFall.getDatef());
 		

@@ -162,7 +162,7 @@
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/end"
             android:layout_toRightOf="@+id/end" 
-            android:text="00h 00m 00s"/>
+            />
 
         <TextView
             android:id="@+id/durationTime"

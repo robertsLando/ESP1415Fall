@@ -2,18 +2,14 @@ package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
 
-import unipd.dei.ESP1415.falldetector.FallService.MyBinder;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.Menu;
@@ -121,35 +117,26 @@ public class MainActivity extends ActionBarActivity {
 			temp.setImgColor(c.getInt(SessionTable.IMGCOLOR));
 			temp.setFalls(c.getInt(SessionTable.FALLS));
 			temp.setTimeElapsed(c.getInt(SessionTable.TIMEELAPSED));
-			temp.setRunning((c.getInt(SessionTable.TIMEELAPSED) == 1) ? true
+			temp.setRunning((c.getInt(SessionTable.ISRUNNING) == 1) ? true
 					: false);
-			
-			if(temp.getEnd() == 0) //there is a session to complete so I can't start another one
+
+			if (temp.getEnd() == 0) // there is a session to complete so I can't
+									// start another one
 			{
 				fabButton.hideFloatingActionButton();
 				sessionToComplete = true;
-				listViewValues.add(0,temp); //it must be the first one
+				listViewValues.add(0, temp); // it must be the first one
 			}
-			
+
 			else
-			listViewValues.add(temp);
+				listViewValues.add(temp);
 		}
 
 	}
-	
-	public static void completeSession()
-	{
+
+	public static void completeSession() {
 		fabButton.showFloatingActionButton();
 		sessionToComplete = false;
-	}
-
-	public void onItemClick(int mPosition) {
-		Session temp = (Session) listViewValues.get(mPosition);
-
-		// Show the alert
-		// Toast.makeText(this, "Hai premuto l'elemento: " + temp.getName(),
-		// Toast.LENGTH_LONG).show();
-
 	}
 
 	@SuppressWarnings("deprecation")
@@ -220,7 +207,7 @@ public class MainActivity extends ActionBarActivity {
 							dialog.dismiss();
 							fabButton.hideFloatingActionButton();
 							sessionToComplete = true;
-							
+
 						} else
 							Toast.makeText(v.getContext(),
 									getString(R.string.errorEmptyName),

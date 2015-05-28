@@ -42,9 +42,9 @@
     <string name="pref_contact_management_sum">Select the people who can help you</string>
     <string name="pref_notification_setting">NOTIFICHE</string>
     <string name="title_activity_fall_detector_preferences">Settings</string>
-    <string name="error">An error occured</string>
+    <string name="error">An error occurred</string>
     <string name="errorEmptyName">Session name must be set!</string>
-    <string name="inExecution">In execution...</string>
+    <string name="inExecution">In execution…</string>
     <string name="pref_alarm_time">Set Alarm Time</string>
     <string name="pref_notification_enable">Enable notification</string>
     <string name="pref_ringtone">Ringtone</string>
