@@ -311,10 +311,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.stop))) // stop
 						{
-							if (mServiceBound) {
+							if (mServiceBound)
 								activity.unbindService(mServiceConnection);
-								mServiceBound = false;
-							}
+							
 							Intent intent = new Intent(v.getContext(),
 									FallService.class);
 							activity.stopService(intent);

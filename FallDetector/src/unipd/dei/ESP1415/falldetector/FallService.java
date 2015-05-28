@@ -13,7 +13,8 @@ public class FallService extends Service {
 	private static String LOG_TAG = "BoundService";
 	private IBinder mBinder = new MyBinder();
 	private Chronometer mChronometer;
-	long elapsedMillis;
+	private long elapsedMillis;
+	private boolean isRunning;
 
 	@Override
 	public void onCreate() {
@@ -22,32 +23,41 @@ public class FallService extends Service {
 		mChronometer = new Chronometer(this);
 		mChronometer.setBase(SystemClock.elapsedRealtime());
 		mChronometer.start();
+		isRunning = true;
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.v(LOG_TAG, "in onBind"); 
-		setTime(intent.getLongExtra(SessionViewAdapter.ELAPSED, 0));
-		return mBinder;
+		
+		long sessionElapsed = intent.getLongExtra(SessionViewAdapter.ELAPSED, 0);
+		
+		if(isRunning) //The service has just been created
+			setTime(sessionElapsed);
+		else
+			setTime(getTimestamp());
+		
+		System.out.println("Fall service onBind");
+		
+		return mBinder;	
 	}
 
 	@Override
 	public void onRebind(Intent intent) {
-		Log.v(LOG_TAG, "in onRebind");
 		super.onRebind(intent);
 	}
 
 	@Override
 	public boolean onUnbind(Intent intent) {
-		Log.v(LOG_TAG, "in onUnbind");
+		System.out.println("Fall service onUnbind");
 		return true;
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.v(LOG_TAG, "in onDestroy");
 		mChronometer.stop();
+		isRunning = false;
+		System.out.println("Fall service destroyed");
 	}
 
 	public long getTimestamp() {
@@ -63,11 +73,13 @@ public class FallService extends Service {
 	public void pause() {
 		elapsedMillis = mChronometer.getBase() - SystemClock.elapsedRealtime() ;
 		mChronometer.stop();
+		isRunning = false;
 	}
 
 	public void resume() {
 		mChronometer.setBase(SystemClock.elapsedRealtime() + elapsedMillis);
 		mChronometer.start();
+		isRunning = true;
 	}
 
 	public class MyBinder extends Binder {
