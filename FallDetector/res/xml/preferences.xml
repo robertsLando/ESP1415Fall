@@ -30,7 +30,7 @@
             android:positiveButtonText="@string/add"
             android:windowNoTitle="true" />
 
-        <unipd.dei.ESP1415.falldetector.SelectHelperPreference
+        <unipd.dei.ESP1415.falldetector.CustomMultiSelectListPreference
             android:key="contact_list_management"
             android:selectable="true"
             android:negativeButtonText="@string/cancel"
