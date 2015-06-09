@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:custom="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         android:key="session_settings"
@@ -31,12 +32,18 @@
             android:windowNoTitle="true" />
 
         <unipd.dei.ESP1415.falldetector.CustomMultiSelectListPreference
-            android:key="contact_list_management"
-            android:selectable="true"
-            android:negativeButtonText="@string/cancel"
-            android:positiveButtonText="@string/ok"
+            android:key="contact_list_management_2"
+            android:dependency="session_settings"
+            android:title="@string/pref_contact_management"
+            android:dialogTitle="@string/pref_contact_management"
             android:summary="@string/pref_contact_management_sum"
-            android:title="@string/pref_contact_management" />
+            custom:dynamicEntriesProvider="unipd.dei.ESP1415.falldetector.DynamicHelperNames"
+            custom:dynamicEntryValuesProvider="unipd.dei.ESP1415.falldetector.DynamicHelperEmails"
+            custom:selectAllValuesByDefault="true"
+            android:entries="@array/empty_array"
+            android:entryValues="@array/empty_array"
+            android:defaultValue="@array/empty_array" />
+        
     </PreferenceCategory>
     <PreferenceCategory
         android:key="notification_setting"
