@@ -28,6 +28,10 @@ public class AddHelperPreference extends DialogPreference {
 	private EditText textEmail;
 	private Spinner setPriority;
 	
+	private static String TAG = AddHelperPreference.class.getSimpleName();
+	 
+    private final int DEFAULT_VALUE = 0;
+	
 	// constructor
 	public AddHelperPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -35,7 +39,7 @@ public class AddHelperPreference extends DialogPreference {
 		addContact = new Dialog(mContext);
 		addContact.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setDialogLayoutResource(R.layout.add_contact_dialog);
-		setPersistent(false);
+		setPersistent(true);
 	}
 	
 	// initial values
@@ -52,10 +56,9 @@ public class AddHelperPreference extends DialogPreference {
 	//what happens when the user closes the dialog and he clicks on positive button
 	protected void onDialogClosed(boolean positiveResult) {
 		super.onDialogClosed(positiveResult);
-		
-		
+
 		if(positiveResult) {
-			
+
 		    surname = textSurname.getText().toString();
 		    name = textName.getText().toString();
 		    email = textEmail.getText().toString();
@@ -107,10 +110,12 @@ public class AddHelperPreference extends DialogPreference {
 				Toast.makeText(mContext, mContext.getString(R.string.error), Toast.LENGTH_SHORT).show();
 			
 			addContact.dismiss();
-			
+			System.out.println("is persistent?: " + getPersistedBoolean(true));
+	        persistBoolean(!getPersistedBoolean(true));
+
 		}//endPositiveResult
 		else
 			addContact.dismiss();
-				
 	}
+	
 }
