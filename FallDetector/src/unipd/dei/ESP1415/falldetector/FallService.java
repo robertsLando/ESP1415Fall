@@ -12,15 +12,17 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Chronometer;
 
 public class FallService extends Service implements SensorEventListener {
 
 	private static String LOG_TAG = "BoundService";
 	private IBinder mBinder = new MyBinder();
-	private Chronometer mChronometer;
+	
 	private long elapsedMillis;
+	private long pauseTime;
+	private long startTime;
 	private boolean isRunning;
+	private Thread chronoThread;
 
 	//thomasgagliardi
 	public double ax,ay,az;
@@ -38,12 +40,15 @@ public class FallService extends Service implements SensorEventListener {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.v(LOG_TAG, "in onCreate");
-		mChronometer = new Chronometer(this);
-		mChronometer.setBase(SystemClock.elapsedRealtime());
-		mChronometer.start();
-
+		System.out.println("Fall service onCreate");
+		
 		isRunning = true;
+		startTime =  SystemClock.uptimeMillis();
+		pauseTime = 0;
+		
+		chronoThread = new Thread(new MyChrono());
+		chronoThread.start();
+		
 
 		//thomasgagliardi
 		sensorManager=(SensorManager) getSystemService(SENSOR_SERVICE);
@@ -57,10 +62,7 @@ public class FallService extends Service implements SensorEventListener {
 		
 		long sessionElapsed = intent.getLongExtra(SessionViewAdapter.ELAPSED, 0);
 		
-		if(isRunning) //The service has just been created
-			setTime(sessionElapsed);
-		else
-			setTime(getTimestamp());
+		setTime(sessionElapsed);
 		
 		System.out.println("Fall service onBind");
 		
@@ -81,31 +83,31 @@ public class FallService extends Service implements SensorEventListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		mChronometer.stop();
+		
 		isRunning = false;
 		System.out.println("Fall service destroyed");
 	}
 
 	public long getTimestamp() {
-		elapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
 		return elapsedMillis;
 	}
 
 	public void setTime(long timestamp) {
-		elapsedMillis = timestamp;
-		mChronometer.setBase(mChronometer.getBase() - timestamp);
+		startTime -= timestamp;	
 	}
 
-	public void pause() {
-		elapsedMillis = mChronometer.getBase() - SystemClock.elapsedRealtime() ;
-		mChronometer.stop();
+	
+	public void pause() {	
 		isRunning = false;
+		chronoThread.interrupt();
+		chronoThread = null;
 	}
 
-	public void resume() {
-		mChronometer.setBase(SystemClock.elapsedRealtime() + elapsedMillis);
-		mChronometer.start();
+	public void resume() {	
 		isRunning = true;
+		pauseTime = SystemClock.uptimeMillis() - (startTime + elapsedMillis);
+		chronoThread = new Thread(new MyChrono());
+		chronoThread.start();
 	}
 
 	public class MyBinder extends Binder {
@@ -113,6 +115,26 @@ public class FallService extends Service implements SensorEventListener {
 			return FallService.this;
 		}
 	}
+	
+	private class MyChrono implements Runnable {
+		
+		
+		@Override
+		public void run() {
+			while(isRunning)
+			{
+				elapsedMillis = SystemClock.uptimeMillis() - startTime - pauseTime;
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					System.out.println("Chrono Thread has been interrupted");
+				}
+			}
+			
+			
+		}//run()
+		
+	} //MyChrono Class
 
 	/**
 	 * thomas gagliardi

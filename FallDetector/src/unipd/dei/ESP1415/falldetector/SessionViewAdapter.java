@@ -571,7 +571,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 				try {
 
-					Thread.sleep(500); // update every half second
+					Thread.sleep(1000); // update every second
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
