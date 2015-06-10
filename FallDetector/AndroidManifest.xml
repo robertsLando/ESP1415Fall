@@ -39,9 +39,14 @@
             android:name=".SessionDetails"
             android:label="@string/title_activity_session_details" >
         </activity>
-        
-         <service android:name="unipd.dei.ESP1415.falldetector.FallService" >
+
+        <service android:name=".FallService" >
         </service>
+
+        <activity
+            android:name=".SendEmail"
+            android:label="@string/title_activity_send_email" >
+        </activity>
     </application>
 
 </manifest>

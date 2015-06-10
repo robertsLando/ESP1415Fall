@@ -311,10 +311,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.stop))) // stop
 						{
-							if (mServiceBound) {
+							if (mServiceBound)
 								activity.unbindService(mServiceConnection);
-								mServiceBound = false;
-							}
+							
 							Intent intent = new Intent(v.getContext(),
 									FallService.class);
 							activity.stopService(intent);
@@ -455,6 +454,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		holder.endTime.setVisibility(View.VISIBLE);
 		holder.endText.setVisibility(View.VISIBLE);
 		holder.playButton.setVisibility(View.GONE);
+		holder.pauseButton.setVisibility(View.GONE);
 		holder.durationTime.setVisibility(View.VISIBLE);
 		holder.durationText.setVisibility(View.VISIBLE);
 		holder.endTime.setText(Utilities.getDate(new Date(ses.getEnd())));
@@ -571,7 +571,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 				try {
 
-					Thread.sleep(500); // update every half second
+					Thread.sleep(1000); // update every second
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
