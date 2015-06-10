@@ -2,10 +2,13 @@ package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
 import java.util.Date;
+
 import unipd.dei.ESP1415.falldetector.FallService.MyBinder;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -48,33 +51,13 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 											// bounded (mainactivity) false =
 											// not buonded
 	private Thread chronoThread;
-	private boolean mServiceStarted = false;
 	private boolean isRunning = false;
 
 	// Intent string constants
 	public static final String SESSION = "session";
 	public static final String ELAPSED = "elapsed";
 
-	private ServiceConnection mServiceConnection = new ServiceConnection() { // monitoring
-																				// the
-																				// state
-																				// of
-																				// an
-																				// application
-																				// service
-
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			mServiceBound = false;
-		}
-
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			MyBinder myBinder = (MyBinder) service;
-			mBoundService = myBinder.getService();
-			mServiceBound = true;
-		}
-	};
+	private MyServiceConnection mServiceConnection;
 
 	public SessionViewAdapter(Activity mactivity, ArrayList<Session> data) {
 
@@ -313,7 +296,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 						{
 							if (mServiceBound)
 								activity.unbindService(mServiceConnection);
-							
+
 							Intent intent = new Intent(v.getContext(),
 									FallService.class);
 							activity.stopService(intent);
@@ -324,7 +307,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 									System.currentTimeMillis());
 							databaseManager.updateEnd(ses.getId());
 							displayDuration(holder, ses);
-							MainActivity.completeSession();// show fab
+							MainActivity.completeSession(); // show fab
 							adapter.notifyDataSetChanged();
 
 						} // stop
@@ -368,23 +351,23 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 				itemRunning = null;
 				isRunning = false;
+				chronoThread.interrupt();
+				chronoThread = null;
 
-				if (mServiceBound) {
-					long timeelapsed = mBoundService.getTimestamp();
-					mBoundService.pause();
+				long timeelapsed = mBoundService.getTimestamp();
+				mBoundService.pause();
 
-					// update the session in the sessionList
-					sessionList.get(position).setTimeElapsed(timeelapsed);
-					sessionList.get(position).setRunning(false);
+				// update the session in the sessionList
+				sessionList.get(position).setTimeElapsed(timeelapsed);
+				sessionList.get(position).setRunning(false);
 
-					// update the session in the db
-					DbManager databaseManager = new DbManager(v.getContext());
-					databaseManager.updateTimeElapsed(ses.getId(), timeelapsed);
-					databaseManager.updateStatus(ses.getId(), false);
-
-				}
+				// update the session in the db
+				DbManager databaseManager = new DbManager(v.getContext());
+				databaseManager.updateTimeElapsed(ses.getId(), timeelapsed);
+				databaseManager.updateStatus(ses.getId(), false);
 
 			}
+
 		});
 
 		mySessionView.setOnClickListener(new OnItemClickListener(position));
@@ -483,54 +466,92 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		// the service hasn't been already bounded
 		if (!mServiceBound) {
 
+			mServiceConnection = new MyServiceConnection(ses, holder, c,
+					position);
+
 			Intent intent = new Intent(activity.getApplicationContext(),
 					FallService.class);
 
-			if (!mServiceStarted) {
+			if (!FallService.isCreated()) {
 				// start the service
 				activity.startService(intent);
-				mServiceStarted = true;
+				intent.putExtra(ELAPSED, ses.getTimeElapsed());
 			}
-
-			intent.putExtra(ELAPSED, ses.getTimeElapsed());
 
 			// bind the service
 			activity.bindService(intent, mServiceConnection,
 					Context.BIND_AUTO_CREATE);
+		} else {
+			
+			if (ses.getStart() == 0) {
+
+				// save the start time in the db
+				DbManager dbmanager = new DbManager(c);
+				dbmanager.updateStart(ses.getId());
+				// update the list item and the view
+				ses.setStart(System.currentTimeMillis());
+				sessionList.get(position).setStart(ses.getStart());
+				holder.startTime.setText(Utilities.getDate(new Date(System
+						.currentTimeMillis())));
+
+			}
+
+			mBoundService.resume();
+
+			isRunning = true;
+			itemRunning = holder;
+
+			// update session status in sessionlist and database
+			sessionList.get(position).setRunning(true);
+			DbManager databaseManager = new DbManager(c);
+			databaseManager.updateStatus(ses.getId(), true);
+
+			// start the thread that updates the value of the elapsed time
+			// every second
+			chronoThread = new Thread(new MyRunner(holder, ses));
+
+			chronoThread.start();
 		}
 
-		if (ses.getStart() == 0) {
+	}
 
-			// save the start time in the db
-			DbManager dbmanager = new DbManager(c);
-			dbmanager.updateStart(ses.getId());
-			// update the list item
-			ses.setStart(System.currentTimeMillis());
-			sessionList.get(position).setStart(ses.getStart());
-			holder.startTime.setText(Utilities.getDate(new Date(System
-					.currentTimeMillis())));
+	/**
+	 * This class monitored the state of the service connection
+	 * 
+	 * @author daniellando
+	 *
+	 */
+	private class MyServiceConnection implements ServiceConnection {
 
-		}// start == 0
+		private Session ses;
+		private SessionViewHolder holder;
+		private int position;
+		private Context context;
 
-		else {
-			if (ses.getTimeElapsed() > 0)
-				if (mServiceBound)
-					mBoundService.resume();
+		public MyServiceConnection(Session ses, SessionViewHolder holder,
+				Context c, int position) {
+			this.ses = ses;
+			this.holder = holder;
+			this.position = position;
+			this.context = c;
+		} // an
+
+		// application
+		// service
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mServiceBound = false;
 		}
 
-		isRunning = true;
-		itemRunning = holder;
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			MyBinder myBinder = (MyBinder) service;
+			mBoundService = myBinder.getService();
+			mServiceBound = true;
 
-		// update session status in sessionlist and database
-		sessionList.get(position).setRunning(true);
-		DbManager databaseManager = new DbManager(c);
-		databaseManager.updateStatus(ses.getId(), true);
-
-		// start the thread that updates the value of the elapsed time
-		// every second
-		chronoThread = new Thread(new MyRunner(holder, ses));
-
-		chronoThread.start();
+			startChronometer(ses, holder, context, position);
+		}
 	}
 
 	/**
