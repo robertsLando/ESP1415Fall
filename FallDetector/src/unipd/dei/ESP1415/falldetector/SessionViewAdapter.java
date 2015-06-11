@@ -214,10 +214,15 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 								MainActivity.completeSession(); // show the fab
 																// button
 
+								itemRunning = null;
+								isRunning = false;
+								chronoThread.interrupt();
+								chronoThread = null;
+
 								// UNBIND and STOP service
-								if (mServiceBound) 
+								if (mServiceBound)
 									activity.unbindService(mServiceConnection);
-								
+
 								Intent intent = new Intent(v.getContext(),
 										FallService.class);
 								activity.stopService(intent);
@@ -293,38 +298,44 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 						if (selected.equals(MainActivity.mContext
 								.getString(R.string.stop))) // stop
 						{
-							
+
 							long timeElapsed = 0;
 							itemRunning = null;
-							isRunning = false;
-							chronoThread.interrupt();
-							chronoThread = null;
-							
-							//unbind the service
-							if (mServiceBound)
+
+							if (isRunning) // if chrono is running I stop it and
+											// I get the time elapsed from the
+											// service
 							{
+								chronoThread.interrupt();
 								mBoundService.pause();
 								timeElapsed = mBoundService.getTimestamp();
-								activity.unbindService(mServiceConnection);	
+							} else {
+								timeElapsed = ses.getTimeElapsed();
+								activity.unbindService(mServiceConnection);
 							}
-							
-							//stop the service
+
+							chronoThread = null;
+							isRunning = false;
+
+							// stop the service
 							Intent intent = new Intent(v.getContext(),
 									FallService.class);
-							activity.stopService(intent);		
+							activity.stopService(intent);
 
 							// update the session info in the database
 							databaseManager = new DbManager(v.getContext());
-							databaseManager.updateTimeElapsed(ses.getId(), timeElapsed);
+							databaseManager.updateTimeElapsed(ses.getId(),
+									timeElapsed);
 							databaseManager.updateStatus(ses.getId(), false);
 							databaseManager.updateEnd(ses.getId());
-							
-							//update the session list element info
-							sessionList.get(position).setTimeElapsed(timeElapsed);
-							sessionList.get(position).setEnd(System.currentTimeMillis());
+
+							// update the session list element info
+							sessionList.get(position).setTimeElapsed(
+									timeElapsed);
+							sessionList.get(position).setEnd(
+									System.currentTimeMillis());
 							sessionList.get(position).setRunning(false);
-							
-							
+
 							displayDuration(holder, ses);
 							MainActivity.completeSession(); // show the fab
 							adapter.notifyDataSetChanged();
@@ -485,11 +496,15 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		// the service hasn't been already bounded
 		if (!mServiceBound) {
 
-			//First I create an object MyServiceConnection that implements ServiceConnection
-			//and I bind the service, the service doesn't bind immediatly so I don't start the chronometer here
-			//but I recall this method (startChronometer) in the overrided method onServiceConnected
-			//of MyServiceConnection, this is the only way to ensure that the service is bounded when
-			//I call service methods 
+			// First I create an object MyServiceConnection that implements
+			// ServiceConnection
+			// and I bind the service, the service doesn't bind immediatly so I
+			// don't start the chronometer here
+			// but I recall this method (startChronometer) in the overrided
+			// method onServiceConnected
+			// of MyServiceConnection, this is the only way to ensure that the
+			// service is bounded when
+			// I call service methods
 			mServiceConnection = new MyServiceConnection(ses, holder, c,
 					position);
 
@@ -506,7 +521,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			activity.bindService(intent, mServiceConnection,
 					Context.BIND_AUTO_CREATE);
 		} else {
-			
+
 			if (ses.getStart() == 0) {
 
 				// save the start time in the db
@@ -520,10 +535,13 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 			}
 
-			//I call resume instead of start. This because the chrono is started in
-			//onBind method of the service so if the chrono is already started this call 
-			//doesn't do anything but if it has been resumed it calculate the pause time
-			//and than restart the chrono
+			// I call resume instead of start. This because the chrono is
+			// started in
+			// onBind method of the service so if the chrono is already started
+			// this call
+			// doesn't do anything but if it has been resumed it calculate the
+			// pause time
+			// and than restart the chrono
 			mBoundService.resume();
 
 			isRunning = true;
@@ -542,7 +560,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		}
 
 	}
-	
 
 	/**
 	 * This class monitored the state of the service connection
