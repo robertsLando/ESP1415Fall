@@ -215,17 +215,26 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 																// button
 
 								itemRunning = null;
+								
+								if(isRunning)
+								{
+									chronoThread.interrupt();
+									chronoThread = null;
+								}
+								
 								isRunning = false;
-								chronoThread.interrupt();
-								chronoThread = null;
+								
 
 								// UNBIND and STOP service
 								if (mServiceBound)
 									activity.unbindService(mServiceConnection);
-
-								Intent intent = new Intent(v.getContext(),
-										FallService.class);
-								activity.stopService(intent);
+								
+								if(FallService.isCreated)
+								{
+									Intent intent = new Intent(v.getContext(),
+											FallService.class);
+									activity.stopService(intent);
+								}
 							}
 
 						}// delete
