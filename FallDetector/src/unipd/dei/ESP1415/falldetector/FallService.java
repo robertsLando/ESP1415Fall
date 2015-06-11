@@ -119,6 +119,7 @@ public class FallService extends Service implements SensorEventListener {
 		chronoThread = new Thread(new MyChrono());
 		chronoThread.start();
 	}
+	
 
 	public static boolean isCreated() {
 		return isCreated;
