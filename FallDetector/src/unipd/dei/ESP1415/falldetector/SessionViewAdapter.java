@@ -327,9 +327,11 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							// stop the service
 							Intent intent = new Intent(v.getContext(),
 									FallService.class);
-							activity.stopService(intent);
+							boolean test = activity.stopService(intent);
 
 							databaseManager = new DbManager(v.getContext());
+							
+							test = true;
 							
 							// update the session info in the database
 							databaseManager.updateTimeElapsed(ses.getId(),
