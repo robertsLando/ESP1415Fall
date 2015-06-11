@@ -309,11 +309,18 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 								chronoThread.interrupt();
 								mBoundService.pause();
 								timeElapsed = mBoundService.getTimestamp();
-							} else {
+							} else 
 								timeElapsed = ses.getTimeElapsed();
+						
+							
+							//unbind the service
+							if(mServiceBound)
+							{
 								activity.unbindService(mServiceConnection);
+								mServiceBound = false;
 							}
-
+							
+						
 							chronoThread = null;
 							isRunning = false;
 
@@ -322,8 +329,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 									FallService.class);
 							activity.stopService(intent);
 
-							// update the session info in the database
 							databaseManager = new DbManager(v.getContext());
+							
+							// update the session info in the database
 							databaseManager.updateTimeElapsed(ses.getId(),
 									timeElapsed);
 							databaseManager.updateStatus(ses.getId(), false);
@@ -490,6 +498,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	 */
 	public void startChronometer(Session ses, SessionViewHolder holder,
 			Context c, int position) {
+		
 		holder.pauseButton.setVisibility(View.VISIBLE);
 		holder.playButton.setVisibility(View.GONE);
 
