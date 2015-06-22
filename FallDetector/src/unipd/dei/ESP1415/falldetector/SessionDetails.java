@@ -142,8 +142,7 @@ public class SessionDetails extends ActionBarActivity{
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.session_details, menu);
+		// Inflate the menu; this adds items to the action bar if it is present.		
 		return true;
 	}
 	
