@@ -256,8 +256,8 @@ public class FallService extends Service implements SensorEventListener {
 					// call SendEmail
 
 					Fall fl = createFall();
-					Intent myIntent = new Intent(fsContext,
-							SessionDetails.class);
+					Intent myIntent = new Intent(this,SendEmail.class);
+					myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);	//to call Calling startActivity() from outside of an Activity 
 					myIntent.putExtra(FALL, fl);
 					startActivity(myIntent);
 				}
