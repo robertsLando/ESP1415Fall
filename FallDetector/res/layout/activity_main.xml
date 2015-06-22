@@ -9,5 +9,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
    </ListView>
+   
+   <TextView
+       android:id="@+id/emptyListHint"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_centerHorizontal="true"
+       android:layout_centerVertical="true"
+       android:gravity="center_vertical"
+       android:text="Press &quot;+&quot; to start a new Session"
+       android:textSize="20sp" >
+   </TextView>
 
 </RelativeLayout>

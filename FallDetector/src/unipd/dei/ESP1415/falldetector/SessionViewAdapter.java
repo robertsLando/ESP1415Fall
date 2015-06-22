@@ -138,6 +138,15 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			holder = (SessionViewHolder) mySessionView.getTag();
 
 		final Session ses = (Session) sessionList.get(position);
+		
+		//the empty list hint
+		TextView tx = (TextView) activity.findViewById(R.id.emptyListHint);
+		
+		if(adapter.isEmpty())		
+			tx.setVisibility(View.VISIBLE);
+		
+		else
+			tx.setVisibility(View.GONE);
 
 		Date start = new Date(ses.getStart());
 
@@ -207,6 +216,15 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							// remove the session from the listview
 							sessionList.remove(position);
 							adapter.notifyDataSetChanged();
+							
+							//the empty list int
+							TextView tx = (TextView) activity.findViewById(R.id.emptyListHint);
+							
+							if(adapter.isEmpty())		
+								tx.setVisibility(View.VISIBLE);
+							
+							else
+								tx.setVisibility(View.GONE);
 
 							if (ses.getEnd() == 0) {// the user have deleted the
 													// session to complete
@@ -215,22 +233,19 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 																// button
 
 								itemRunning = null;
-								
-								if(isRunning)
-								{
+
+								if (isRunning) {
 									chronoThread.interrupt();
 									chronoThread = null;
 								}
-								
+
 								isRunning = false;
-								
 
 								// UNBIND and STOP service
 								if (mServiceBound)
 									activity.unbindService(mServiceConnection);
-								
-								if(FallService.isCreated)
-								{
+
+								if (isFallServiceRunning()) {
 									Intent intent = new Intent(v.getContext(),
 											FallService.class);
 									activity.stopService(intent);
@@ -318,30 +333,25 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 								chronoThread.interrupt();
 								mBoundService.pause();
 								timeElapsed = mBoundService.getTimestamp();
-							} else 
+							} else
 								timeElapsed = ses.getTimeElapsed();
-						
-							
-							//unbind the service
-							if(mServiceBound)
-							{
+
+							// unbind the service
+							if (mServiceBound) {
 								activity.unbindService(mServiceConnection);
 								mServiceBound = false;
 							}
-							
-						
+
 							chronoThread = null;
 							isRunning = false;
 
 							// stop the service
 							Intent intent = new Intent(v.getContext(),
 									FallService.class);
-							boolean test = activity.stopService(intent);
+							activity.stopService(intent);
 
 							databaseManager = new DbManager(v.getContext());
-							
-							test = true;
-							
+
 							// update the session info in the database
 							databaseManager.updateTimeElapsed(ses.getId(),
 									timeElapsed);
@@ -509,7 +519,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	 */
 	public void startChronometer(Session ses, SessionViewHolder holder,
 			Context c, int position) {
-		
+
 		holder.pauseButton.setVisibility(View.VISIBLE);
 		holder.playButton.setVisibility(View.GONE);
 
@@ -528,10 +538,10 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			mServiceConnection = new MyServiceConnection(ses, holder, c,
 					position);
 
-			Intent intent = new Intent(activity.getApplicationContext(),
+			Intent intent = new Intent(MainActivity.mContext,
 					FallService.class);
 
-			if (!FallService.isCreated()) {
+			if (!isFallServiceRunning()) {
 				// start the service
 				activity.startService(intent);
 				intent.putExtra(ELAPSED, ses.getTimeElapsed());
@@ -579,6 +589,37 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			chronoThread.start();
 		}
 
+	}
+
+	/**
+	 * Used in onDestroy() method of MainActivity to unBind the service
+	 */
+	public void unBindService() {
+		if (mServiceBound)
+			MainActivity.mContext.unbindService(mServiceConnection);
+	}
+
+	/**
+	 * Used to check if FallService is running or not
+	 * 
+	 * @return true if the service is running, false if not
+	 */
+	private boolean isFallServiceRunning() {
+
+		ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+		String myService = FallService.class.getName();
+
+		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+
+			String runService = service.service.getClassName();
+		//	System.out.println("Fall service:" + runService);
+
+			if (myService.equals(runService)) 
+				return true;
+			
+		}
+		
+		return false;
 	}
 
 	/**

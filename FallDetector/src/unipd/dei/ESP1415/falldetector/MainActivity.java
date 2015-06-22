@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
@@ -104,7 +105,7 @@ public class MainActivity extends ActionBarActivity {
 		// database
 
 		Cursor c = databaseManager.getSessions();
-
+		
 		while (c.moveToNext()) {
 
 			final Session temp = new Session();
@@ -137,6 +138,7 @@ public class MainActivity extends ActionBarActivity {
 	public static void completeSession() {
 		fabButton.showFloatingActionButton();
 		sessionToComplete = false;
+
 	}
 
 	@SuppressWarnings("deprecation")
@@ -246,6 +248,13 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	public void onPause() {
 		super.onPause();
+
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		adapter.unBindService();
 
 	}
 

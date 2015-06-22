@@ -21,8 +21,8 @@ public class FallService extends Service implements SensorEventListener {
 	private long elapsedMillis;
 	private long pauseTime;
 	private long startTime;
-	public boolean isRunning;
-	public static boolean isCreated = false;
+	private boolean isRunning;
+	private static boolean isCreated = false;
 	private Thread chronoThread;
 
 	// thomasgagliardi
@@ -55,6 +55,15 @@ public class FallService extends Service implements SensorEventListener {
 		initialize();
 
 	}
+	
+	 @Override
+	 public int onStartCommand(Intent intent, int flags, int startId) {
+		 System.out.println("Fall service OnStartCommand received start id " + startId + ": " + intent);
+		 
+		 	// We want this service to continue running until it is explicitly
+	        // stopped, so return sticky.
+	        return START_STICKY;
+	  }
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -124,6 +133,7 @@ public class FallService extends Service implements SensorEventListener {
 	public static boolean isCreated() {
 		return isCreated;
 	}
+	
 
 	public class MyBinder extends Binder {
 		FallService getService() {
