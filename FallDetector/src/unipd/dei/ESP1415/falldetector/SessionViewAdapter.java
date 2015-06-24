@@ -56,6 +56,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	// Intent string constants
 	public static final String SESSION = "session";
 	public static final String ELAPSED = "elapsed";
+	public static final String ID = "id";
 
 	private MyServiceConnection mServiceConnection;
 
@@ -545,6 +546,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 				// start the service
 				activity.startService(intent);
 				intent.putExtra(ELAPSED, ses.getTimeElapsed());
+				intent.putExtra(ID, ses.getId());
 			}
 
 			// bind the service

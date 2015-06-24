@@ -1,5 +1,6 @@
 package unipd.dei.ESP1415.falldetector;
 
+import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
@@ -28,6 +29,7 @@ public class FallService extends Service implements SensorEventListener {
 	private boolean isRunning;
 	private static boolean isCreated = false;
 	private Thread chronoThread;
+	private int sessionID;
 
 	// thomasgagliardi
 	private double ax, ay, az;
@@ -100,6 +102,9 @@ public class FallService extends Service implements SensorEventListener {
 
 		long sessionElapsed = intent
 				.getLongExtra(SessionViewAdapter.ELAPSED, 0);
+		
+		sessionID = intent
+				.getIntExtra(SessionViewAdapter.ID, 0);
 
 		if(!isRunning)
 			setTime(sessionElapsed);
@@ -313,18 +318,22 @@ public class FallService extends Service implements SensorEventListener {
 
 	private Fall createFall() {
 		Fall temp = new Fall();
-		/*
-		 * String name = text.getText().toString();
-		 * 
-		 * if (!name.equals("")) { temp.setName(name);
-		 * temp.setBgColor(color[0]); temp.setImgColor(color[1]);
-		 * temp.setStart(0);
-		 * 
-		 * DbManager databaseManager = new DbManager(fsContext);
-		 * 
-		 * //long id = databaseManager.addFall(temp); NEED TO CREATE THE METHOD
-		 * }
-		 */
+		
+		temp.setDatef(System.currentTimeMillis());
+		temp.setLocation(longitude + " " + latitude);
+		temp.setSessionID(sessionID);
+		
+		DbManager databaseManager = new DbManager(fsContext);
+		 
+		long id = databaseManager.addFall(temp);
+		
+		temp.setId(id);
+		
+		for (i = 0; i < BUFF_SIZE; i++) {  //Add the new fallData in the database
+			window[i].setFallID(id);
+			databaseManager.addFallData(window[i]);
+		}
+		
 		return temp;
 	}
 	
