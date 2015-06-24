@@ -30,30 +30,27 @@ public class FallService extends Service implements SensorEventListener {
 	private Thread chronoThread;
 
 	// thomasgagliardi
-	public double ax, ay, az;
-	public double a_norm;
-	public int i = 0;
-	static int BUFF_SIZE = 50;
-	static public double[] window = new double[BUFF_SIZE];
+	private double ax, ay, az;
+	private double a_norm;
+	private int i = 0;
+	private int BUFF_SIZE = 50;
+	private FallData[] window = new FallData[BUFF_SIZE];
 	double sigma = 0.5, th = 10, th1 = 5, th2 = 2;
 	private SensorManager sensorManager;
-	public static String fall_state, post_state;
-	public static Context fsContext;
-	public static final String FALL = "fall";
-	public LocationManager locationManager;
-	public Location mLocation;
-	public double longitude;
-	public double latitude;
-	
-	/**
-	 * Thomas Gagliardi
-	 */
-	//implementation on LocationListener interface
-	LocationListener locationListener = new LocationListener() {
+	private String fall_state, post_state;
+	private Context fsContext;
+	public final static String FALL = "fall";
+	private LocationManager locationManager;
+	private Location mLocation;
+	private double longitude;
+	private double latitude;
+	private Thread fallDetected = new Thread(new FallRecognizedThread());
+	private Thread findLocation = new Thread(new FindLocationThread());
+	private LocationListener locationListener = new LocationListener() {
 	    public void onLocationChanged(Location location) {
-	      // Called when a new location is found by the network location provider.
-	    	longitude = location.getLongitude();
-	        latitude = location.getLatitude();
+	      mLocation = location;
+	    	if(findLocation.getState() == Thread.State.NEW)
+	    		findLocation.start();
 	    }
 
 	    public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -62,7 +59,7 @@ public class FallService extends Service implements SensorEventListener {
 
 	    public void onProviderDisabled(String provider) {}
 	  };
-
+	
 
 	@Override
 	public void onCreate() {
@@ -73,6 +70,9 @@ public class FallService extends Service implements SensorEventListener {
 		pauseTime = 0;
 
 		isCreated = true;
+		
+		fallDetected.setName("Fall Detect Thread");
+		findLocation.setName("Find location Thread");
 
 		// thomasgagliardi
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -158,6 +158,7 @@ public class FallService extends Service implements SensorEventListener {
 		isRunning = true;
 		chronoThread = new Thread(new MyChrono());
 		chronoThread.start();
+		chronoThread.setName("Fall service Chrono thread");
 	}
 
 
@@ -216,35 +217,40 @@ public class FallService extends Service implements SensorEventListener {
 	}
 
 	private void initialize() {
-		// TODO Auto-generated method stub
-		for (i = 0; i < BUFF_SIZE; i++) {
-			window[i] = 0;
+	
+		FallData temp = new FallData();
+		temp.setTimeX(0);
+		temp.setAccelerationY(0);
+		
+		for (i = 0; i < BUFF_SIZE; i++) { 
+			window[i] = temp;
 		}
 		fall_state = "none";
 		post_state = "none";
 	}
 
-	private void fall_recognition(double[] window1) {
+	private void fall_recognition(FallData[] window1) {
 		int l = window1.length;
 		int f = 0;
 		double tMin = 100, tMax = 0;
 
 		for (int i = 0; i < l; i++)
-			if (window[i] > tMax)
-				tMax = window[i];
+			if (window[i].getAccelerationY() > tMax)
+				tMax = window[i].getAccelerationY();
 
 		for (int i = 0; i < l; i++)
-			if (window[i] < tMin)
-				tMin = window[i];
+			if (window[i].getAccelerationY() < tMin)
+				tMin = window[i].getAccelerationY();
 
-		if ((tMax - tMin) > (2 * 9.81))
+		if ((tMax - tMin) > (2 * SensorManager.GRAVITY_EARTH)) //if the difference between the max-min acceleration values is
+																//greater then g*2 a fall is detected
 			fall_state = "fall";
 		else
 			fall_state = "none";
 	}
 
-	private void posture_recognition(double[] window2, double ay2) {
-		// TODO Auto-generated method stub
+	private void posture_recognition(FallData[] window2, double ay2) {
+		
 		int zrc = compute_zrc(window2);
 		if (zrc == 0) {
 
@@ -264,12 +270,12 @@ public class FallService extends Service implements SensorEventListener {
 		}
 	}
 
-	private int compute_zrc(double[] window2) {
-		// TODO Auto-generated method stub
+	private int compute_zrc(FallData[] window2) {
+		
 		int count = 0;
 		for (i = 1; i <= BUFF_SIZE - 1; i++) {
 
-			if ((window2[i] - th) < sigma && (window2[i - 1] - th) > sigma) {
+			if ((window2[i].getAccelerationY() - th) < sigma && (window2[i - 1].getAccelerationY() - th) > sigma) {
 				count = count + 1;
 			}
 		}
@@ -277,7 +283,6 @@ public class FallService extends Service implements SensorEventListener {
 	}
 
 	private void SystemState(String fall_state1, String post_state1) {
-		// TODO Auto-generated method stub
 
 		// Fall !!
 		if (!fall_state1.equalsIgnoreCase(post_state1)) {
@@ -285,28 +290,26 @@ public class FallService extends Service implements SensorEventListener {
 					|| fall_state1.equalsIgnoreCase("none")) {
 				if (post_state1.equalsIgnoreCase("none")) {
 					//reach the data
-					latitude = mLocation.getLatitude();
-					longitude = mLocation.getLongitude();
-					// call SendEmail					
-					Fall fl = createFall();
-					Intent myIntent = new Intent(this,SendEmail.class);
-					myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);	//to call Calling startActivity() from outside of an Activity 
-					myIntent.putExtra(FALL, fl);
-					startActivity(myIntent);
+					if(findLocation.getState() == Thread.State.NEW)
+						findLocation.start();
+					fallDetected.start();
 				}
 			}
 		}
 	}
 
 	private void AddData(double ax2, double ay2, double az2) {
-		// TODO Auto-generated method stub
-		a_norm = Math.sqrt(ax * ax + ay * ay + az * az);
-		for (i = 0; i <= BUFF_SIZE - 2; i++) {
+		
+		a_norm = Math.sqrt(ax * ax + ay * ay + az * az); //acceleration value
+		for (i = 0; i <= BUFF_SIZE - 2; i++) {  //Add the new fallData ordered by time (ASC)
 			window[i] = window[i + 1];
 		}
-		window[BUFF_SIZE - 1] = a_norm;
+		window[BUFF_SIZE - 1].setAccelerationY(a_norm);
+		window[BUFF_SIZE - 1].setTimeX(System.currentTimeMillis());
 
 	} 
+	
+
 
 	private Fall createFall() {
 		Fall temp = new Fall();
@@ -324,4 +327,44 @@ public class FallService extends Service implements SensorEventListener {
 		 */
 		return temp;
 	}
+	
+	
+	private class FallRecognizedThread implements Runnable {
+
+		@Override
+		public void run() {
+			
+			try {
+				findLocation.join();
+			} catch (InterruptedException e) {
+				
+				System.out.println("Fall Service find location join has been interrupted");
+			} //wait location services
+			
+			// call SendEmail					
+			Fall fl = createFall();
+			Intent myIntent = new Intent(MainActivity.mContext, SendEmail.class);
+			myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);	//to call Calling startActivity() from outside of an Activity 
+			myIntent.putExtra(FALL, fl);
+			startActivity(myIntent);
+			
+		}// run()
+
+	} // FallRecognizedThread
+
+	private class FindLocationThread implements Runnable {
+
+		@Override
+		public void run() {
+			
+			//reach the data
+			latitude = mLocation.getLatitude();
+			longitude = mLocation.getLongitude();
+			
+			
+		}// run()
+
+	} // FallRecognizedThread
+
+	
 }
