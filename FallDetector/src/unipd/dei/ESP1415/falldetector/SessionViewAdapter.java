@@ -589,6 +589,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			chronoThread = new Thread(new MyRunner(holder, ses));
 
 			chronoThread.start();
+			
+			chronoThread.setName("Main activity Chrono Thread");
 		}
 
 	}
