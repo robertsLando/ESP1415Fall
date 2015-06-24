@@ -7,10 +7,10 @@
         <item >SENSOR_DELAY_UI</item>
     </string-array>
     <string-array name="sensorRate">
-        <item >Veloce</item>
-        <item >Adatta al gioco</item>
-        <item >Normale</item>
-        <item >Adatta all\'interfaccia utente</item>
+        <item >Fast</item>
+        <item >Game</item>
+        <item >Normal</item>
+        <item >UI</item>
     </string-array>
     <string-array name="sessionDuration">
         <item >30 minutes</item>
@@ -28,9 +28,9 @@
         <item >14400</item>
     </string-array>
     <string-array name="priority_level">
-        <item >Alta</item>
-        <item >Media</item>
-        <item >Bassa</item>
+        <item >Low</item>
+        <item >Medium</item>
+        <item >High</item>
     </string-array>
     <string-array name="empty_array">
     </string-array>
