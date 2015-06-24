@@ -8,7 +8,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -36,6 +40,29 @@ public class FallService extends Service implements SensorEventListener {
 	public static String fall_state, post_state;
 	public static Context fsContext;
 	public static final String FALL = "fall";
+	public LocationManager locationManager;
+	public Location mLocation;
+	public double longitude;
+	public double latitude;
+	
+	/**
+	 * Thomas Gagliardi
+	 */
+	//implementation on LocationListener interface
+	LocationListener locationListener = new LocationListener() {
+	    public void onLocationChanged(Location location) {
+	      // Called when a new location is found by the network location provider.
+	    	longitude = location.getLongitude();
+	        latitude = location.getLatitude();
+	    }
+
+	    public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+	    public void onProviderEnabled(String provider) {}
+
+	    public void onProviderDisabled(String provider) {}
+	  };
+
 
 	@Override
 	public void onCreate() {
@@ -53,17 +80,20 @@ public class FallService extends Service implements SensorEventListener {
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_UI);
 		initialize();
-
+		
+		//initialize the GPS
+		locationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 	}
-	
-	 @Override
-	 public int onStartCommand(Intent intent, int flags, int startId) {
-		 System.out.println("Fall service OnStartCommand received start id " + startId + ": " + intent);
-		 
-		 	// We want this service to continue running until it is explicitly
-	        // stopped, so return sticky.
-	        return START_STICKY;
-	  }
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		System.out.println("Fall service OnStartCommand received start id " + startId + ": " + intent);
+
+		// We want this service to continue running until it is explicitly
+		// stopped, so return sticky.
+		return START_STICKY;
+	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -75,7 +105,7 @@ public class FallService extends Service implements SensorEventListener {
 			setTime(sessionElapsed);
 
 		start(); // starts the chrono thread
-		
+
 		System.out.println("Fall service onBind");
 
 		return mBinder;
@@ -98,6 +128,7 @@ public class FallService extends Service implements SensorEventListener {
 		super.onDestroy();
 		isRunning = false;
 		isCreated = false;
+		locationManager.removeUpdates(locationListener);
 		System.out.println("Fall service destroyed");
 	}
 
@@ -128,12 +159,12 @@ public class FallService extends Service implements SensorEventListener {
 		chronoThread = new Thread(new MyChrono());
 		chronoThread.start();
 	}
-	
+
 
 	public static boolean isCreated() {
 		return isCreated;
 	}
-	
+
 
 	public class MyBinder extends Binder {
 		FallService getService() {
@@ -253,8 +284,10 @@ public class FallService extends Service implements SensorEventListener {
 			if (fall_state1.equalsIgnoreCase("fall")
 					|| fall_state1.equalsIgnoreCase("none")) {
 				if (post_state1.equalsIgnoreCase("none")) {
-					// call SendEmail
-
+					//reach the data
+					latitude = mLocation.getLatitude();
+					longitude = mLocation.getLongitude();
+					// call SendEmail					
 					Fall fl = createFall();
 					Intent myIntent = new Intent(this,SendEmail.class);
 					myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);	//to call Calling startActivity() from outside of an Activity 
@@ -273,7 +306,7 @@ public class FallService extends Service implements SensorEventListener {
 		}
 		window[BUFF_SIZE - 1] = a_norm;
 
-	}
+	} 
 
 	private Fall createFall() {
 		Fall temp = new Fall();
