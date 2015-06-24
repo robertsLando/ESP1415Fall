@@ -22,12 +22,12 @@
     <string name="rename">Rename</string>
     <string name="stop">Stop</string>
     <string name="details">Details</string>
-    <string name="pref_acc">Impostazioni Accelerometro</string>
-    <string name="pref_acc_sum">Seleziona la frequenza di campionamento dei dati dell\'accelerometro</string>
-    <string name="session_pref">OPZIONI SESSIONE</string>
-    <string name="pref_session_time">Durata sessione</string>
-    <string name="pref_session_time_sum">Imposta la durata massima della sessione</string>
-    <string name="pref_contact_setting">IMPOSTAZIONI CONTATTI</string>
+    <string name="pref_acc">Accelerometer Sample Rate</string>
+    <string name="pref_acc_sum">Set the sample rate of the accelerometer</string>
+    <string name="session_pref">SESSION OPTIONS</string>
+    <string name="pref_session_time">Session Duration</string>
+    <string name="pref_session_time_sum">Set the maximum duration of a session</string>
+    <string name="pref_contact_setting">CONTACTS</string>
     <string name="newSession">NEW SESSION</string>
     <string name="renameSession">RENAME SESSION</string>
     <string name="cancel">Cancel</string>
@@ -40,7 +40,7 @@
     <string name="pref_contact_list_sum">Add a new helper mail</string>
     <string name="pref_contact_management">Chose the helpers</string>
     <string name="pref_contact_management_sum">Select the people who can help you</string>
-    <string name="pref_notification_setting">NOTIFICHE</string>
+    <string name="pref_notification_setting">NOTIFICATION</string>
     <string name="title_activity_fall_detector_preferences">Settings</string>
     <string name="error">An error occurred</string>
     <string name="errorEmptyName">Session name must be set!</string>
