@@ -104,6 +104,7 @@ public class FallService extends Service implements SensorEventListener {
 		System.out.println("Fall service OnStartCommand received start id "
 				+ startId + ": " + intent);
 
+
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
 		return START_STICKY;
@@ -115,7 +116,8 @@ public class FallService extends Service implements SensorEventListener {
 		long sessionElapsed = intent
 				.getLongExtra(SessionViewAdapter.ELAPSED, 0);
 
-		sessionID = intent.getIntExtra(SessionViewAdapter.ID, 0);
+		DbManager databaseManager = new DbManager(getApplicationContext());
+		sessionID = databaseManager.getRunningSessionID();
 
 		if (!isRunning)
 			setTime(sessionElapsed);
@@ -348,6 +350,9 @@ public class FallService extends Service implements SensorEventListener {
 
 		long id = databaseManager.addFall(temp);
 
+		if(id == -1)
+			System.out.println("Error inserting Fall in the Database");
+		
 		temp.setId(id);
 
 		for (i = 0; i < BUFF_SIZE; i++) { // Add the new fallData in the

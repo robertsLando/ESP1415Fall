@@ -544,9 +544,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 			if (!isFallServiceRunning()) {
 				// start the service
-				activity.startService(intent);
 				intent.putExtra(ELAPSED, ses.getTimeElapsed());
 				intent.putExtra(ID, ses.getId());
+				activity.startService(intent);
 			}
 
 			// bind the service

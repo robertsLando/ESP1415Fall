@@ -7,6 +7,7 @@ import unipd.dei.ESP1415.falldetector.Fall;
 import unipd.dei.ESP1415.falldetector.FallData;
 import unipd.dei.ESP1415.falldetector.Helper;
 import unipd.dei.ESP1415.falldetector.Session;
+import unipd.dei.ESP1415.falldetector.SessionViewAdapter;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
 import unipd.dei.ESP1415.falldetector.database.HelperDB.HelperTable;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
@@ -360,6 +361,25 @@ public class DbManager {
 	}
 
 	// ******FALLS METHODS*****
+	
+	public int getRunningSessionID()
+	{
+		
+		// Connect to the database in Readable mode
+		db = dbHelper.getReadableDatabase();
+
+		// Fetch the last element inserted
+		Cursor c = db.rawQuery("SELECT " + SessionTable.ID_COLUMN + " FROM "
+				+ SessionTable.SESSION_TABLE + " WHERE "
+				+ SessionTable.ISRUNNING_COLUMN + " = 1", null);
+
+		if (c.moveToFirst()) {
+			return c.getInt(SessionTable.ID);
+		}
+
+		return -1;
+
+	}
 
 	public long addFall(Fall temp) {
 
@@ -374,11 +394,22 @@ public class DbManager {
 
 		// Insert into the table the values
 		long id = db.insert(FallDB.FallTable.FALL_TABLE, null, values);
-
-		if (id == -1)
+		if(id == -1)
 			return id;
+		
+		// Connect to the database in Readable mode
+		db = dbHelper.getReadableDatabase();
 
-		return 1;
+		// Fetch the last element inserted
+		Cursor c = db.rawQuery("SELECT " + FallTable.ID_COLUMN + " FROM "
+				+ FallTable.FALL_TABLE + " ORDER BY "
+				+ FallTable.ID_COLUMN + " DESC LIMIT 1", null);
+
+		if (c.moveToFirst()) {
+			return c.getLong(FallTable.ID);
+		}
+
+		return -1;
 
 	}
 	

@@ -176,7 +176,8 @@ public class SessionDetails extends ActionBarActivity{
 
 		//ok
 		//databaseManager.updateDB(); //uncomment this line when update database
-		databaseManager.addTempFalls(sID);
+		
+		databaseManager.getFalls(sID);
 
 		Cursor c = databaseManager.getFalls(sID);
 		
