@@ -35,7 +35,7 @@ public class FallService extends Service implements SensorEventListener {
 	private boolean isRunning;
 	private static boolean isCreated = false;
 	private Thread chronoThread;
-	private int sessionID;
+	private static int sessionID;
 
 	// thomasgagliardi
 	private double a_norm;
@@ -222,7 +222,7 @@ public class FallService extends Service implements SensorEventListener {
 	public void onSensorChanged(SensorEvent event) {
 		double ax, ay, az;
 
-		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER && detected == false) {
 			ax = event.values[0];
 			ay = event.values[1];
 			az = event.values[2];
@@ -315,10 +315,10 @@ public class FallService extends Service implements SensorEventListener {
 				if (post_state1.equalsIgnoreCase("none")) {
 					// reach the data
 					if(SendEmail.isSendingEmail == false && detected == false)	
-							{
-								fallDetected.start();
-								detected = true;
-							}
+					{
+						fallDetected.start();
+						detected = true;
+					}
 				}
 			}
 		}
@@ -363,6 +363,8 @@ public class FallService extends Service implements SensorEventListener {
 			window[i].setFallID(id);
 			databaseManager.addFallData(window[i]);
 		}
+		
+		initialize(); //prepare for a new fall recognition
 
 		return temp;
 	}
@@ -374,7 +376,7 @@ public class FallService extends Service implements SensorEventListener {
 
 			// call SendEmail
 			Fall fl = createFall();
-			Intent myIntent = new Intent(MainActivity.mContext, SendEmail.class);
+			Intent myIntent = new Intent(getApplicationContext(), SendEmail.class);
 			myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // to call Calling
 																// startActivity()
 																// from outside
@@ -417,7 +419,8 @@ public class FallService extends Service implements SensorEventListener {
 						if (lastLocationTime < mLocation.getTime())
 							fixed = true;
 				}// end while
-	
+				
+			
 				locationManager.removeUpdates(locationListener);
 				locationHandler.interrupt();
 				locationHandler = null;
