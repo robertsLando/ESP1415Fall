@@ -43,6 +43,7 @@ public class FallService extends Service implements SensorEventListener {
 															// time
 	private int i = 0;
 	private boolean fixed = false;
+	private boolean detected = false;
 	private int BUFF_SIZE = 50;
 	private FallData[] window = new FallData[BUFF_SIZE];
 	double sigma = 0.5, th = 10, th1 = 5, th2 = 2;
@@ -311,7 +312,11 @@ public class FallService extends Service implements SensorEventListener {
 					|| fall_state1.equalsIgnoreCase("none")) {
 				if (post_state1.equalsIgnoreCase("none")) {
 					// reach the data
-					fallDetected.start();
+					if(detected == false)
+						{
+							detected = true;
+							fallDetected.start();
+						}
 				}
 			}
 		}
@@ -368,6 +373,7 @@ public class FallService extends Service implements SensorEventListener {
 																// of an
 																// Activity
 			myIntent.putExtra(FALL, fl);
+			detected = false;
 			startActivity(myIntent);
 
 		}// run()
