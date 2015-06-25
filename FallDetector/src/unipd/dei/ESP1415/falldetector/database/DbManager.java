@@ -394,22 +394,32 @@ public class DbManager {
 
 		// Insert into the table the values
 		long id = db.insert(FallDB.FallTable.FALL_TABLE, null, values);
-		if(id == -1)
-			return id;
+
 		
-		// Connect to the database in Readable mode
+		//update falls number in session table
+		final String query = "SELECT * FROM "
+				+ SessionDB.SessionTable.SESSION_TABLE + " WHERE "
+				+ SessionDB.SessionTable.ID_COLUMN + " = " + temp.getSessionID();
+
 		db = dbHelper.getReadableDatabase();
 
-		// Fetch the last element inserted
-		Cursor c = db.rawQuery("SELECT " + FallTable.ID_COLUMN + " FROM "
-				+ FallTable.FALL_TABLE + " ORDER BY "
-				+ FallTable.ID_COLUMN + " DESC LIMIT 1", null);
+		Cursor c = db.rawQuery(query, null);
+		
+		int falls = 0;
+		
+		if(c.moveToFirst())
+			falls = c.getInt(SessionTable.FALLS) + 1;
 
-		if (c.moveToFirst()) {
-			return c.getLong(FallTable.ID);
-		}
+		values = new ContentValues();
 
-		return -1;
+		// Insert values with associated column name
+		values.put(SessionDB.SessionTable.FALLS_COLUMN, falls);
+
+		// update database
+		db.update(SessionTable.SESSION_TABLE, values, SessionTable.ID_COLUMN
+				+ " = " + temp.getSessionID(), null);
+		
+		return id;
 
 	}
 	

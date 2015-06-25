@@ -39,7 +39,7 @@ public class FallService extends Service implements SensorEventListener {
 
 	// thomasgagliardi
 	private double a_norm;
-	private static final int TWO_MINUTES = 1000 * 30 * 1; // location update
+	private static final int TWO_MINUTES = 1000 * 60 * 2; // location update
 															// time
 	private int i = 0;
 	private boolean fixed = false;
@@ -341,9 +341,12 @@ public class FallService extends Service implements SensorEventListener {
 	private Fall createFall() {
 		Fall temp = new Fall();
 
+		String location = "-------";
 		temp.setDatef(System.currentTimeMillis());
 		if (mLocation != null)
-			temp.setLocation(getAddress());
+			location = getAddress();
+			
+		temp.setLocation(location);
 		temp.setSessionID(sessionID);
 
 		DbManager databaseManager = new DbManager(MainActivity.mContext);
