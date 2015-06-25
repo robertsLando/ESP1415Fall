@@ -15,6 +15,12 @@ public class FallData implements Serializable{
 	private double accelerationY; //the acceleration value at that time in Y-axis
 	private long fallID; //the id of the associated fall
 	
+	public FallData(){
+		id = 0;
+		timeX = 0;
+		accelerationY = 0;
+		fallID = 0;
+	}
 	
 	public long getFallID() {
 		return fallID;

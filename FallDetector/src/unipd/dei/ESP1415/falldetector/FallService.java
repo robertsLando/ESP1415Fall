@@ -1,7 +1,11 @@
 package unipd.dei.ESP1415.falldetector;
 
+import java.util.List;
+import java.util.Locale;
+
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +13,16 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.SystemClock;
-import android.util.Log;
 
 public class FallService extends Service implements SensorEventListener {
 
@@ -32,9 +38,11 @@ public class FallService extends Service implements SensorEventListener {
 	private int sessionID;
 
 	// thomasgagliardi
-	private double ax, ay, az;
 	private double a_norm;
+	private static final int TWO_MINUTES = 1000 * 30 * 1; // location update
+															// time
 	private int i = 0;
+	private boolean fixed = false;
 	private int BUFF_SIZE = 50;
 	private FallData[] window = new FallData[BUFF_SIZE];
 	double sigma = 0.5, th = 10, th1 = 5, th2 = 2;
@@ -44,24 +52,23 @@ public class FallService extends Service implements SensorEventListener {
 	public final static String FALL = "fall";
 	private LocationManager locationManager;
 	private Location mLocation;
-	private double longitude;
-	private double latitude;
 	private Thread fallDetected = new Thread(new FallRecognizedThread());
-	private Thread findLocation = new Thread(new FindLocationThread());
+	private Thread locationThread = new Thread(new FindLocationThread());
 	private LocationListener locationListener = new LocationListener() {
-	    public void onLocationChanged(Location location) {
-	      mLocation = location;
-	    	if(findLocation.getState() == Thread.State.NEW)
-	    		findLocation.start();
-	    }
+		public void onLocationChanged(Location location) {
+			if (isBetterLocation(location, mLocation))
+				mLocation = location;
+		}
 
-	    public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
-	    public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
-	    public void onProviderDisabled(String provider) {}
-	  };
-	
+		public void onProviderDisabled(String provider) {
+		}
+	};
 
 	@Override
 	public void onCreate() {
@@ -72,9 +79,9 @@ public class FallService extends Service implements SensorEventListener {
 		pauseTime = 0;
 
 		isCreated = true;
-		
+
 		fallDetected.setName("Fall Detect Thread");
-		findLocation.setName("Find location Thread");
+		locationThread.setName("Find location Thread");
 
 		// thomasgagliardi
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -82,15 +89,19 @@ public class FallService extends Service implements SensorEventListener {
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_UI);
 		initialize();
+
+		// initialize the GPS
+		locationManager = (LocationManager) getApplicationContext()
+				.getSystemService(Context.LOCATION_SERVICE);
 		
-		//initialize the GPS
-		locationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		locationThread.start();
+
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		System.out.println("Fall service OnStartCommand received start id " + startId + ": " + intent);
+		System.out.println("Fall service OnStartCommand received start id "
+				+ startId + ": " + intent);
 
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
@@ -102,11 +113,10 @@ public class FallService extends Service implements SensorEventListener {
 
 		long sessionElapsed = intent
 				.getLongExtra(SessionViewAdapter.ELAPSED, 0);
-		
-		sessionID = intent
-				.getIntExtra(SessionViewAdapter.ID, 0);
 
-		if(!isRunning)
+		sessionID = intent.getIntExtra(SessionViewAdapter.ID, 0);
+
+		if (!isRunning)
 			setTime(sessionElapsed);
 
 		start(); // starts the chrono thread
@@ -166,11 +176,9 @@ public class FallService extends Service implements SensorEventListener {
 		chronoThread.setName("Fall service Chrono thread");
 	}
 
-
 	public static boolean isCreated() {
 		return isCreated;
 	}
-
 
 	public class MyBinder extends Binder {
 		FallService getService() {
@@ -183,6 +191,7 @@ public class FallService extends Service implements SensorEventListener {
 		@Override
 		public void run() {
 			while (isRunning) {
+
 				elapsedMillis = SystemClock.uptimeMillis() - startTime
 						- pauseTime;
 				try {
@@ -190,6 +199,7 @@ public class FallService extends Service implements SensorEventListener {
 				} catch (InterruptedException e) {
 					System.out.println("Chrono Thread has been interrupted");
 				}
+							
 			}
 
 		}// run()
@@ -207,6 +217,8 @@ public class FallService extends Service implements SensorEventListener {
 	@SuppressLint("ParserError")
 	@Override
 	public void onSensorChanged(SensorEvent event) {
+		double ax, ay, az;
+
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			ax = event.values[0];
 			ay = event.values[1];
@@ -222,13 +234,9 @@ public class FallService extends Service implements SensorEventListener {
 	}
 
 	private void initialize() {
-	
-		FallData temp = new FallData();
-		temp.setTimeX(0);
-		temp.setAccelerationY(0);
-		
-		for (i = 0; i < BUFF_SIZE; i++) { 
-			window[i] = temp;
+
+		for (i = 0; i < BUFF_SIZE; i++) {
+			window[i] = new FallData();
 		}
 		fall_state = "none";
 		post_state = "none";
@@ -247,15 +255,22 @@ public class FallService extends Service implements SensorEventListener {
 			if (window[i].getAccelerationY() < tMin)
 				tMin = window[i].getAccelerationY();
 
-		if ((tMax - tMin) > (2 * SensorManager.GRAVITY_EARTH)) //if the difference between the max-min acceleration values is
-																//greater then g*2 a fall is detected
+		if ((tMax - tMin) > (2 * SensorManager.GRAVITY_EARTH)) // if the
+																// difference
+																// between the
+																// max-min
+																// acceleration
+																// values is
+																// greater then
+																// g*2 a fall is
+																// detected
 			fall_state = "fall";
 		else
 			fall_state = "none";
 	}
 
 	private void posture_recognition(FallData[] window2, double ay2) {
-		
+
 		int zrc = compute_zrc(window2);
 		if (zrc == 0) {
 
@@ -276,11 +291,12 @@ public class FallService extends Service implements SensorEventListener {
 	}
 
 	private int compute_zrc(FallData[] window2) {
-		
+
 		int count = 0;
 		for (i = 1; i <= BUFF_SIZE - 1; i++) {
 
-			if ((window2[i].getAccelerationY() - th) < sigma && (window2[i - 1].getAccelerationY() - th) > sigma) {
+			if ((window2[i].getAccelerationY() - th) < sigma
+					&& (window2[i - 1].getAccelerationY() - th) > sigma) {
 				count = count + 1;
 			}
 		}
@@ -294,9 +310,7 @@ public class FallService extends Service implements SensorEventListener {
 			if (fall_state1.equalsIgnoreCase("fall")
 					|| fall_state1.equalsIgnoreCase("none")) {
 				if (post_state1.equalsIgnoreCase("none")) {
-					//reach the data
-					if(findLocation.getState() == Thread.State.NEW)
-						findLocation.start();
+					// reach the data
 					fallDetected.start();
 				}
 			}
@@ -304,59 +318,58 @@ public class FallService extends Service implements SensorEventListener {
 	}
 
 	private void AddData(double ax2, double ay2, double az2) {
-		
-		a_norm = Math.sqrt(ax * ax + ay * ay + az * az); //acceleration value
-		for (i = 0; i <= BUFF_SIZE - 2; i++) {  //Add the new fallData ordered by time (ASC)
-			window[i] = window[i + 1];
+
+		a_norm = Math.sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2); // acceleration
+																// value
+		for (i = 0; i <= BUFF_SIZE - 2; i++) { // Add the new fallData ordered
+												// by time (ASC)
+			window[i].setAccelerationY(window[i + 1].getAccelerationY());
+			window[i].setTimeX(window[i + 1].getTimeX());
 		}
 		window[BUFF_SIZE - 1].setAccelerationY(a_norm);
 		window[BUFF_SIZE - 1].setTimeX(System.currentTimeMillis());
 
-	} 
-	
-
+	}
 
 	private Fall createFall() {
 		Fall temp = new Fall();
-		
+
 		temp.setDatef(System.currentTimeMillis());
-		temp.setLocation(longitude + " " + latitude);
+		if (mLocation != null)
+			temp.setLocation(getAddress());
 		temp.setSessionID(sessionID);
-		
-		DbManager databaseManager = new DbManager(fsContext);
-		 
+
+		DbManager databaseManager = new DbManager(MainActivity.mContext);
+
 		long id = databaseManager.addFall(temp);
-		
+
 		temp.setId(id);
-		
-		for (i = 0; i < BUFF_SIZE; i++) {  //Add the new fallData in the database
+
+		for (i = 0; i < BUFF_SIZE; i++) { // Add the new fallData in the
+											// database
 			window[i].setFallID(id);
 			databaseManager.addFallData(window[i]);
 		}
-		
+
 		return temp;
 	}
-	
-	
+
 	private class FallRecognizedThread implements Runnable {
 
 		@Override
 		public void run() {
-			
-			try {
-				findLocation.join();
-			} catch (InterruptedException e) {
-				
-				System.out.println("Fall Service find location join has been interrupted");
-			} //wait location services
-			
-			// call SendEmail					
+
+			// call SendEmail
 			Fall fl = createFall();
 			Intent myIntent = new Intent(MainActivity.mContext, SendEmail.class);
-			myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);	//to call Calling startActivity() from outside of an Activity 
+			myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // to call Calling
+																// startActivity()
+																// from outside
+																// of an
+																// Activity
 			myIntent.putExtra(FALL, fl);
 			startActivity(myIntent);
-			
+
 		}// run()
 
 	} // FallRecognizedThread
@@ -366,14 +379,156 @@ public class FallService extends Service implements SensorEventListener {
 		@Override
 		public void run() {
 			
-			//reach the data
-			latitude = mLocation.getLatitude();
-			longitude = mLocation.getLongitude();
+			while(true)
+			{
+				LocationHandler locationHandler = new LocationHandler();
+				locationHandler.start();
+				fixed = false;
+				long lastLocationTime = 0;
+	
+				if (mLocation != null)
+					lastLocationTime = mLocation.getTime();
+	
+				while (fixed == false) {
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+	
+						e.printStackTrace();
+					}
+	
+					if (mLocation != null)
+						if (lastLocationTime < mLocation.getTime())
+							fixed = true;
+				}// end while
+	
+				locationManager.removeUpdates(locationListener);
+				locationHandler.interrupt();
+				locationHandler = null;
+				
+				try {
+					Thread.sleep(TWO_MINUTES);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+			}
 			
-			
+
 		}// run()
 
 	} // FallRecognizedThread
-
 	
+	private class LocationHandler extends Thread {
+
+	      @Override
+	      public void run() {
+	    	  Looper.prepare();
+				
+				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+						0, locationListener);
+				locationManager.requestLocationUpdates(
+						LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+				
+				Looper.loop();
+				
+	      }
+	  }
+
+	/**
+	 * This method estimate the location
+	 * 
+	 * @param location
+	 * @param currentBestLocation
+	 * @return true if location is better than currentBestLocation
+	 */
+	protected boolean isBetterLocation(Location location,
+			Location currentBestLocation) {
+		if (currentBestLocation == null) {
+			// A new location is always better than no location
+			return true;
+		}
+
+		// Check whether the new location fix is newer or older
+		long timeDelta = location.getTime() - currentBestLocation.getTime();
+		boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
+		boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+		boolean isNewer = timeDelta > 0;
+
+		// If it's been more than two minutes since the current location, use
+		// the new location
+		// because the user has likely moved
+		if (isSignificantlyNewer) {
+			return true;
+			// If the new location is more than two minutes older, it must be
+			// worse
+		} else if (isSignificantlyOlder) {
+			return false;
+		}
+
+		// Check whether the new location fix is more or less accurate
+		int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation
+				.getAccuracy());
+		boolean isLessAccurate = accuracyDelta > 0;
+		boolean isMoreAccurate = accuracyDelta < 0;
+		boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+		// Check if the old and new location are from the same provider
+		boolean isFromSameProvider = isSameProvider(location.getProvider(),
+				currentBestLocation.getProvider());
+
+		// Determine location quality using a combination of timeliness and
+		// accuracy
+		if (isMoreAccurate) {
+			return true;
+		} else if (isNewer && !isLessAccurate) {
+			return true;
+		} else if (isNewer && !isSignificantlyLessAccurate
+				&& isFromSameProvider) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * This method is used to check if provider1 is the same of provide2
+	 * 
+	 * @param provider1
+	 * @param provider2
+	 * @return true if prvider1 == provider2
+	 */
+	private boolean isSameProvider(String provider1, String provider2) {
+		if (provider1 == null) {
+			return provider2 == null;
+		}
+		return provider1.equals(provider2);
+	}
+
+	/**
+	 * Retrieve the address from location
+	 * 
+	 * @return The address at the given location in String format
+	 */
+	private String getAddress() {
+		String address = "none";
+		try {
+
+			Geocoder geo = new Geocoder(this.getApplicationContext(),
+					Locale.getDefault());
+			List<Address> addresses = geo.getFromLocation(
+					mLocation.getLatitude(), mLocation.getLongitude(), 1);
+			if (addresses.size() > 0) {
+				address = addresses.get(0).getFeatureName() + ", "
+						+ addresses.get(0).getLocality() + ", "
+						+ addresses.get(0).getAdminArea() + ", "
+						+ addresses.get(0).getCountryName();
+			}
+
+		} catch (Exception e) {
+			System.out.println("Something gets wrong with getAddress method");
+		}
+
+		return address;
+	}
+
 }
