@@ -312,11 +312,11 @@ public class FallService extends Service implements SensorEventListener {
 					|| fall_state1.equalsIgnoreCase("none")) {
 				if (post_state1.equalsIgnoreCase("none")) {
 					// reach the data
-					if(detected == false)
-						{
-							detected = true;
-							fallDetected.start();
-						}
+					if(SendEmail.isSendingEmail == false && detected == false)	
+							{
+								fallDetected.start();
+								detected = true;
+							}
 				}
 			}
 		}
@@ -373,8 +373,10 @@ public class FallService extends Service implements SensorEventListener {
 																// of an
 																// Activity
 			myIntent.putExtra(FALL, fl);
+			
 			detected = false;
 			startActivity(myIntent);
+			
 
 		}// run()
 
@@ -524,14 +526,18 @@ public class FallService extends Service implements SensorEventListener {
 			List<Address> addresses = geo.getFromLocation(
 					mLocation.getLatitude(), mLocation.getLongitude(), 1);
 			if (addresses.size() > 0) {
-				address = addresses.get(0).getFeatureName() + ", "
-						+ addresses.get(0).getLocality() + ", "
-						+ addresses.get(0).getAdminArea() + ", "
-						+ addresses.get(0).getCountryName();
+				address = addresses.get(0).getAddressLine(0) + ", "
+						+ addresses.get(0).getLocality() + " "
+						+ addresses.get(0).getPostalCode() + ", "						
+						+ addresses.get(0).getCountryName() + "\n"
+						+ "Latitude: " + addresses.get(0).getLatitude() + "\n" 
+						+ "Longitude: " + addresses.get(0).getLongitude();
 			}
 
 		} catch (Exception e) {
 			System.out.println("Something gets wrong with getAddress method");
+			if(mLocation != null)
+			address = "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude();
 		}
 
 		return address;

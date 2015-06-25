@@ -1,6 +1,7 @@
 package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
@@ -279,6 +280,6 @@ public class MainActivity extends ActionBarActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
+	}    
 
 }

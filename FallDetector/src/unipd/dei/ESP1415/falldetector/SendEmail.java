@@ -1,5 +1,7 @@
 package unipd.dei.ESP1415.falldetector;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,12 +22,14 @@ public class SendEmail extends Activity {
 	EditText textMessage;
 	
 	private Fall newFall;
+	public static boolean isSendingEmail = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_send_email);
 		
+		isSendingEmail = true;
 		Intent myIntent = getIntent();
 		newFall = (Fall) myIntent.getSerializableExtra(FallService.FALL);
 		
@@ -36,39 +40,40 @@ public class SendEmail extends Activity {
 		textCc = (EditText) findViewById(R.id.editTextCc);
 		textBcc = (EditText) findViewById(R.id.editTextBcc);
 
-		buttonSend.setOnClickListener(new OnClickListener() {
+		
+		//Retrieving the addressee from the EditText field textTo
+		String to = "djsanco@hotmail.it";
+		//Retrieving the mail's subject from the EditText field textSubject
+		String subject = "FALL DETECTED! HELP ME";
+		//Retrieving the mail's message from the EditText field textMessage
+		String message = "Please HELP ME, I fell! \n Time:" + Utilities.getDate(new Date(newFall.getDatef())) + "\nLocation: " + newFall.getLocation();
 
-			@Override
-			public void onClick(View v)
-			{
-				//Retrieving the addressee from the EditText field textTo
-				String to = textTo.getText().toString();
-				//Retrieving the Cc addressee from the EditText field textCc
-				String cc = textCc.getText().toString();
-				//Retrieving the Bcc addressee from the EditText field textBcc
-				String bcc = textBcc.getText().toString();
-				//Retrieving the mail's subject from the EditText field textSubject
-				String subject = textSubject.getText().toString();
-				//Retrieving the mail's message from the EditText field textMessage
-				String message = textMessage.getText().toString();
+		Intent email = new Intent(Intent.ACTION_SEND);
+		email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
+		email.putExtra(Intent.EXTRA_SUBJECT, subject);
+		email.putExtra(Intent.EXTRA_TEXT, message);
 
-				Intent email = new Intent(Intent.ACTION_SEND);
-				email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
-				if(!cc.isEmpty())
-					email.putExtra(Intent.EXTRA_CC, new String[]{ to});
-				if(!bcc.isEmpty())
-					email.putExtra(Intent.EXTRA_BCC, new String[]{ to});
-				if(!subject.isEmpty())
-					email.putExtra(Intent.EXTRA_SUBJECT, subject);
-				email.putExtra(Intent.EXTRA_TEXT, message);
+		//need this to prompts email client only
+		email.setType("message/rfc822");
 
-				//need this to prompts email client only
-				email.setType("message/rfc822");
-
-				startActivity(Intent.createChooser(email, "choose an EMAIL client :"));
-			}
-		});
+		startActivityForResult((Intent.createChooser(email, "choose an EMAIL client :")),1);
+			
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+	    if (requestCode == 1) {
+	        if(resultCode == RESULT_OK){
+	           isSendingEmail = false; 
+	        }
+	        if (resultCode == RESULT_CANCELED) {
+	           isSendingEmail = false;
+	        }
+	    }
+	    
+	    finish();
+	}//onActivityResult
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
