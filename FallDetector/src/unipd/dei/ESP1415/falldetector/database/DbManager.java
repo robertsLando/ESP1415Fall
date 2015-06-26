@@ -508,5 +508,41 @@ public class DbManager {
 		return c;
 
 	}
-
+	
+	//--------FallData METHOD------
+	/**
+	 * Gets time of the data by given Fall
+	 * 
+	 * @return A Cursor
+	 */
+	public Cursor getFallData(long fId) {
+		
+		final String query = "SELECT * " + "FROM "
+		       + FallDataDB.FallDataTable.FALLDATA_TABLE + " WHERE "
+		       + FallDataDB.FallDataTable.FALLID_COLUMN + " =" + fId;
+		
+		db = dbHelper.getReadableDatabase();
+		
+		Cursor c = db.rawQuery(query, null);
+		
+		return c;
+		
+	}
+	
+	 /**
+	 * Gets acceleration data of given Fall
+	 * 
+	 * @return A Cursor 
+	 */
+	/*  INUTILE
+	public Cursor getAccelearation(long fId) {
+		
+		final String query = "SELECT " + FallDataDB.FallDataTable.ACCELERATIONY + "FROM "
+		       + FallDataDB.FallDataTable.FALLDATA_TABLE + " WHERE "
+		       + FallDataDB.FallDataTable.FALLID_COLUMN + " =" + fId;
+		
+        Cursor c = db.rawQuery(query, null);
+		
+		return c;
+	} */
 }// class: dbManager
