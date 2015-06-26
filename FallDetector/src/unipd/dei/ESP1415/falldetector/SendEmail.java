@@ -46,7 +46,7 @@ public class SendEmail extends Activity {
 		//Retrieving the mail's subject from the EditText field textSubject
 		String subject = "FALL DETECTED! HELP ME";
 		//Retrieving the mail's message from the EditText field textMessage
-		String message = "Please HELP ME, I fell! \n Time:" + Utilities.getDate(new Date(newFall.getDatef())) + "\nLocation: " + newFall.getLocation();
+		String message = "Please HELP ME, I fell! \nTime: " + Utilities.getDate(new Date(newFall.getDatef())) + "\nLocation: " + newFall.getLocation();
 
 		Intent email = new Intent(Intent.ACTION_SEND);
 		email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});

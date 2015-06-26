@@ -1,5 +1,6 @@
 package unipd.dei.ESP1415.falldetector;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -349,7 +350,7 @@ public class FallService extends Service implements SensorEventListener {
 		temp.setLocation(location);
 		temp.setSessionID(sessionID);
 
-		DbManager databaseManager = new DbManager(MainActivity.mContext);
+		DbManager databaseManager = new DbManager(getApplicationContext());
 
 		long id = databaseManager.addFall(temp);
 
@@ -541,14 +542,15 @@ public class FallService extends Service implements SensorEventListener {
 						+ addresses.get(0).getLocality() + " "
 						+ addresses.get(0).getPostalCode() + ", "						
 						+ addresses.get(0).getCountryName() + "\n"
-						+ "Latitude: " + addresses.get(0).getLatitude() + "\n" 
-						+ "Longitude: " + addresses.get(0).getLongitude();
+						+ "Latitude: " + Utilities.latitudeLongitudeToString(addresses.get(0).getLatitude()) + "\n" 
+						+ "Longitude: " + Utilities.latitudeLongitudeToString(addresses.get(0).getLongitude()) + "\n" 
+						+ "Location Time: " + Utilities.getOnlyTime(new Date(mLocation.getTime()));
 			}
 
 		} catch (Exception e) {
 			System.out.println("Something gets wrong with getAddress method");
 			if(mLocation != null)
-			address = "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude();
+			address = "Latitude: " + Utilities.latitudeLongitudeToString(mLocation.getLatitude()) + " Longitude: " + Utilities.latitudeLongitudeToString(mLocation.getLongitude());
 		}
 
 		return address;

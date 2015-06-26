@@ -8,6 +8,7 @@ import java.util.Random;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.location.Location;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -30,6 +31,15 @@ public class Utilities {
 			Log.e("Date format EXCEPTION", e.getMessage());
 			return null;
 		}
+	}
+	
+	public static String latitudeLongitudeToString(double value)
+	{
+		String str = Location.convert(value, Location.FORMAT_SECONDS);
+		String[] degree = str.split(":");
+		
+		
+		return degree[0] + "° " + degree[1] + "' " + degree[2] + "''";
 	}
 	
 	public static String getTime(long millis)
