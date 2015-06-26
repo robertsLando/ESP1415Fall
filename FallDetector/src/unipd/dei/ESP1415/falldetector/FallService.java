@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -25,7 +26,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
 
-public class FallService extends Service implements SensorEventListener {
+public class FallService extends Service {
 
 	private static String LOG_TAG = "BoundService";
 	private IBinder mBinder = new MyBinder();
@@ -56,6 +57,33 @@ public class FallService extends Service implements SensorEventListener {
 	private Location mLocation;
 	private Thread fallDetected = new Thread(new FallRecognizedThread());
 	private Thread locationThread = new Thread(new FindLocationThread());
+	
+	private SensorEventListener sensorListener = new SensorEventListener() {
+		
+		@Override
+		public void onAccuracyChanged(Sensor arg0, int arg1) {
+		}
+
+		@SuppressLint("ParserError")
+		@Override
+		public void onSensorChanged(SensorEvent event) {
+			double ax, ay, az;
+
+			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+				ax = event.values[0];
+				ay = event.values[1];
+				az = event.values[2];
+				AddData(ax, ay, az);
+				posture_recognition(window, ay);
+				fall_recognition(window);
+				SystemState(fall_state, post_state);
+				if (!fall_state.equalsIgnoreCase(post_state)) {
+					fall_state = post_state;
+				}
+			}
+		}
+	};
+	
 	private LocationListener locationListener = new LocationListener() {
 		public void onLocationChanged(Location location) {
 			if (isBetterLocation(location, mLocation))
@@ -87,7 +115,7 @@ public class FallService extends Service implements SensorEventListener {
 
 		// thomasgagliardi
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		sensorManager.registerListener(this,
+		sensorManager.registerListener(sensorListener,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_UI);
 		initialize();
@@ -210,32 +238,11 @@ public class FallService extends Service implements SensorEventListener {
 
 	} // MyChrono Class
 
+
 	/**
 	 * thomas gagliardi
 	 */
 
-	@Override
-	public void onAccuracyChanged(Sensor arg0, int arg1) {
-	}
-
-	@SuppressLint("ParserError")
-	@Override
-	public void onSensorChanged(SensorEvent event) {
-		double ax, ay, az;
-
-		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER && detected == false) {
-			ax = event.values[0];
-			ay = event.values[1];
-			az = event.values[2];
-			AddData(ax, ay, az);
-			posture_recognition(window, ay);
-			fall_recognition(window);
-			SystemState(fall_state, post_state);
-			if (!fall_state.equalsIgnoreCase(post_state)) {
-				fall_state = post_state;
-			}
-		}
-	}
 
 	private void initialize() {
 
@@ -317,6 +324,7 @@ public class FallService extends Service implements SensorEventListener {
 					// reach the data
 					if(SendEmail.isSendingEmail == false && detected == false)	
 					{
+						sensorManager.unregisterListener(sensorListener);
 						fallDetected.start();
 						detected = true;
 					}
@@ -339,6 +347,11 @@ public class FallService extends Service implements SensorEventListener {
 
 	}
 
+	/**
+	 * Create a fall instance, save it and all data in the windows buffer in the database
+	 * and reinitialize the buffer for new data.
+	 * @return
+	 */
 	private Fall createFall() {
 		Fall temp = new Fall();
 
@@ -370,6 +383,13 @@ public class FallService extends Service implements SensorEventListener {
 		return temp;
 	}
 
+	/**
+	 * This thread starts when a fall has been recognized. It create a fall instance
+	 * and save it and all his data in the window buffer in the database, finally it 
+	 * starts the email activity
+	 * @author daniellando
+	 *
+	 */
 	private class FallRecognizedThread implements Runnable {
 
 		@Override
@@ -386,6 +406,10 @@ public class FallService extends Service implements SensorEventListener {
 			myIntent.putExtra(FALL, fl);
 			
 			detected = false;
+			sensorManager.registerListener(sensorListener,
+					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+					SensorManager.SENSOR_DELAY_UI);
+			
 			startActivity(myIntent);
 			
 
@@ -393,6 +417,11 @@ public class FallService extends Service implements SensorEventListener {
 
 	} // FallRecognizedThread
 
+	/**
+	 * This thread fix the location every 2 minutes
+	 * @author daniellando
+	 *
+	 */
 	private class FindLocationThread implements Runnable {
 
 		@Override
@@ -439,6 +468,11 @@ public class FallService extends Service implements SensorEventListener {
 
 	} // FallRecognizedThread
 	
+	/**
+	 * This thread handles location updates
+	 * @author daniellando
+	 *
+	 */
 	private class LocationHandler extends Thread {
 
 	      @Override
@@ -548,7 +582,7 @@ public class FallService extends Service implements SensorEventListener {
 			}
 
 		} catch (Exception e) {
-			System.out.println("Something gets wrong with getAddress method");
+			System.out.println("Something went wrong with getAddress method");
 			if(mLocation != null)
 			address = "Latitude: " + Utilities.latitudeLongitudeToString(mLocation.getLatitude()) + " Longitude: " + Utilities.latitudeLongitudeToString(mLocation.getLongitude());
 		}
