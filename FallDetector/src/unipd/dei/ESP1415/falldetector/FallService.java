@@ -372,11 +372,8 @@ public class FallService extends Service {
 		
 		temp.setId(id);
 
-		for (i = 0; i < BUFF_SIZE; i++) { // Add the new fallData in the
-											// database
-			window[i].setFallID(id);
-			databaseManager.addFallData(window[i]);
-		}
+		databaseManager.addFallData(window,id);
+		
 		
 		initialize(); //prepare for a new fall recognition
 

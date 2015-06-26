@@ -423,19 +423,22 @@ public class DbManager {
 
 	}
 	
-	public void addFallData(FallData temp) {
+	public void addFallData(FallData[] temp, long fallId) {
 
 		db = dbHelper.getWritableDatabase();
 		// Create a new map of values
-		ContentValues values = new ContentValues();
-
-		// Insert values with associated column name
-		values.put(FallDataDB.FallDataTable.TIMESTAMP_COLUMN, temp.getTimeX());
-		values.put(FallDataDB.FallDataTable.ACCELERATION_COLUMN, temp.getAccelerationY());
-		values.put(FallDataDB.FallDataTable.FALLID_COLUMN, temp.getFallID());
-
-		// Insert into the table the values
-		db.insert(FallDataDB.FallDataTable.FALLDATA_TABLE, null, values);
+		
+		for(int i=0; i< temp.length;i++)
+		{
+			ContentValues values = new ContentValues();
+			// Insert values with associated column name
+			values.put(FallDataDB.FallDataTable.TIMESTAMP_COLUMN, temp[i].getTimeX());
+			values.put(FallDataDB.FallDataTable.ACCELERATION_COLUMN, temp[i].getAccelerationY());
+			values.put(FallDataDB.FallDataTable.FALLID_COLUMN, fallId);
+	
+			// Insert into the table the values
+			db.insert(FallDataDB.FallDataTable.FALLDATA_TABLE, null, values);
+		}
 
 
 	}
