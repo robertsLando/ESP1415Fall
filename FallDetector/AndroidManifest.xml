@@ -43,7 +43,10 @@
             android:label="@string/title_activity_session_details" >
         </activity>
 
-        <service android:name=".FallService" >
+        <service android:name=".FallService">
+            <intent-filter android:label="FallServiceFilter" >
+                <action android:name="unipd.dei.ESP1415.falldetector.FallService"/>
+            </intent-filter>
         </service>
 
         <activity
