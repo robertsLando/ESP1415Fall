@@ -134,6 +134,9 @@ public class FallService extends Service {
 				+ startId + ": " + intent);
 
 
+		DbManager databaseManager = new DbManager(getApplicationContext());
+
+		sessionID = databaseManager.getRunningSessionID();
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
 		return START_STICKY;
@@ -144,9 +147,6 @@ public class FallService extends Service {
 
 		long sessionElapsed = intent
 				.getLongExtra(SessionViewAdapter.ELAPSED, 0);
-
-		DbManager databaseManager = new DbManager(getApplicationContext());
-		sessionID = databaseManager.getRunningSessionID();
 
 		if (!isRunning)
 			setTime(sessionElapsed);

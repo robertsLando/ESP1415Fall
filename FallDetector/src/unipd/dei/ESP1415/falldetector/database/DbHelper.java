@@ -1,5 +1,7 @@
 package unipd.dei.ESP1415.falldetector.database;
 
+import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
+import unipd.dei.ESP1415.falldetector.database.FallDataDB.FallDataTable;
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,6 +25,13 @@ public class DbHelper extends SQLiteOpenHelper {
 	public DbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
+	
+	@Override
+	public void onOpen(SQLiteDatabase db){
+		
+		db.execSQL("PRAGMA foreign_keys=ON"); //foreign key support
+		
+	}
 
 	/**
 	 * When an instance is created this method creates database tables
@@ -38,7 +47,13 @@ public class DbHelper extends SQLiteOpenHelper {
     	db.execSQL(FallDB.FallTable.SQL_CREATE_ENTRIES); //fall events in a session
         db.execSQL(ReportedToDB.ReportedToTable.SQL_CREATE_ENTRIES); //relation between fall and helper
         db.execSQL(FallDataDB.FallDataTable.SQL_CREATE_ENTRIES); //fall data for a fall event to create the graph
-        db.execSQL("PRAGMA foreign_keys=ON"); //foreign key support
+        db.execSQL("CREATE TRIGGER delete_fallData AFTER DELETE ON " 
+				   + FallTable.FALL_TABLE
+     	       +  " FOR EACH ROW BEGIN"
+     	       +  " DELETE FROM " + FallDataTable.FALLDATA_TABLE + " WHERE " 
+     	       + FallDataTable.FALLDATA_TABLE + "." + FallDataTable.FALLID_COLUMN 
+     	       + "=" + FallTable.FALL_TABLE + "." + FallTable.ID_COLUMN 
+     	       +  "; END"); //because delete cascade doesn't works in fallData table
     	}catch(SQLException e)
     	{
     		Log.e("SQLException",e.getMessage());

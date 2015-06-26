@@ -367,17 +367,19 @@ public class DbManager {
 		
 		// Connect to the database in Readable mode
 		db = dbHelper.getReadableDatabase();
+		
+		String query = "SELECT * FROM "
+				+ SessionTable.SESSION_TABLE + " WHERE "
+				+ SessionTable.ISRUNNING_COLUMN + " = 1";
 
 		// Fetch the last element inserted
-		Cursor c = db.rawQuery("SELECT * FROM "
-				+ SessionTable.SESSION_TABLE + " WHERE "
-				+ SessionTable.ISRUNNING_COLUMN + " = 1", null);
+		Cursor c = db.rawQuery(query, null);
 
 		if (c.moveToFirst()) {
 			return c.getInt(SessionTable.ID);
 		}
 
-		return -1;
+		else return -1;
 
 	}
 
