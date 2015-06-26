@@ -70,9 +70,11 @@ public class SendEmail extends Activity {
 	        if (resultCode == RESULT_CANCELED) {
 	           isSendingEmail = false;
 	        }
+	        
+	        Intent intent = new Intent(SendEmail.this, MainActivity.class);
+	        startActivity(intent);
 	    }
 	    
-	    finish();
 	}//onActivityResult
 
 	@Override

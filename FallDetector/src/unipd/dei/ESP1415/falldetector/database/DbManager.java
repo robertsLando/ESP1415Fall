@@ -369,7 +369,7 @@ public class DbManager {
 		db = dbHelper.getReadableDatabase();
 
 		// Fetch the last element inserted
-		Cursor c = db.rawQuery("SELECT " + SessionTable.ID_COLUMN + " FROM "
+		Cursor c = db.rawQuery("SELECT * FROM "
 				+ SessionTable.SESSION_TABLE + " WHERE "
 				+ SessionTable.ISRUNNING_COLUMN + " = 1", null);
 

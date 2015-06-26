@@ -38,6 +38,7 @@ public class DbHelper extends SQLiteOpenHelper {
     	db.execSQL(FallDB.FallTable.SQL_CREATE_ENTRIES); //fall events in a session
         db.execSQL(ReportedToDB.ReportedToTable.SQL_CREATE_ENTRIES); //relation between fall and helper
         db.execSQL(FallDataDB.FallDataTable.SQL_CREATE_ENTRIES); //fall data for a fall event to create the graph
+        db.execSQL("PRAGMA foreign_keys=ON"); //foreign key support
     	}catch(SQLException e)
     	{
     		Log.e("SQLException",e.getMessage());

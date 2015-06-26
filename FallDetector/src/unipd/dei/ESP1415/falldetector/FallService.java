@@ -45,7 +45,7 @@ public class FallService extends Service {
 															// time
 	private int i = 0;
 	private boolean fixed = false;
-	private boolean detected = false;
+	private static boolean detected = false;
 	private int BUFF_SIZE = 50;
 	private FallData[] window = new FallData[BUFF_SIZE];
 	double sigma = 0.5, th = 10, th1 = 5, th2 = 2;
@@ -191,6 +191,10 @@ public class FallService extends Service {
 		isRunning = false;
 		chronoThread.interrupt();
 		chronoThread = null;
+		locationManager.removeUpdates(locationListener);
+		locationThread.interrupt();
+		locationThread = null;
+		sensorManager.unregisterListener(sensorListener);
 	}
 
 	public void resume() {
@@ -198,6 +202,13 @@ public class FallService extends Service {
 			pauseTime = SystemClock.uptimeMillis()
 					- (startTime + elapsedMillis);
 			start();
+			
+			sensorManager.registerListener(sensorListener,
+					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+					SensorManager.SENSOR_DELAY_UI);
+			locationThread = new Thread(new FindLocationThread());
+			locationThread.start();
+			
 		}
 	}
 
@@ -325,6 +336,7 @@ public class FallService extends Service {
 					if(SendEmail.isSendingEmail == false && detected == false)	
 					{
 						sensorManager.unregisterListener(sensorListener);
+						fallDetected = new Thread(new FallRecognizedThread());
 						fallDetected.start();
 						detected = true;
 					}
@@ -409,7 +421,6 @@ public class FallService extends Service {
 			
 			startActivity(myIntent);
 			
-
 		}// run()
 
 	} // FallRecognizedThread
@@ -463,7 +474,7 @@ public class FallService extends Service {
 
 		}// run()
 
-	} // FallRecognizedThread
+	} // findLocationThread
 	
 	/**
 	 * This thread handles location updates

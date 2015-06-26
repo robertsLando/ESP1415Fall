@@ -24,7 +24,7 @@ public final class FallDB {
 		 * location TEXT NOT NULL,
 		 * dateF DATETIME NOT NULL,
 		 * sessionID INTEGER NOT NULL,
-		 * FOREIGN KEY(sessionID) REFERENCES session(_id))*/
+		 * FOREIGN KEY(sessionID) REFERENCES session(_id) ON DELETE CASCADE)*/
 		
 		/*Android documentation suggest on every place where you work with IO,
 		 *  use different thread for disk manipulation.I suggest you should use one
@@ -60,7 +60,7 @@ public final class FallDB {
 		//CONSTRAINT
 		private static final String PRIMARY_KEY = " PRIMARY KEY";
 		private static final String FOREIGN_KEY = " FOREIGN KEY(" + SESSIONID_COLUMN + ") REFERENCES " + SessionTable.SESSION_TABLE 
-				+ "(" + SessionTable.ID_COLUMN + ")";
+				+ "(" + SessionTable.ID_COLUMN + ") ON DELETE CASCADE";
 
 		
 		

@@ -23,7 +23,7 @@ public final class FallDataDB {
 		 timeX DATETIME NOT NULL,
 		 accelerationY FLOAT NOT NULL,
 		 fallID INTEGER NOT NULL, 
-		 FOREIGN KEY(fallID) REFERENCES fall(_id));
+		 FOREIGN KEY(fallID) REFERENCES fall(_id) ON DELETE CASCADE);
 		*/
 		
 		
@@ -44,7 +44,7 @@ public final class FallDataDB {
 		//CONSTRAINT
 		private static final String PRIMARY_KEY = " PRIMARY KEY";
 		private static final String FOREIGN_KEY = " FOREIGN KEY(" + FALLID_COLUMN + ") REFERENCES " + FallTable.FALL_TABLE 
-													+ "(" + FallTable.ID_COLUMN + ")";
+													+ "(" + FallTable.ID_COLUMN + ") ON DELETE CASCADE";
 		
 		
 		//FOREIGN KEY(customer_id) REFERENCES customers(id)

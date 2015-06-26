@@ -23,8 +23,8 @@ public final class ReportedToDB {
 		 * fallID INTEGER NOT NULL,
 		 * helperID TEXT NOT NULL,
 		 * PRIMARY KEY (fallID,helperID),
-		 * FOREIGN KEY(fallID) REFERENCES fall(_id),
-		 * FOREIGN KEY(helperID) REFERENCES helper(email));*/
+		 * FOREIGN KEY(fallID) REFERENCES fall(_id) ON DELETE CASCADE,
+		 * FOREIGN KEY(helperID) REFERENCES helper(email) ON DELETE CASCADE);*/
 		
 		
 		public static final String FALLID_COLUMN = "fallID";
@@ -42,9 +42,9 @@ public final class ReportedToDB {
 		//CONSTRAINT
 		private static final String PRIMARY_KEY = "PRIMARY KEY (" + FALLID_COLUMN + "," + HELPERID_COLUMN + ")";
 		private static final String FOREIGN_KEYFALL = "FOREIGN KEY(" + FALLID_COLUMN + ") REFERENCES " + FallTable.FALL_TABLE 
-													+ "(" + FallTable.ID_COLUMN + ")";
+													+ "(" + FallTable.ID_COLUMN + ") ON DELETE CASCADE";
 		private static final String FOREIGN_HELPER = "FOREIGN KEY(" + HELPERID_COLUMN + ") REFERENCES " + HelperTable.HELPER_TABLE 
-				+ "(" + HelperTable.EMAIL_COLUMN + ")";
+				+ "(" + HelperTable.EMAIL_COLUMN + ") ON DELETE CASCADE";
 		
 		
 		//FOREIGN KEY(customer_id) REFERENCES customers(id)
