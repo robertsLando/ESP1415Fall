@@ -29,6 +29,7 @@ import android.os.SystemClock;
 public class FallService extends Service {
 
 	private static String LOG_TAG = "BoundService";
+	public static final String FALLSERVICE = "unipd.dei.ESP1415.falldetector.FallService";
 	private IBinder mBinder = new MyBinder();
 
 	private long elapsedMillis;
@@ -107,6 +108,7 @@ public class FallService extends Service {
 
 		startTime = SystemClock.uptimeMillis();
 		pauseTime = 0;
+		sessionID = -1;
 
 		isCreated = true;
 
@@ -133,10 +135,12 @@ public class FallService extends Service {
 		System.out.println("Fall service OnStartCommand received start id "
 				+ startId + ": " + intent);
 
-
-		DbManager databaseManager = new DbManager(getApplicationContext());
-
-		sessionID = databaseManager.getRunningSessionID();
+		if(sessionID == -1)
+		{
+			DbManager databaseManager = new DbManager(getApplicationContext());
+	
+			sessionID = databaseManager.getRunningSessionID();
+		}
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
 		return START_STICKY;
