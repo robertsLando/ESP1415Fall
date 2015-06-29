@@ -247,7 +247,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 									activity.unbindService(mServiceConnection);
 
 								if (isFallServiceRunning()) {
-									Intent intent = new Intent(FallService.FALLSERVICE);
+									Intent intent = new Intent(v.getContext(),FallService.class);
 									activity.stopService(intent);
 								}
 							}
@@ -346,7 +346,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							isRunning = false;
 
 							// stop the service
-							Intent intent = new Intent(FallService.FALLSERVICE);
+							Intent intent = new Intent(v.getContext(),FallService.class);
 							activity.stopService(intent);
 
 							databaseManager = new DbManager(v.getContext());
@@ -537,7 +537,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			mServiceConnection = new MyServiceConnection(ses, holder, c,
 					position);
 
-			Intent intent = new Intent(FallService.FALLSERVICE);
+			Intent intent = new Intent(c,FallService.class);
 
 			if (!isFallServiceRunning()) {
 				// start the service
