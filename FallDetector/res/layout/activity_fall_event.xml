@@ -17,6 +17,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
             android:contentDescription="Thumbnail Image"
             android:src="@drawable/ic_fall" />
 
@@ -46,6 +47,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
             android:text="@string/whenFallHappens"
             android:textColor="#FFFF4444"
             android:textStyle="bold" />
@@ -56,6 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_marginLeft="5dp"
             android:layout_below="@+id/when"
             android:layout_marginTop="5dp"
             android:text="@string/fallDate"
@@ -68,7 +71,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/when"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/date"
@@ -83,6 +86,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/date"
             android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
             android:text="@string/fallTime"
             android:textStyle="bold" />
 
@@ -93,7 +97,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/day"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/time"
@@ -106,6 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/time"
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
             android:text="@string/fallLocation"
             android:textColor="#FFFF4444"
             android:textStyle="bold" />
@@ -118,6 +123,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/location"
             android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
             android:text="@string/fallLatitude"
             android:textStyle="bold" />
 
@@ -128,7 +134,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/location"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/latitude"
@@ -143,6 +149,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/latitude"
             android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
             android:text="@string/fallLongitude"
             android:textStyle="bold" />
 
@@ -153,7 +160,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/latitudeCoordinates"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/longitude"
@@ -162,9 +169,27 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
+         
+        <TextView
+            android:id="@+id/graph"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:text="@string/acc_graph"
+            android:textColor="#FF5722"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/accelerometer_graph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="25dp" />
+        
     </LinearLayout>
 
 </LinearLayout>

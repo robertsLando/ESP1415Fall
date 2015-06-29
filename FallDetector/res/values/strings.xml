@@ -72,5 +72,6 @@
     <string name="Sbj">Subject</string>
     <string name="Title">Email Sender</string>
     <string name="sendBtn">Send</string>
+    <string name="acc_graph">Accelerometer Data Graph</string>
 
 </resources>
