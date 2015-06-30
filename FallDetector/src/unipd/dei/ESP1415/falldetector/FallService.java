@@ -32,6 +32,7 @@ public class FallService extends Service {
 	public static final String FALLSERVICE = "unipd.dei.ESP1415.falldetector.FallService";
 	private IBinder mBinder = new MyBinder();
 
+	private aData accData;
 	private long elapsedMillis;
 	private long pauseTime;
 	private long startTime;
@@ -74,6 +75,9 @@ public class FallService extends Service {
 				ax = event.values[0];
 				ay = event.values[1];
 				az = event.values[2];
+				accData.setX(ax);
+				accData.setY(ay);
+				accData.setZ(az);
 				AddData(ax, ay, az);
 				posture_recognition(window, ay);
 				fall_recognition(window);
@@ -181,6 +185,10 @@ public class FallService extends Service {
 		isCreated = false;
 		locationManager.removeUpdates(locationListener);
 		System.out.println("Fall service destroyed");
+	}
+	
+	public aData getAData(){
+		return accData;
 	}
 
 	public long getTimestamp() {
@@ -428,7 +436,37 @@ public class FallService extends Service {
 		}// run()
 
 	} // FallRecognizedThread
-
+	
+	/**
+	 * Class for acceleration Data type
+	 * @author thomasGagliardi
+	 */
+	public class aData{
+		
+		double x;
+		double y;
+		double z;
+		
+		public aData(){
+			this.x = 0;
+			this.y = 0;
+			this.z = 0;
+		}
+		
+		public void setX(double x)
+		{
+			this.x = x;
+		}
+		public void setY(double y)
+		{
+			this.y = y;
+		}
+		public void setZ(double z)
+		{
+			this.z = z;
+		}
+		
+	}
 	/**
 	 * This thread fix the location every 2 minutes
 	 * @author daniellando
