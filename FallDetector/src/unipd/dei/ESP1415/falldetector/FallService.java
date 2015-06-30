@@ -6,14 +6,13 @@ import java.util.Locale;
 
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -39,6 +38,7 @@ public class FallService extends Service {
 	private static boolean isCreated = false;
 	private Thread chronoThread;
 	private static int sessionID;
+	
 
 	// thomasgagliardi
 	private double a_norm;
@@ -116,10 +116,15 @@ public class FallService extends Service {
 		locationThread.setName("Find location Thread");
 
 		// thomasgagliardi
+		//federico---->use the rate that the user will
+		SharedPreferences prefs = this.getSharedPreferences("Settings", Context.MODE_PRIVATE);
+		String rate = prefs.getString("accelerometer_settings", "3");
+		int mode = Integer.parseInt(rate);
+		
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sensorManager.registerListener(sensorListener,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-				SensorManager.SENSOR_DELAY_UI);
+				mode);
 		initialize();
 
 		// initialize the GPS

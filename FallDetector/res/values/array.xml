@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="sensorRateValue">
-        <item >SENSOR_DELAY_FASTEST</item>
-        <item >SENSOR_DELAY_GAME</item>
-        <item >SENSOR_DELAY_NORMAL</item>
-        <item >SENSOR_DELAY_UI</item>
-    </string-array>
     <string-array name="sensorRate">
         <item >Fast</item>
         <item >Game</item>
@@ -33,6 +27,12 @@
         <item >High</item>
     </string-array>
     <string-array name="empty_array">
+    </string-array>
+    <string-array name="sensorRateValue">
+        <item >0x00000000</item>
+        <item >0x00000001</item>
+        <item >0x00000003</item>
+        <item >0x00000002</item>
     </string-array>
     
 </resources>
