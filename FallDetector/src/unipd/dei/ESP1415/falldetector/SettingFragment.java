@@ -3,19 +3,19 @@ package unipd.dei.ESP1415.falldetector;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 public class SettingFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
 	SharedPreferences.OnSharedPreferenceChangeListener mListener;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// carico le preference che avevo fatto nella file xml nella cartella
-		// res/xml
+		// upload of the preference layout
 		addPreferencesFromResource(R.xml.preferences);
-
 		
 		mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
 			public void onSharedPreferenceChanged(SharedPreferences shared_prefs, String key) {
@@ -34,6 +34,8 @@ public class SettingFragment extends PreferenceFragment implements OnSharedPrefe
 				}
 			}
 		};
+		
+		
 	}
 
 	@Override
