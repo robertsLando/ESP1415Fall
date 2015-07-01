@@ -20,7 +20,6 @@ public class SettingFragment extends PreferenceFragment implements OnSharedPrefe
 		mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
 			public void onSharedPreferenceChanged(SharedPreferences shared_prefs, String key) {
 				// listener implementation
-				System.out.println("test1");
 				if (key.equals("contact_list_add")) {
 					Preference pref = findPreference("contact_list_management_2");
 					if (pref instanceof CustomMultiSelectListPreference) {
@@ -56,7 +55,6 @@ public class SettingFragment extends PreferenceFragment implements OnSharedPrefe
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		// TODO Auto-generated method stub
-    	System.out.println("test2");
 
 	}
 }

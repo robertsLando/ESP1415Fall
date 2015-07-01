@@ -36,7 +36,7 @@ public class CustomMultiSelectListPreference extends MultiSelectListPreference {
         dynamicEntryValuesProviderName = typedArray.getString(R.styleable.CustomListPreference_dynamicEntryValuesProvider);
         selectAllValuesByDefault = typedArray.getBoolean(R.styleable.CustomListPreference_selectAllValuesByDefault, false);
         typedArray.recycle();
-        System.out.println("construttore1!!!");
+      
 
         if (dynamicEntriesProviderName != null && dynamicEntryValuesProviderName != null) {
         	updateEntriesAndValues(context);
