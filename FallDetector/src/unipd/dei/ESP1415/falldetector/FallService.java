@@ -4,17 +4,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.logging.Log;
-
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -33,6 +32,7 @@ public class FallService extends Service {
 	public static final String FALLSERVICE = "unipd.dei.ESP1415.falldetector.FallService";
 	private IBinder mBinder = new MyBinder();
 
+	private aData accData;
 	private long elapsedMillis;
 	private long pauseTime;
 	private long startTime;
@@ -40,7 +40,6 @@ public class FallService extends Service {
 	private static boolean isCreated = false;
 	private Thread chronoThread;
 	private static int sessionID;
-	
 
 	// thomasgagliardi
 	private double a_norm;
@@ -76,6 +75,9 @@ public class FallService extends Service {
 				ax = event.values[0];
 				ay = event.values[1];
 				az = event.values[2];
+				accData.setX(ax);
+				accData.setY(ay);
+				accData.setZ(az);
 				AddData(ax, ay, az);
 				posture_recognition(window, ay);
 				fall_recognition(window);
@@ -118,20 +120,12 @@ public class FallService extends Service {
 		locationThread.setName("Find location Thread");
 
 		// thomasgagliardi
-		/*//federico---->use the rate that the user will
-		SharedPreferences prefs = this.getSharedPreferences("Settings", Context.MODE_PRIVATE);
-		String rate = prefs.getString("accelerometer_settings", "");
-	    System.out.println(rate);
-		int mode = Integer.parseInt(rate);*/
-		
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sensorManager.registerListener(sensorListener,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-				SensorManager.SENSOR_DELAY_NORMAL);
+				SensorManager.SENSOR_DELAY_UI);
 		initialize();
-        
-		//end 
-		
+
 		// initialize the GPS
 		locationManager = (LocationManager) getApplicationContext()
 				.getSystemService(Context.LOCATION_SERVICE);
@@ -191,6 +185,10 @@ public class FallService extends Service {
 		isCreated = false;
 		locationManager.removeUpdates(locationListener);
 		System.out.println("Fall service destroyed");
+	}
+	
+	public aData getAData(){
+		return accData;
 	}
 
 	public long getTimestamp() {
@@ -438,7 +436,37 @@ public class FallService extends Service {
 		}// run()
 
 	} // FallRecognizedThread
-
+	
+	/**
+	 * Class for acceleration Data type
+	 * @author thomasGagliardi
+	 */
+	public class aData{
+		
+		double x;
+		double y;
+		double z;
+		
+		public aData(){
+			this.x = 0;
+			this.y = 0;
+			this.z = 0;
+		}
+		
+		public void setX(double x)
+		{
+			this.x = x;
+		}
+		public void setY(double y)
+		{
+			this.y = y;
+		}
+		public void setZ(double z)
+		{
+			this.z = z;
+		}
+		
+	}
 	/**
 	 * This thread fix the location every 2 minutes
 	 * @author daniellando
