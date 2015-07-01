@@ -11,22 +11,22 @@ import android.view.View;
 public class ChartXY extends View {
 
 	private Paint mPaint;
-	private float[] xvalues,yvalues;
+	private float[] xValues,yValues;
 	private float maxx,maxy,minx,miny,locxAxis,locyAxis;
-	private int vectorLength;
+	private int mArrayLength;
 	private int axes = 1;
 	
 	//constructor
-	public ChartXY(Context context, float[] xvalues, float[] yvalues, int axes) {
+	public ChartXY(Context context, float[] xValues, float[] yValues, int axes) {
 		super(context);
 		//we pass the arays
-		this.xvalues=xvalues;
-		this.yvalues=yvalues;
+		this.xValues=xValues;
+		this.yValues=yValues;
 		this.axes=axes;
-		vectorLength = xvalues.length;
+		mArrayLength = xValues.length;
 		mPaint = new Paint();
         
-	    getAxes(xvalues, yvalues);
+	    getAxes(xValues, yValues);
 		
 	}
 
@@ -38,8 +38,8 @@ public class ChartXY extends View {
 		float canvasWidth = getWidth();
 		
 		//we have to transform all the values in pixel (we have to layer the graph)
-		int[] xvaluesInPixels = toPixel(canvasWidth, minx, maxx, xvalues); 
-		int[] yvaluesInPixels = toPixel(canvasHeight, miny, maxy, yvalues);
+		int[] xValuesInPixels = toPixel(canvasWidth, minx, maxx, xValues); 
+		int[] yValuesInPixels = toPixel(canvasHeight, miny, maxy, yValues);
 		int locxAxisInPixels = toPixelInt(canvasHeight, miny, maxy, locxAxis);
 		int locyAxisInPixels = toPixelInt(canvasWidth, minx, maxx, locyAxis);
 		//description of the axis
@@ -48,11 +48,11 @@ public class ChartXY extends View {
 
 		mPaint.setStrokeWidth(2);
 		canvas.drawARGB(255, 255, 255, 255);
-		for (int i = 0; i < vectorLength-1; i++) {
+		for (int i = 0; i < mArrayLength-1; i++) {
 			//now we draw our graph---->using the data from database
 			mPaint.setColor(Color.RED);
 			//drawLine (float startX, float startY, float stopX, float stopY, Paint mPaint)
-			canvas.drawLine(xvaluesInPixels[i],canvasHeight-yvaluesInPixels[i],xvaluesInPixels[i+1],canvasHeight-yvaluesInPixels[i+1],mPaint);
+			canvas.drawLine(xValuesInPixels[i],canvasHeight-yValuesInPixels[i],xValuesInPixels[i+1],canvasHeight-yValuesInPixels[i+1],mPaint);
 		}
 		
 		mPaint.setColor(Color.BLACK);
@@ -91,7 +91,7 @@ public class ChartXY extends View {
 		
 	}
 	
-	//function to transfor our array of float in pixel
+	//function to transform our array of float in pixel
 	private int[] toPixel(float pixels, float min, float max, float[] value) {
 		
 		double[] p = new double[value.length];
@@ -106,13 +106,13 @@ public class ChartXY extends View {
 	}
 	
 	//we control all our value and we set the axis in a good way
-	private void getAxes(float[] xvalues, float[] yvalues) {
+	private void getAxes(float[] xValues, float[] yValues) {
 		
 		//we need the max and the min value of x and y
-		minx=getMin(xvalues);
-		miny=getMin(yvalues);
-		maxx=getMax(xvalues);
-		maxy=getMax(yvalues);
+		minx=getMin(xValues);
+		miny=getMin(yValues);
+		maxx=getMax(xValues);
+		maxy=getMax(yValues);
 		
 		if (minx>=0)
 			locyAxis=minx;
