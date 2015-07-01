@@ -33,7 +33,7 @@ public class FallService extends Service {
 	public static final String FALLSERVICE = "unipd.dei.ESP1415.falldetector.FallService";
 	private IBinder mBinder = new MyBinder();
 
-	private aData accData;
+	private aData accData = new aData();
 	private long elapsedMillis;
 	private long pauseTime;
 	private long startTime;
@@ -60,6 +60,7 @@ public class FallService extends Service {
 	private Location mLocation;
 	private Thread fallDetected = new Thread(new FallRecognizedThread());
 	private Thread locationThread = new Thread(new FindLocationThread());
+	private double ax, ay, az;
 	
 	private SensorEventListener sensorListener = new SensorEventListener() {
 		
@@ -70,15 +71,15 @@ public class FallService extends Service {
 		@SuppressLint("ParserError")
 		@Override
 		public void onSensorChanged(SensorEvent event) {
-			double ax, ay, az;
+			//double ax, ay, az;
 
 			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 				ax = event.values[0];
 				ay = event.values[1];
 				az = event.values[2];
-				accData.setX(ax);
+				/*accData.setX(ax);
 				accData.setY(ay);
-				accData.setZ(az);
+				accData.setZ(az);*/
 				AddData(ax, ay, az);
 				posture_recognition(window, ay);
 				fall_recognition(window);
@@ -196,6 +197,9 @@ public class FallService extends Service {
 	}
 	
 	public aData getAData(){
+		accData.setX(ax);
+		accData.setY(ay);
+		accData.setZ(az);
 		return accData;
 	}
 
