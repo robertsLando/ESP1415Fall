@@ -121,6 +121,13 @@ public class FallService extends Service {
 		locationThread.setName("Find location Thread");
 
 		// thomasgagliardi
+		
+		/*//federico---->use the rate that the user will
+		SharedPreferences prefs = this.getSharedPreferences("Settings", Context.MODE_PRIVATE);
+		String rate = prefs.getString("accelerometer_settings", "");
+	    System.out.println(rate);
+		int mode = Integer.parseInt(rate);*/
+		
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sensorManager.registerListener(sensorListener,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
