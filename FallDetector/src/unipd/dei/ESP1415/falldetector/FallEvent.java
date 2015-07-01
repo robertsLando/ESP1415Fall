@@ -47,6 +47,7 @@ public class FallEvent extends ActionBarActivity {
 		  *longitudeFall.setText(Utilities.getOnlyTime();
 		  */	
 		
+		//federico
 		//---------XY CHART--------
 		
         DbManager databaseManager = new DbManager(this);
