@@ -1,3 +1,4 @@
+
 package unipd.dei.ESP1415.falldetector;
 
 import java.util.Date;
@@ -6,13 +7,14 @@ import java.util.Locale;
 
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -24,9 +26,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.Toast;
 
 public class FallService extends Service {
 
@@ -130,17 +129,10 @@ public class FallService extends Service {
 	    System.out.println(rate);
 		int mode = Integer.parseInt(rate);*/
 		
-		SharedPreferences settings = 
-		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		String rate = settings.getString("accelerometer_settings", "3");
-	    System.out.println(rate);
-	    int mode = Integer.parseInt(rate);
-	   
-	    
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sensorManager.registerListener(sensorListener,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-				mode);
+				SensorManager.SENSOR_DELAY_UI);
 		initialize();
 
 		// initialize the GPS
@@ -169,7 +161,9 @@ public class FallService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-
+		boolean accSrv = intent.getBooleanExtra(GraphViewer.ACCSERVICE, false);
+		
+		if(!accSrv){
 		long sessionElapsed = intent
 				.getLongExtra(SessionViewAdapter.ELAPSED, 0);
 
@@ -179,6 +173,7 @@ public class FallService extends Service {
 		start(); // starts the chrono thread
 
 		System.out.println("Fall service onBind");
+		}
 
 		return mBinder;
 	}
