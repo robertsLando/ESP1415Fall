@@ -61,19 +61,15 @@ public class FallEvent extends ActionBarActivity {
 		float[] acc = new float[n];
 		//we fill our array
 		for(int i=0; i < n; i++, c.moveToNext()) {
-			millis[i]= i;//c.getLong(FallDataTable.TIMEX) / (float)1000;
+			millis[i]= i;//instead of c.getLong(FallDataTable.TIMEX) / (float)1000;
 			acc[i]= c.getFloat(FallDataTable.ACCELERATIONY);
 		}
 	
 		//start to create the xy chart which show the accelerometer data
 		LinearLayout image = (LinearLayout) findViewById(R.id.accelerometer_graph);
-//		image.setBackgroundResource(R.drawable.graph);
-		//empty bitmap where we draw our line
-		//public static Bitmap createBitmap (int width, int height, Bitmap.Config config)
-		
        
-		 
 	     ChartXY graph = new ChartXY(this, millis, acc, 1);
+	     //we add the graph, which is a view, to the Layout
 	     image.addView(graph);
 		 
 	}

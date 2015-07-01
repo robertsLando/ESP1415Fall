@@ -4,73 +4,94 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.View;
 
 
 public class ChartXY extends View {
 
-	private Paint paint;
+	private Paint mPaint;
 	private float[] xvalues,yvalues;
 	private float maxx,maxy,minx,miny,locxAxis,locyAxis;
 	private int vectorLength;
 	private int axes = 1;
 	
+	//constructor
 	public ChartXY(Context context, float[] xvalues, float[] yvalues, int axes) {
 		super(context);
+		//we pass the arays
 		this.xvalues=xvalues;
 		this.yvalues=yvalues;
 		this.axes=axes;
 		vectorLength = xvalues.length;
-		paint = new Paint();
-
-		getAxes(xvalues, yvalues);
+		mPaint = new Paint();
+        
+	    getAxes(xvalues, yvalues);
 		
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		
-		float canvasHeight = getHeight();
+		//from android documentation we know that height and width the pixel of the canvas 
+		float canvasHeight = getHeight(); //value in pixel
 		float canvasWidth = getWidth();
+		
+		//we have to transform all the values in pixel (we have to layer the graph)
 		int[] xvaluesInPixels = toPixel(canvasWidth, minx, maxx, xvalues); 
 		int[] yvaluesInPixels = toPixel(canvasHeight, miny, maxy, yvalues);
 		int locxAxisInPixels = toPixelInt(canvasHeight, miny, maxy, locxAxis);
 		int locyAxisInPixels = toPixelInt(canvasWidth, minx, maxx, locyAxis);
-		String xAxis = "x-axis";
-		String yAxis = "y-axis";
+		//description of the axis
+		String xAxis = "time";
+		String yAxis = "acceleration";
 
-		paint.setStrokeWidth(2);
+		mPaint.setStrokeWidth(2);
 		canvas.drawARGB(255, 255, 255, 255);
 		for (int i = 0; i < vectorLength-1; i++) {
-			paint.setColor(Color.RED);
-			canvas.drawLine(xvaluesInPixels[i],canvasHeight-yvaluesInPixels[i],xvaluesInPixels[i+1],canvasHeight-yvaluesInPixels[i+1],paint);
+			//now we draw our graph---->using the data from database
+			mPaint.setColor(Color.RED);
+			//drawLine (float startX, float startY, float stopX, float stopY, Paint mPaint)
+			canvas.drawLine(xvaluesInPixels[i],canvasHeight-yvaluesInPixels[i],xvaluesInPixels[i+1],canvasHeight-yvaluesInPixels[i+1],mPaint);
 		}
 		
-		paint.setColor(Color.BLACK);
-		canvas.drawLine(0,canvasHeight-locxAxisInPixels,canvasWidth,canvasHeight-locxAxisInPixels,paint);
-		canvas.drawLine(locyAxisInPixels,0,locyAxisInPixels,canvasHeight,paint);
+		mPaint.setColor(Color.BLACK);
+		//we draw the x and y axis
+		//FROM ANDROID DOCUMENTATION
+		//public void drawLine (float startX, float startY, float stopX, float stopY, Paint mPaint)
+		canvas.drawLine(0,canvasHeight-locxAxisInPixels,canvasWidth,canvasHeight-locxAxisInPixels,mPaint);
+		canvas.drawLine(locyAxisInPixels,0,locyAxisInPixels,canvasHeight,mPaint);
 		
-		//Automatic axes markings, modify n to control the number of axes labels
+		//n controls the number of axes labels
 		if (axes!=0){
 			float temp = 0.0f;
-			int n=3;
-			paint.setTextAlign(Paint.Align.CENTER);
-			paint.setTextSize(20.0f);
+			int n=10;
+			mPaint.setTextAlign(Paint.Align.CENTER);
+			mPaint.setTextSize(15.0f);
 			for (int i=1;i<=n;i++){
+				//FROM ANDROID DOCUMENTATION
+				//public void drawText (String text, float x, float y, Paint mPaint)
 				temp = Math.round(10*(minx+(i-1)*(maxx-minx)/n))/10;
-				canvas.drawText(""+temp, (float)toPixelInt(canvasWidth, minx, maxx, temp),canvasHeight-locxAxisInPixels+20, paint);
+				canvas.drawText(""+temp, (float)toPixelInt(canvasWidth, minx, maxx, temp),canvasHeight-locxAxisInPixels+20, mPaint);
 				temp = Math.round(10*(miny+(i-1)*(maxy-miny)/n))/10;
-				canvas.drawText(""+temp, locyAxisInPixels+20,canvasHeight-(float)toPixelInt(canvasHeight, miny, maxy, temp), paint);
+				canvas.drawText(""+temp, locyAxisInPixels+20,canvasHeight-(float)toPixelInt(canvasHeight, miny, maxy, temp), mPaint);
 			}
-			canvas.drawText(""+maxx, (float)toPixelInt(canvasWidth, minx, maxx, maxx),canvasHeight-locxAxisInPixels+20, paint);
-			canvas.drawText(""+maxy, locyAxisInPixels+20,canvasHeight-(float)toPixelInt(canvasHeight, miny, maxy, maxy), paint);
-			//canvas.drawText(xAxis, canvasWidth/2,canvasHeight-locxAxisInPixels+45, paint);
-			//canvas.drawText(yAxis, locyAxisInPixels-40,canvasHeight/2, paint);
+			//we write the max and the min value of our array
+			canvas.drawText(""+maxx, (float)toPixelInt(canvasWidth, minx, maxx, maxx),canvasHeight-locxAxisInPixels+20, mPaint);
+			canvas.drawText(""+maxy, locyAxisInPixels+20,canvasHeight-(float)toPixelInt(canvasHeight, miny, maxy, maxy), mPaint);
+			//now we have to write what the axis represent
+			mPaint.setTextSize(20.0f);
+			mPaint.setColor(Color.RED);
+			mPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+			canvas.drawText(xAxis, canvasWidth/2,canvasHeight-locxAxisInPixels+45, mPaint);
+			mPaint.setTextSize(16.0f);
+			canvas.drawText(yAxis, locyAxisInPixels-50,canvasHeight/2, mPaint);
 		}
 		
 		
 	}
 	
+	//function to transfor our array of float in pixel
 	private int[] toPixel(float pixels, float min, float max, float[] value) {
 		
 		double[] p = new double[value.length];
@@ -84,8 +105,10 @@ public class ChartXY extends View {
 		return (pint);
 	}
 	
+	//we control all our value and we set the axis in a good way
 	private void getAxes(float[] xvalues, float[] yvalues) {
 		
+		//we need the max and the min value of x and y
 		minx=getMin(xvalues);
 		miny=getMin(yvalues);
 		maxx=getMax(xvalues);
@@ -107,6 +130,7 @@ public class ChartXY extends View {
 		
 	}
 	
+	//function which transform only a float in pixel
 	private int toPixelInt(float pixels, float min, float max, float value) {
 		
 		double p;
@@ -115,7 +139,8 @@ public class ChartXY extends View {
 		pint = (int)p;
 		return (pint);
 	}
-
+    
+	//return the max value of the array
 	private float getMax(float[] v) {
 		float largest = v[0];
 		for (int i = 0; i < v.length; i++)
@@ -123,7 +148,8 @@ public class ChartXY extends View {
 				largest = v[i];
 		return largest;
 	}
-
+    
+	//return the min value of the array
 	private float getMin(float[] v) {
 		float smallest = v[0];
 		for (int i = 0; i < v.length; i++)
