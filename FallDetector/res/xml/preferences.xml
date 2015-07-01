@@ -6,7 +6,7 @@
         android:key="session_settings"
         android:title="@string/session_pref" >
         <ListPreference
-            android:defaultValue="SENSOR_DELAY_NORMAL"
+            android:defaultValue="3"
             android:entries="@array/sensorRate"
             android:entryValues="@array/sensorRateValue"
             android:key="accelerometer_settings"

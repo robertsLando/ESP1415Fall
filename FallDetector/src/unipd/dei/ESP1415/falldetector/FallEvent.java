@@ -76,7 +76,7 @@ public class FallEvent extends ActionBarActivity {
 			acc[i]= c.getFloat(FallDataTable.ACCELERATIONY);
 		}
 		
-		long startTime = millis[0]; //time in which we start the aquisition of datas
+		long startTime = millis[0]; //time in which we start the acquisition of datas
 		
 		
 	
@@ -85,7 +85,7 @@ public class FallEvent extends ActionBarActivity {
 		image.setBackgroundResource(R.drawable.graph);
 		//empty bitmap where we draw our line
 		//public static Bitmap createBitmap (int width, int height, Bitmap.Config config)
-		Bitmap mEmptyBmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+		Bitmap mEmptyBmap = Bitmap.createBitmap(1000, 100, Bitmap.Config.ARGB_8888);
 		
 		//the Bitmap is always required for a Canvas
 		Canvas mCanvas = new Canvas(mEmptyBmap);
@@ -99,7 +99,7 @@ public class FallEvent extends ActionBarActivity {
 		 Path mPath = new Path();
 		 mPath.moveTo(0, acc[0]);
 		 for(int r = 1; r< acc.length; r++) {		 
-			 mPath.lineTo((millis[r]-startTime)*100, acc[r]*100); //*100 to show the graph better
+			 mPath.lineTo((millis[r]-startTime), acc[r]*10); //*100 to show the graph better
 		 }
 		
 		 

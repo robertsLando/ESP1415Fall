@@ -34,7 +34,8 @@ public class FallDetectorPreferences extends PreferenceActivity {
 		
 	}
 	
-	/*protected void onStop(){
+	/*-------USELESS----
+	   protected void onStop(){
 		
 	    //on stop, when the settings are no longer visible we save all the value of the settings in SharedPreferences
 		//we call our preference by name
