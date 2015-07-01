@@ -7,16 +7,11 @@ import unipd.dei.ESP1415.falldetector.database.FallDataDB.FallDataTable;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class FallEvent extends ActionBarActivity {
@@ -54,58 +49,32 @@ public class FallEvent extends ActionBarActivity {
 		
 		//---------XY CHART--------
 		
-		//this is an array of acceleration data I create to see if my graph works
-		//I have to pick up the data from the database 
-		/*float[] prova = new float[50];
-	    for(int r = 0; r<50; r++)
-	    	prova[r]= (float) Math.random()*100;*/
-		
-		//array for the datas, we now that the buffer that we use have max size = 50
-		long[] millis = new long[50];
-		float[] acc = new float[50];
-		
-		DbManager databaseManager = new DbManager(this);
+        DbManager databaseManager = new DbManager(this);
 		
 		//now I use the accelerometer datas
 		Cursor c = databaseManager.getFallData(fallID);
-	
+		c.moveToFirst();
+		int n = c.getCount();
+		
+		float[] millis = new float[n];
+		float[] acc = new float[n];
 		//we fill our array
-		int i;
-		for(i=0; c.moveToNext(); i++) {
-			millis[i]= c.getLong(FallDataTable.TIMEX);
+		for(int i=0; i < n; i++, c.moveToNext()) {
+			millis[i]= i;//c.getLong(FallDataTable.TIMEX) / (float)1000;
 			acc[i]= c.getFloat(FallDataTable.ACCELERATIONY);
 		}
-		
-		long startTime = millis[0]; //time in which we start the acquisition of datas
-		
-		
 	
 		//start to create the xy chart which show the accelerometer data
-		ImageView image = (ImageView) findViewById(R.id.accelerometer_graph);
-		image.setBackgroundResource(R.drawable.graph);
+		LinearLayout image = (LinearLayout) findViewById(R.id.accelerometer_graph);
+//		image.setBackgroundResource(R.drawable.graph);
 		//empty bitmap where we draw our line
 		//public static Bitmap createBitmap (int width, int height, Bitmap.Config config)
-		Bitmap mEmptyBmap = Bitmap.createBitmap(1000, 100, Bitmap.Config.ARGB_8888);
 		
-		//the Bitmap is always required for a Canvas
-		Canvas mCanvas = new Canvas(mEmptyBmap);
-		
-		//now we have to draw in our bitmap
-		
-		 Paint mPaint = new Paint();
-		 mPaint.setColor(Color.RED);
+       
 		 
-		 //create the path, using the data in the array
-		 Path mPath = new Path();
-		 mPath.moveTo(0, acc[0]);
-		 for(int r = 1; r< acc.length; r++) {		 
-			 mPath.lineTo((millis[r]-startTime), acc[r]*10); //*100 to show the graph better
-		 }
-		
+	     ChartXY graph = new ChartXY(this, millis, acc, 1);
+	     image.addView(graph);
 		 
-		 mCanvas.drawPath(mPath, mPaint);
-        
-		 image.setImageBitmap(mEmptyBmap);
 	}
 
 	@Override
