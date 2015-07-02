@@ -233,8 +233,8 @@ public class DbManager {
 
 		db = dbHelper.getWritableDatabase();
 		db.delete(FallTable.FALL_TABLE,
-				FallTable.SESSIONID_COLUMN + " = " + ID, null);
-		return db.delete(SessionTable.SESSION_TABLE, SessionTable.ID_COLUMN
+				 FallTable.SESSIONID_COLUMN + " = " + ID, null);
+		return db.delete(SessionTable.SESSION_TABLE, SessionTable.SESSION_TABLE + "."+SessionTable.ID_COLUMN
 				+ " = " + ID, null);
 	}
 
