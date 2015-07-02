@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import android.R;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;

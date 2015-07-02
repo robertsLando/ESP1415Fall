@@ -1,5 +1,6 @@
 package unipd.dei.ESP1415.falldetector;
 
+import android.R;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.NotificationManager;

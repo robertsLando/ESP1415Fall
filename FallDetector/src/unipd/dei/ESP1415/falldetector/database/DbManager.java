@@ -7,7 +7,6 @@ import unipd.dei.ESP1415.falldetector.Fall;
 import unipd.dei.ESP1415.falldetector.FallData;
 import unipd.dei.ESP1415.falldetector.Helper;
 import unipd.dei.ESP1415.falldetector.Session;
-import unipd.dei.ESP1415.falldetector.SessionViewAdapter;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
 import unipd.dei.ESP1415.falldetector.database.HelperDB.HelperTable;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
@@ -532,19 +531,21 @@ public class DbManager {
 	}
 	
 	 /**
-	 * Gets acceleration data of given Fall
+	 * Get the sesison of given Id
 	 * 
-	 * @return A Cursor 
+	 * @return A Cursor
 	 */
-	/*  INUTILE
-	public Cursor getAccelearation(long fId) {
-		
-		final String query = "SELECT " + FallDataDB.FallDataTable.ACCELERATIONY + "FROM "
-		       + FallDataDB.FallDataTable.FALLDATA_TABLE + " WHERE "
-		       + FallDataDB.FallDataTable.FALLID_COLUMN + " =" + fId;
-		
-        Cursor c = db.rawQuery(query, null);
-		
-		return c;
-	} */
+     public Cursor getSessionById(long sId){
+    	 
+    	 final String query = "SELECT * " + "FROM "
+ 				+ SessionDB.SessionTable.SESSION_TABLE + " WHERE "
+ 				+ SessionDB.SessionTable.ID_COLUMN + " =" + sId;
+    	 
+        db = dbHelper.getReadableDatabase();
+ 		
+ 		Cursor c = db.rawQuery(query, null);
+ 	    
+ 		return c;
+ 		
+     }
 }// class: dbManager

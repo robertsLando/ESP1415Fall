@@ -1,10 +1,10 @@
 package unipd.dei.ESP1415.falldetector;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
+import android.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +23,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {

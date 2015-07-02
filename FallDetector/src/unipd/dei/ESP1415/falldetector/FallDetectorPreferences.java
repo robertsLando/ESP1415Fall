@@ -1,8 +1,6 @@
 package unipd.dei.ESP1415.falldetector;
 
-import java.util.Set;
-
-import android.content.SharedPreferences;
+import android.R;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;

@@ -1,8 +1,8 @@
 package unipd.dei.ESP1415.falldetector;
 
-import android.content.Context;
-
 import java.util.List;
+
+import android.content.Context;
 
 
 public interface IDynamicProvider {
