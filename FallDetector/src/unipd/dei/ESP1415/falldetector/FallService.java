@@ -62,7 +62,7 @@ public class FallService extends Service {
 	private Thread locationThread = new Thread(new FindLocationThread());
 	private double ax, ay, az;
 	
-	int mode; //I use this variable to define the rate of the accelerometer---->the user chose it in the preference
+	private int mode; //I use this variable to define the rate of the accelerometer---->the user chose it in the preference
 	
 	private SensorEventListener sensorListener = new SensorEventListener() {
 		
@@ -239,6 +239,7 @@ public class FallService extends Service {
 					- (startTime + elapsedMillis);
 			start();
 			
+			//federico---->use the rate that the user will
 			SharedPreferences settings = 
 			        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 			String rate = settings.getString("accelerometer_settings", "3");
@@ -458,6 +459,7 @@ public class FallService extends Service {
 			
 			detected = false;
 			
+			//federico---->use the rate that the user will
 			SharedPreferences settings = 
 			        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 			String rate = settings.getString("accelerometer_settings", "3");
