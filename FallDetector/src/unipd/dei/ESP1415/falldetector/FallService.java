@@ -124,16 +124,12 @@ public class FallService extends Service {
 
 		// thomasgagliardi
 		
-		/*//federico---->use the rate that the user will
-		SharedPreferences prefs = this.getSharedPreferences("Settings", Context.MODE_PRIVATE);
-		String rate = prefs.getString("accelerometer_settings", "");
-	    System.out.println(rate);
-		int mode = Integer.parseInt(rate);*/
 		
+		//federico---->use the rate that the user will
 		SharedPreferences settings = 
 		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		String rate = settings.getString("accelerometer_settings", "3");
-	    System.out.println(rate);
+	    //System.out.println(rate); test
 	    int mode = Integer.parseInt(rate);
 	   
 	    

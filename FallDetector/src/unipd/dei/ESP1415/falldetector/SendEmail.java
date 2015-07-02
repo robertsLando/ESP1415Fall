@@ -1,14 +1,17 @@
 package unipd.dei.ESP1415.falldetector;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Intent;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -40,6 +43,23 @@ public class SendEmail extends Activity {
 		textCc = (EditText) findViewById(R.id.editTextCc);
 		textBcc = (EditText) findViewById(R.id.editTextBcc);
 
+		//federico--->use the contact that the user select
+	   /*ArrayList<String> to = new ArrayList<String>(); //we have to pass an arrayList in our Intent
+		
+		Set<String> def = new HashSet<String>();
+		def.add(""); //this is the default address---> no address
+		SharedPreferences settings = 
+		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		Set<String> receiver = settings.getStringSet("contact_list_management_2", def );
+		System.out.println(receiver.size());
+		while(receiver.iterator().hasNext()){
+			//System.out.println("casino qua--->  son qua");
+			System.out.println(receiver.iterator().next());
+			//to.add(receiver.iterator().next());
+		}
+		//test
+		for(int i = 0; i<to.size();i++)
+			 System.out.println(to.get(i));*/
 		
 		//Retrieving the addressee from the EditText field textTo
 		String to = "djsanco@hotmail.it";
@@ -49,7 +69,7 @@ public class SendEmail extends Activity {
 		String message = "Please HELP ME, I fell! \nTime: " + Utilities.getDate(new Date(newFall.getDatef())) + "\nLocation: " + newFall.getLocation();
 
 		Intent email = new Intent(Intent.ACTION_SEND);
-		email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
+		email.putExtra(Intent.EXTRA_EMAIL, new String[] {to});
 		email.putExtra(Intent.EXTRA_SUBJECT, subject);
 		email.putExtra(Intent.EXTRA_TEXT, message);
 
