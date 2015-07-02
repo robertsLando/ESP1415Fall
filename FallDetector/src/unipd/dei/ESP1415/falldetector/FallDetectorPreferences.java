@@ -10,9 +10,6 @@ import android.preference.PreferenceManager;
 
 public class FallDetectorPreferences extends PreferenceActivity {
 	
-	//I need this string to use SharedPreference in all activity of my application
-		public final static String SharedPrefName = "Settings";
-		
 		//we create a button to our preferences
 	    private ListPreference sampleRate;
 	    private ListPreference sessionDuration;
@@ -30,39 +27,8 @@ public class FallDetectorPreferences extends PreferenceActivity {
 		
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		
-		SharedPreferences prefs = getSharedPreferences(SharedPrefName, MODE_PRIVATE);
-		
 	}
 	
-	/*-------USELESS----
-	   protected void onStop(){
-		
-	    //on stop, when the settings are no longer visible we save all the value of the settings in SharedPreferences
-		//we call our preference by name
-		SharedPreferences prefs = getSharedPreferences(SharedPrefName, MODE_PRIVATE);
-		
-		//we need an Editor to edit the preference
-		SharedPreferences.Editor mPrefsEditor = prefs.edit();
-		//now we have to insert all the couple (key/value) of our preference
-		//for the first time we use default value
-		sampleRate = (ListPreference) findPreference("accelerometer_settings");
-		int rateValue = Integer.parseInt(sampleRate.getValue());
-		mPrefsEditor.putInt("accelerometer_settings", rateValue);
-		
-		sessionDuration = (ListPreference) findPreference("session_duration");
-		String sesDuration = sessionDuration.getValue();
-		mPrefsEditor.putString("session_duration", sesDuration);
-		
-		helper = (CustomMultiSelectListPreference) findPreference("contact_list_management_2");
-		Set<String> helperChecked = helper.getValues();
-		mPrefsEditor.putStringSet("contact_list_management_2", helperChecked);
-		
-		//we save all the value
-		mPrefsEditor.commit();
-		
-		
-		
-	}*/
 	
 	
 }
