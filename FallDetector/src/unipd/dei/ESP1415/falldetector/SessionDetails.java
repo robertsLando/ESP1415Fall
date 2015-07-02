@@ -3,13 +3,21 @@ package unipd.dei.ESP1415.falldetector;
 import java.util.ArrayList;
 import java.util.Date;
 
+import unipd.dei.ESP1415.falldetector.FallService.MyBinder;
+import unipd.dei.ESP1415.falldetector.FallService.aData;
+//import unipd.dei.ESP1415.falldetector.GraphViewer.AccRunner;
+//import unipd.dei.ESP1415.falldetector.GraphViewer.MyServiceConnection;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,18 +36,29 @@ public class SessionDetails extends ActionBarActivity{
 	private Activity activity; // the activity where the ListView is placed
 	public static Context sdContext;
 	ListView list;
+	public ScrollView scroll;
 	public ArrayList<Fall> fallList = new ArrayList<Fall>();
 	public FallViewAdapter adapter = null;
-
 	public static final String FALL = "fall";
-
 	private Session currentSession;
+	public View v;
+	private Context cont;
+	private aData data;
+	private FallService mService; // the instance of the service
+	public boolean mBound = false;
+	private boolean isRunning = false;
+	private Thread accThread;
+	private float wX[] = new float[20];
+	private float wY[] = new float[20];
+	private float wZ[] = new float[20];
+	String[] verlabels = new String[] { "10", "0", "-10" };
+	public static final String ACCSERVICE = "accservice";
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_session_details);
-
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 		//getSupportActionBar().setHomeAsUpIndicator(
@@ -75,11 +95,15 @@ public class SessionDetails extends ActionBarActivity{
 			@Override
 			public void onClick(View v){
 
-				Intent myIntent = new Intent(v.getContext(), GraphViewer.class);
-				startActivity(myIntent);
+				if(mBound)
+				{
+					isRunning = true;
+					accThread = new Thread(new AccRunner());
+					accThread.start();        	
+				}
 			}
 		});
-		
+
 		btnDelete.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -139,6 +163,30 @@ public class SessionDetails extends ActionBarActivity{
 
 	}
 
+	@Override
+	protected void onStart(){
+		super.onStart();
+		//*********************BIND TO THE SERVICE*********************/
+		Intent intent = new Intent(this, FallService.class);
+		intent.putExtra(ACCSERVICE, true);
+		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);		
+		//*************************END SERVICE*************************//
+	}
+
+	@Override
+	protected void onStop(){
+		super.onStop();
+		// Unbind from the service
+		if (mBound) {
+			isRunning = false;
+			unbindService(mConnection);
+			mBound = false;
+			if(accThread != null){
+				accThread.interrupt();
+				accThread = null;
+			}
+		}
+	}
 
 	public void onItemClick(int position, View v) {
 		/*Object clickedObj = parent.getItemAtPosition(position);
@@ -206,4 +254,70 @@ public class SessionDetails extends ActionBarActivity{
 		}
 
 	}
+
+
+	//SERVICE
+	private ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName className,
+				IBinder service) {
+			// We've bound to LocalService, cast the IBinder and get LocalService instance
+			MyBinder binder = (MyBinder) service;
+			mService = binder.getService();
+			mBound = true;
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName arg0) {
+			mBound = false;
+		}
+	};
+
+	private void addWindowsData(aData a)
+	{
+		int i;
+		for(i = (wX.length - 1); i>1; i--){
+			wX[i-1] = wX[i];
+			wY[i-1] = wY[i];
+			wZ[i-1] = wZ[i];
+		}
+		wX[i]= (float)a.x;
+		wY[i] = (float)a.y;
+		wZ[i] = (float)a.z;
+
+	}
+
+	/**
+	 * This class implements the Runnable class to manage the Accelerator of the
+	 * FallService with a thread that updates the accelerator data array
+	 * 
+	 * @author thomasgagliardi
+	 *
+	 */
+	private class AccRunner implements Runnable {
+
+		@Override
+		public void run() {
+			scroll = (ScrollView) findViewById(R.id.scrollView1);
+			while (isRunning) {
+				if(mBound) {
+					data = mService.getAData();
+					addWindowsData(data);
+					GraphView graphView = new GraphView(sdContext, wX, wY, wZ, "Session Graph",verlabels, GraphView.LINE);
+					scroll.addView(graphView);
+					//setContentView(graphView);
+
+				}// if bound
+				try {
+
+					Thread.sleep(500); // update every second
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}//end AccRunner
+
 }

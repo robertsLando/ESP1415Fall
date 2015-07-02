@@ -1,3 +1,4 @@
+
 package unipd.dei.ESP1415.falldetector;
 
 import java.util.Date;
@@ -25,8 +26,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.Toast;
 
 public class FallService extends Service {
 
@@ -41,7 +40,7 @@ public class FallService extends Service {
 	private boolean isRunning;
 	private static boolean isCreated = false;
 	private Thread chronoThread;
-	private static int sessionID;
+	private static long sessionID;
 
 	// thomasgagliardi
 	private double a_norm;
@@ -125,6 +124,7 @@ public class FallService extends Service {
 		// thomasgagliardi
 		
 		
+
 		//federico---->use the rate that the user will
 		SharedPreferences settings = 
 		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -136,7 +136,7 @@ public class FallService extends Service {
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sensorManager.registerListener(sensorListener,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-				mode);
+				SensorManager.SENSOR_DELAY_UI);
 		initialize();
 
 		// initialize the GPS
@@ -152,7 +152,10 @@ public class FallService extends Service {
 		System.out.println("Fall service OnStartCommand received start id "
 				+ startId + ": " + intent);
 
-		if(sessionID == -1)
+		if(intent != null)
+		sessionID = intent.getLongExtra(SessionViewAdapter.ID, -1);
+		
+		if(sessionID == -1 || sessionID == 0)
 		{
 			DbManager databaseManager = new DbManager(getApplicationContext());
 	
@@ -165,7 +168,9 @@ public class FallService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-
+		boolean accSrv = intent.getBooleanExtra(GraphViewer.ACCSERVICE, false);
+		
+		if(!accSrv){
 		long sessionElapsed = intent
 				.getLongExtra(SessionViewAdapter.ELAPSED, 0);
 
@@ -175,6 +180,7 @@ public class FallService extends Service {
 		start(); // starts the chrono thread
 
 		System.out.println("Fall service onBind");
+		}
 
 		return mBinder;
 	}
