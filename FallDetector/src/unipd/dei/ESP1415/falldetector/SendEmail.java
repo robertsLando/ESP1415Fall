@@ -3,6 +3,7 @@ package unipd.dei.ESP1415.falldetector;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import android.app.Activity;
@@ -44,32 +45,39 @@ public class SendEmail extends Activity {
 		textBcc = (EditText) findViewById(R.id.editTextBcc);
 
 		//federico--->use the contact that the user select
-	   /*ArrayList<String> to = new ArrayList<String>(); //we have to pass an arrayList in our Intent
-		
+	    //ArrayList<String> to = new ArrayList<String>(); //we have to pass an arrayList in our Intent
+ 	    String[] address;
 		Set<String> def = new HashSet<String>();
 		def.add(""); //this is the default address---> no address
 		SharedPreferences settings = 
 		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		Set<String> receiver = settings.getStringSet("contact_list_management_2", def );
-		System.out.println(receiver.size());
-		while(receiver.iterator().hasNext()){
-			//System.out.println("casino qua--->  son qua");
-			System.out.println(receiver.iterator().next());
-			//to.add(receiver.iterator().next());
+		//System.out.println("Il nostro set contiene  : " + receiver.size() + "indirizzi email"); //test to see how many address are in the Set<String>!
+		address = new String[receiver.size()];
+		int k = 0;
+		for(String s : receiver){
+			System.out.println(s); //test for control the address
+			//to.add(s);
+			address[k++]=s;
 		}
-		//test
-		for(int i = 0; i<to.size();i++)
-			 System.out.println(to.get(i));*/
+		
+		/*System.out.println("TEST 2");
+		System.out.println("Indirizzi salvati nell'array di stringhe");
+		for(int d =0; d<address.length;d++){
+			System.out.println(address[d]);
+		}*/
+		
+		
 		
 		//Retrieving the addressee from the EditText field textTo
-		String to = "djsanco@hotmail.it";
+		//String to = "djsanco@hotmail.it";
 		//Retrieving the mail's subject from the EditText field textSubject
 		String subject = "FALL DETECTED! HELP ME";
 		//Retrieving the mail's message from the EditText field textMessage
 		String message = "Please HELP ME, I fell! \nTime: " + Utilities.getDate(new Date(newFall.getDatef())) + "\nLocation: " + newFall.getLocation();
 
 		Intent email = new Intent(Intent.ACTION_SEND);
-		email.putExtra(Intent.EXTRA_EMAIL, new String[] {to});
+		email.putExtra(Intent.EXTRA_EMAIL, address);
 		email.putExtra(Intent.EXTRA_SUBJECT, subject);
 		email.putExtra(Intent.EXTRA_TEXT, message);
 
