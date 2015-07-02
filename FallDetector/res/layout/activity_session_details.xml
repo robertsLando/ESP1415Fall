@@ -45,6 +45,20 @@
             android:layout_marginRight="10dp"
             android:contentDescription="@string/btnGraphDsc"
             android:src="@drawable/graph_launcher" />
+       
+        <ImageView
+            android:id="@+id/showGraphButtonON"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:contentDescription="@string/btnGraphDsc"
+            android:src="@drawable/graph_launcher_on" 
+            android:visibility="gone"/>
+        
     </RelativeLayout>
 
     <RelativeLayout

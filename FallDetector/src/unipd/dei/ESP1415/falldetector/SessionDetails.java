@@ -61,6 +61,7 @@ public class SessionDetails extends ActionBarActivity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_session_details);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
@@ -88,24 +89,51 @@ public class SessionDetails extends ActionBarActivity{
 		ImageView image = (ImageView) findViewById(R.id.courrentSessionImage);
 		final ImageView btnEdit = (ImageView) findViewById(R.id.editButton);
 		final ImageView btnGraph = (ImageView) findViewById(R.id.showGraphButton);
+		final ImageView btnGraphON = (ImageView) findViewById(R.id.showGraphButtonON);
 		final ImageView btnDone = (ImageView) findViewById(R.id.doneButton);
 		final EditText newSessionName = (EditText) findViewById(R.id.newSessionName);
 		final Button btnDelete = (Button) findViewById(R.id.courrentSessionBtnDelete);
+		final TextView acc_x = (TextView) findViewById(R.id.accelerometer_data_x);
+		final TextView acc_y = (TextView) findViewById(R.id.accelerometer_data_y);
+		final TextView acc_z = (TextView) findViewById(R.id.accelerometer_data_z);
 
 		btnGraph.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v){
-
+				
+				btnGraph.setVisibility(v.GONE);
+				btnGraphON.setVisibility(v.VISIBLE);
 				if(mBound)
 				{
 					isRunning = true;
-					accThread = new Thread(new AccRunner());
+					accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
 					accThread.start();        	
 				}
+				acc_x.setVisibility(v.VISIBLE);
+				acc_y.setVisibility(v.VISIBLE);
+				acc_z.setVisibility(v.VISIBLE);
 			}
 		});
 
+		btnGraphON.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v){
+				
+				btnGraph.setVisibility(v.VISIBLE);
+				btnGraphON.setVisibility(v.GONE);
+				if(mBound)
+				{
+					isRunning = false;
+					accThread.interrupt();        	
+				}
+				acc_x.setVisibility(v.GONE);
+				acc_y.setVisibility(v.GONE);
+				acc_z.setVisibility(v.GONE);
+			}
+		});
+		
 		btnDelete.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -189,8 +217,8 @@ public class SessionDetails extends ActionBarActivity{
 			}
 		}
 	}
-	
-	/*@Override
+
+	@Override
 	protected void onPause(){
 		super.onPause();
 		// Unbind from the service
@@ -203,6 +231,28 @@ public class SessionDetails extends ActionBarActivity{
 				accThread = null;
 			}
 		}
+	}
+
+	
+	@Override
+	protected void onDestroy(){
+		super.onStop();
+		// Unbind from the service
+		if (mBound) {
+			isRunning = false;
+			unbindService(mConnection);
+			mBound = false;
+			if (accThread != null) {
+				accThread.interrupt();
+				accThread = null;
+			}
+		}
+	}
+	/**@Override
+	protected void onSaveInstanceState(Bundle savedInstanceState)
+	{
+		savedInstanceState.putBoolean("threadRunning", isRunning);
+		super.onSaveInstanceState(savedInstanceState); 
 	}*/
 
 	public void onItemClick(int position, View v) {
@@ -313,6 +363,17 @@ public class SessionDetails extends ActionBarActivity{
 	 *
 	 */
 	private class AccRunner implements Runnable {
+		
+		TextView acc_x;
+		TextView acc_y;
+		TextView acc_z;
+		
+		public AccRunner(TextView acc_x, TextView acc_y, TextView acc_z) {
+			this.acc_x = acc_x;
+			this.acc_y = acc_y;
+			this.acc_z = acc_z;
+
+		}
 
 		@Override
 		public void run() {
@@ -320,7 +381,7 @@ public class SessionDetails extends ActionBarActivity{
 			while (isRunning) {
 				if(mBound) {
 					activity.runOnUiThread( new Runnable() {
-						
+
 						@SuppressLint("ShowToast") @Override
 						public void run() {
 							// TODO Auto-generated method stub
@@ -329,43 +390,40 @@ public class SessionDetails extends ActionBarActivity{
 							int x = (int) Math.round(data.x);
 							acc_x.setMax(50);
 							acc_x.incrementProgressBy(x%50);*/
-							TextView acc_x = (TextView) findViewById(R.id.accelerometer_data_x);
 							double x = round(data.x,2);
 							acc_x.setText("X = " + x);
-							TextView acc_y = (TextView) findViewById(R.id.accelerometer_data_y);
 							double y = round(data.y,2);
 							acc_y.setText("Y = " + y);
-							TextView acc_z = (TextView) findViewById(R.id.accelerometer_data_z);
 							double z = round(data.z,2);
 							acc_z.setText("Z = " + z);
-//							addWindowsData(data);
-//							GraphView graphView = new GraphView(sdContext, wX,
-//									wY, wZ, "Session Graph", verlabels,
-//									GraphView.LINE);
-//							scroll.addView(graphView);
+							//							addWindowsData(data);
+							//							GraphView graphView = new GraphView(sdContext, wX,
+							//									wY, wZ, "Session Graph", verlabels,
+							//									GraphView.LINE);
+							//							scroll.addView(graphView);
 							// setContentView(graphView);
 						}
 					});
 				}
 
-				}// if bound
-				try {
+			}// if bound
+			try {
 
-					Thread.sleep(100); // update 
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				Thread.sleep(100); // update 
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+		}
 
 	}//end AccRunner
-	
-	public static double round(double value, int places) {
-	    if (places < 0) throw new IllegalArgumentException();
 
-	    long factor = (long) Math.pow(10, places);
-	    value = value * factor;
-	    long tmp = Math.round(value);
-	    return (double) tmp / factor;
+	public static double round(double value, int places) {
+		if (places < 0) throw new IllegalArgumentException();
+
+		long factor = (long) Math.pow(10, places);
+		value = value * factor;
+		long tmp = Math.round(value);
+		return (double) tmp / factor;
 	}
 
 }
