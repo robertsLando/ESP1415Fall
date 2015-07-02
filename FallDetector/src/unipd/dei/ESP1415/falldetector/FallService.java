@@ -281,6 +281,11 @@ public class FallService extends Service {
 
 		@Override
 		public void run() {
+			//I need the maximum duration
+			maxSessionDuration=getDuration();
+			//test
+			System.out.println("THE MAXIMUM DURATION IS: "+ maxSessionDuration);
+			
 			while (isRunning) {
 				
 				elapsedMillis = SystemClock.uptimeMillis() - startTime
