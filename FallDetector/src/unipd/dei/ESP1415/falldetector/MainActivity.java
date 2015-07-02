@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
-import android.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;

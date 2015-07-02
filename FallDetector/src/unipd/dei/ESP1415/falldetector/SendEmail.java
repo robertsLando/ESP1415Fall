@@ -3,8 +3,6 @@ package unipd.dei.ESP1415.falldetector;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import android.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;

@@ -9,7 +9,6 @@ import unipd.dei.ESP1415.falldetector.FallService.aData;
 //import unipd.dei.ESP1415.falldetector.GraphViewer.MyServiceConnection;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
-import android.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;

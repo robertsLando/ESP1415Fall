@@ -5,7 +5,6 @@ import java.util.Date;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.FallDataDB.FallDataTable;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
-import android.R;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;

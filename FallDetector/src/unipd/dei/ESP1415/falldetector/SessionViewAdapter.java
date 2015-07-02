@@ -5,7 +5,6 @@ import java.util.Date;
 
 import unipd.dei.ESP1415.falldetector.FallService.MyBinder;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
-import android.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
