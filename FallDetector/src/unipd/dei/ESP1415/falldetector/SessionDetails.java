@@ -9,6 +9,7 @@ import unipd.dei.ESP1415.falldetector.FallService.aData;
 //import unipd.dei.ESP1415.falldetector.GraphViewer.MyServiceConnection;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -27,7 +28,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,7 +66,7 @@ public class SessionDetails extends ActionBarActivity{
 		getSupportActionBar().setHomeButtonEnabled(true);
 		//getSupportActionBar().setHomeAsUpIndicator(
 		//		R.drawable.ic_action_remove_white);
-
+		activity = this;
 		sdContext = this.getBaseContext();	
 		Intent myIntent = getIntent();
 		currentSession = (Session) myIntent.getSerializableExtra(SessionViewAdapter.SESSION);
@@ -80,7 +83,6 @@ public class SessionDetails extends ActionBarActivity{
 
 		list = (ListView) findViewById(R.id.sessionListView);
 		list.setAdapter(adapter);
-
 		final TextView currentSessionName = (TextView) findViewById(R.id.CourrentSessionName);
 		TextView sessionStartDate = (TextView) findViewById(R.id.startDateTextView);
 		ImageView image = (ImageView) findViewById(R.id.courrentSessionImage);
@@ -181,12 +183,27 @@ public class SessionDetails extends ActionBarActivity{
 			isRunning = false;
 			unbindService(mConnection);
 			mBound = false;
-			if(accThread != null){
+			if (accThread != null) {
 				accThread.interrupt();
 				accThread = null;
 			}
 		}
 	}
+	
+	/*@Override
+	protected void onPause(){
+		super.onPause();
+		// Unbind from the service
+		if (mBound) {
+			isRunning = false;
+			unbindService(mConnection);
+			mBound = false;
+			if (accThread != null) {
+				accThread.interrupt();
+				accThread = null;
+			}
+		}
+	}*/
 
 	public void onItemClick(int position, View v) {
 		/*Object clickedObj = parent.getItemAtPosition(position);
@@ -299,25 +316,56 @@ public class SessionDetails extends ActionBarActivity{
 
 		@Override
 		public void run() {
-			scroll = (ScrollView) findViewById(R.id.scrollView1);
+
 			while (isRunning) {
 				if(mBound) {
-					data = mService.getAData();
-					addWindowsData(data);
-					GraphView graphView = new GraphView(sdContext, wX, wY, wZ, "Session Graph",verlabels, GraphView.LINE);
-					scroll.addView(graphView);
-					//setContentView(graphView);
+					activity.runOnUiThread( new Runnable() {
+						
+						@SuppressLint("ShowToast") @Override
+						public void run() {
+							// TODO Auto-generated method stub
+							data = mService.getAData();
+							/*SeekBar acc_x = (SeekBar) findViewById(R.id.accelerometer_data_x);
+							int x = (int) Math.round(data.x);
+							acc_x.setMax(50);
+							acc_x.incrementProgressBy(x%50);*/
+							TextView acc_x = (TextView) findViewById(R.id.accelerometer_data_x);
+							double x = round(data.x,2);
+							acc_x.setText("X = " + x);
+							TextView acc_y = (TextView) findViewById(R.id.accelerometer_data_y);
+							double y = round(data.y,2);
+							acc_y.setText("Y = " + y);
+							TextView acc_z = (TextView) findViewById(R.id.accelerometer_data_z);
+							double z = round(data.z,2);
+							acc_z.setText("Z = " + z);
+//							addWindowsData(data);
+//							GraphView graphView = new GraphView(sdContext, wX,
+//									wY, wZ, "Session Graph", verlabels,
+//									GraphView.LINE);
+//							scroll.addView(graphView);
+							// setContentView(graphView);
+						}
+					});
+				}
 
 				}// if bound
 				try {
 
-					Thread.sleep(500); // update every second
+					Thread.sleep(100); // update 
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-		}
 
 	}//end AccRunner
+	
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    long factor = (long) Math.pow(10, places);
+	    value = value * factor;
+	    long tmp = Math.round(value);
+	    return (double) tmp / factor;
+	}
 
 }

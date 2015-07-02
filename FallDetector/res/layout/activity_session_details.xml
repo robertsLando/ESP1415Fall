@@ -152,13 +152,58 @@
             android:id="@+id/courrentSessionBtStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/courrentSessionBtDelete"
+            android:layout_alignBaseline="@+id/courrentSessionBtnDelete"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:text="@string/Play"
             android:width="150dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/accelerometer_data_x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/accelerometer_data_y"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/accelerometer_data_x"
+            android:layout_toRightOf="@+id/accelerometer_data_x" />
+
+        <TextView
+            android:id="@+id/accelerometer_data_z"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/accelerometer_data_y"
+            android:layout_toRightOf="@+id/accelerometer_data_y" />
+
+        <!--
+             <SeekBar
+            android:id="@+id/accelerometer_data_x"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp" />
+        -->
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -171,23 +216,21 @@
             android:layout_height="match_parent" >
         </ListView>
     </RelativeLayout>
-    
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
-        <ScrollView
-            android:id="@+id/scrollView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+        <!--
+            <TextView 
+                android:id="@+id/accelerometer_data_y" 
+                android:layout_width="match_parent"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" >
-            </LinearLayout>
-        </ScrollView>
-        
+            <TextView
+                android:id="@+id/accelerometer_data_z"
+                android:layout_width="match_parent" />
+        -->
+
     </RelativeLayout>
 
 </LinearLayout>
