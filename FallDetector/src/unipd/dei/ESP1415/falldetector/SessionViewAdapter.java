@@ -244,7 +244,10 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 								// UNBIND and STOP service
 								if (mServiceBound)
+								{
+									mBoundService.stopSelf();
 									activity.unbindService(mServiceConnection);
+								}
 
 								if (isFallServiceRunning()) {
 									Intent intent = new Intent(v.getContext(),FallService.class);
@@ -338,6 +341,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 							// unbind the service
 							if (mServiceBound) {
+								mBoundService.stopSelf();
 								activity.unbindService(mServiceConnection);
 								mServiceBound = false;
 							}

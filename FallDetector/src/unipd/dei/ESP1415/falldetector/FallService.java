@@ -148,7 +148,10 @@ public class FallService extends Service {
 		System.out.println("Fall service OnStartCommand received start id "
 				+ startId + ": " + intent);
 
-		if(sessionID == -1)
+		if(intent != null)
+		sessionID = intent.getIntExtra(SessionViewAdapter.ID, -1);
+		
+		if(sessionID == -1 || sessionID == 0)
 		{
 			DbManager databaseManager = new DbManager(getApplicationContext());
 	

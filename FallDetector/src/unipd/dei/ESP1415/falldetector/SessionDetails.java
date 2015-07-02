@@ -181,8 +181,10 @@ public class SessionDetails extends ActionBarActivity{
 			isRunning = false;
 			unbindService(mConnection);
 			mBound = false;
-			accThread.interrupt();
-			accThread = null;
+			if(accThread != null){
+				accThread.interrupt();
+				accThread = null;
+			}
 		}
 	}
 
