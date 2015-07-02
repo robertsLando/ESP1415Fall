@@ -62,6 +62,8 @@ public class FallService extends Service {
 	private Thread locationThread = new Thread(new FindLocationThread());
 	private double ax, ay, az;
 	
+	int mode; //I use this variable to define the rate of the accelerometer---->the user chose it in the preference
+	
 	private SensorEventListener sensorListener = new SensorEventListener() {
 		
 		@Override
@@ -130,13 +132,13 @@ public class FallService extends Service {
 		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		String rate = settings.getString("accelerometer_settings", "3");
 	    //System.out.println(rate); test
-	    int mode = Integer.parseInt(rate);
+	    mode = Integer.parseInt(rate);
 	   
 	    
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sensorManager.registerListener(sensorListener,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-				SensorManager.SENSOR_DELAY_UI);
+				mode);
 		initialize();
 
 		// initialize the GPS
@@ -237,9 +239,15 @@ public class FallService extends Service {
 					- (startTime + elapsedMillis);
 			start();
 			
+			SharedPreferences settings = 
+			        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+			String rate = settings.getString("accelerometer_settings", "3");
+		    //System.out.println(rate); test
+		    mode = Integer.parseInt(rate);
+		   
 			sensorManager.registerListener(sensorListener,
 					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-					SensorManager.SENSOR_DELAY_UI);
+					mode);
 			locationThread = new Thread(new FindLocationThread());
 			locationThread.start();
 			
@@ -449,9 +457,16 @@ public class FallService extends Service {
 			myIntent.putExtra(FALL, fl);
 			
 			detected = false;
+			
+			SharedPreferences settings = 
+			        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+			String rate = settings.getString("accelerometer_settings", "3");
+		    //System.out.println(rate); test
+		    mode = Integer.parseInt(rate);
+		   
 			sensorManager.registerListener(sensorListener,
 					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-					SensorManager.SENSOR_DELAY_UI);
+					mode);
 			
 			startActivity(myIntent);
 			
