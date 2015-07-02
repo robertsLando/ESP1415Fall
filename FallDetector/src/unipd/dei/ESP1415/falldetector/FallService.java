@@ -63,6 +63,7 @@ public class FallService extends Service {
 	private double ax, ay, az;
 	
 	private int mode; //I use this variable to define the rate of the accelerometer---->the user chose it in the preference
+	private long maxSessionDuration; //I use this variable to define the maximum duration
 	
 	private SensorEventListener sensorListener = new SensorEventListener() {
 		
@@ -127,13 +128,14 @@ public class FallService extends Service {
 		
 		
 
-		//federico---->use the rate that the user will
+		/*//federico---->use the rate that the user will
 		SharedPreferences settings = 
 		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		String rate = settings.getString("accelerometer_settings", "3");
 	    //System.out.println(rate); test
-	    mode = Integer.parseInt(rate);
-	   
+	    mode = Integer.parseInt(rate);*/
+	   mode = getRate();
+	   System.out.println("IL MODE SCELTO IN ONCREATE E' " + mode);
 	    
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sensorManager.registerListener(sensorListener,
@@ -239,13 +241,16 @@ public class FallService extends Service {
 					- (startTime + elapsedMillis);
 			start();
 			
-			//federico---->use the rate that the user will
+			/*//federico---->use the rate that the user will
 			SharedPreferences settings = 
 			        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 			String rate = settings.getString("accelerometer_settings", "3");
 		    //System.out.println(rate); test
-		    mode = Integer.parseInt(rate);
+		    mode = Integer.parseInt(rate);*/
 		   
+			mode = getRate();
+			 System.out.println("IL MODE SCELTO IN RESUME E' " + mode);
+			
 			sensorManager.registerListener(sensorListener,
 					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 					mode);
@@ -277,7 +282,7 @@ public class FallService extends Service {
 		@Override
 		public void run() {
 			while (isRunning) {
-
+				
 				elapsedMillis = SystemClock.uptimeMillis() - startTime
 						- pauseTime;
 				try {
@@ -459,13 +464,15 @@ public class FallService extends Service {
 			
 			detected = false;
 			
-			//federico---->use the rate that the user will
+			/*//federico---->use the rate that the user will
 			SharedPreferences settings = 
 			        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 			String rate = settings.getString("accelerometer_settings", "3");
 		    //System.out.println(rate); test
-		    mode = Integer.parseInt(rate);
-		   
+		    mode = Integer.parseInt(rate);*/
+			 mode = getRate();
+			 System.out.println("IL MODE SCELTO I RUN E' " + mode);
+			 
 			sensorManager.registerListener(sensorListener,
 					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 					mode);
@@ -677,6 +684,34 @@ public class FallService extends Service {
 		}
 
 		return address;
+	}
+	
+	/**
+	 * This method is used to read the selected item in the preference for the rate
+	 * 
+ 	 * @return the value of accelerometer's rate
+	 */
+	private int getRate(){
+		//federico---->use the rate that the user will
+		SharedPreferences settings = 
+		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		String rate = settings.getString("accelerometer_settings", "3");
+	    //System.out.println(rate); test
+	    int rateInt = Integer.parseInt(rate);
+	    return rateInt;
+     
+	}
+	/**
+	 * This method is used to find the selected item for the maximum duration of the session
+	 * 
+	 * @return the value of the maximum duration
+	 */
+	private long getDuration() {
+		SharedPreferences settings = 
+		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		String duration = settings.getString("session_duration", "3600" );
+		long durationLong = Long.parseLong(duration);
+		return durationLong;
 	}
 
 }
