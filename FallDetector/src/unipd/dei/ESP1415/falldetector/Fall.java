@@ -14,7 +14,7 @@ public class Fall implements Serializable{
 	private long id;
 	private String location; 
 	private long datef; 
-	private int sessionID;
+	private long sessionID;
 	
 	public long getId() {
 		return id;
@@ -34,10 +34,10 @@ public class Fall implements Serializable{
 	public void setDatef(long datef) {
 		this.datef = datef;
 	}
-	public int getSessionID() {
+	public long getSessionID() {
 		return sessionID;
 	}
-	public void setSessionID(int sessionID) {
+	public void setSessionID(long sessionID) {
 		this.sessionID = sessionID;
 	} 	
 	

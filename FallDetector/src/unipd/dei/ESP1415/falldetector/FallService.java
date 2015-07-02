@@ -40,7 +40,7 @@ public class FallService extends Service {
 	private boolean isRunning;
 	private static boolean isCreated = false;
 	private Thread chronoThread;
-	private static int sessionID;
+	private static long sessionID;
 
 	// thomasgagliardi
 	private double a_norm;
@@ -149,7 +149,7 @@ public class FallService extends Service {
 				+ startId + ": " + intent);
 
 		if(intent != null)
-		sessionID = intent.getIntExtra(SessionViewAdapter.ID, -1);
+		sessionID = intent.getLongExtra(SessionViewAdapter.ID, -1);
 		
 		if(sessionID == -1 || sessionID == 0)
 		{
