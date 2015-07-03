@@ -48,9 +48,6 @@ public class SessionDetails extends ActionBarActivity{
 	public boolean mBound = false;
 	private boolean isRunning = false;
 	private Thread accThread;
-	private float wX[] = new float[20];
-	private float wY[] = new float[20];
-	private float wZ[] = new float[20];
 	String[] verlabels = new String[] { "10", "0", "-10" };
 	public static final String ACCSERVICE = "accservice";
 	public MyBinder binder;
@@ -69,8 +66,6 @@ public class SessionDetails extends ActionBarActivity{
 		sdContext = this.getBaseContext();	
 		Intent myIntent = getIntent();
 		currentSession = (Session) myIntent.getSerializableExtra(SessionViewAdapter.SESSION);
-
-
 		/*
 		 * set of instructions regarding the initialization of the list view
 		 * which contains all the falls in this session
@@ -94,6 +89,9 @@ public class SessionDetails extends ActionBarActivity{
 		final TextView acc_x = (TextView) findViewById(R.id.accelerometer_data_x);
 		final TextView acc_y = (TextView) findViewById(R.id.accelerometer_data_y);
 		final TextView acc_z = (TextView) findViewById(R.id.accelerometer_data_z);
+		
+		if(currentSession.isRunning())
+			btnGraph.setVisibility(v.VISIBLE);
 
 		if(savedInstanceState != null)
 		{
