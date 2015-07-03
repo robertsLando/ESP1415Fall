@@ -73,6 +73,7 @@
     <string name="Title">Email Sender</string>
     <string name="sendBtn">Send</string>
     <string name="acc_graph">Accelerometer Data Graph</string>
-    <string name="emptyString"/>
+    <string name="emptyString"></string>
+    <string name="thumbnail">Thumbnail Image</string>
 
 </resources>

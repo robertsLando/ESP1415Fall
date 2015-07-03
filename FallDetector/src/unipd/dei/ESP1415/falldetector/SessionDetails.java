@@ -90,7 +90,7 @@ public class SessionDetails extends ActionBarActivity{
 		final TextView acc_z = (TextView) findViewById(R.id.accelerometer_data_z);
 		
 		if(currentSession.isRunning())
-			btnGraph.setVisibility(v.VISIBLE);
+			btnGraph.setVisibility(View.VISIBLE);
 		
 		if(savedInstanceState != null)
 		{
@@ -98,8 +98,8 @@ public class SessionDetails extends ActionBarActivity{
 			
 			if(acRun){
 
-				btnGraph.setVisibility(v.GONE);
-				btnGraphON.setVisibility(v.VISIBLE);
+				btnGraph.setVisibility(View.GONE);
+				btnGraphON.setVisibility(View.VISIBLE);
 				if(!mBound)
 				{
 					Intent intent = new Intent(this, FallService.class);
@@ -109,9 +109,9 @@ public class SessionDetails extends ActionBarActivity{
 					accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
 					accThread.start();        	
 				}
-				acc_x.setVisibility(v.VISIBLE);
-				acc_y.setVisibility(v.VISIBLE);
-				acc_z.setVisibility(v.VISIBLE);				
+				acc_x.setVisibility(View.VISIBLE);
+				acc_y.setVisibility(View.VISIBLE);
+				acc_z.setVisibility(View.VISIBLE);				
 			}
 		} 
 
@@ -120,17 +120,17 @@ public class SessionDetails extends ActionBarActivity{
 			@Override
 			public void onClick(View v){
 
-				btnGraph.setVisibility(v.GONE);
-				btnGraphON.setVisibility(v.VISIBLE);
+				btnGraph.setVisibility(View.GONE);
+				btnGraphON.setVisibility(View.VISIBLE);
 				if(mBound)
 				{
 					isRunning = true;
 					accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
 					accThread.start();        	
 				}
-				acc_x.setVisibility(v.VISIBLE);
-				acc_y.setVisibility(v.VISIBLE);
-				acc_z.setVisibility(v.VISIBLE);
+				acc_x.setVisibility(View.VISIBLE);
+				acc_y.setVisibility(View.VISIBLE);
+				acc_z.setVisibility(View.VISIBLE);
 			}
 		});
 
@@ -139,16 +139,16 @@ public class SessionDetails extends ActionBarActivity{
 			@Override
 			public void onClick(View v){
 
-				btnGraph.setVisibility(v.VISIBLE);
-				btnGraphON.setVisibility(v.GONE);
+				btnGraph.setVisibility(View.VISIBLE);
+				btnGraphON.setVisibility(View.GONE);
 				if(mBound)
 				{
 					isRunning = false;
 					accThread.interrupt();        	
 				}
-				acc_x.setVisibility(v.GONE);
-				acc_y.setVisibility(v.GONE);
-				acc_z.setVisibility(v.GONE);
+				acc_x.setVisibility(View.GONE);
+				acc_y.setVisibility(View.GONE);
+				acc_z.setVisibility(View.GONE);
 			}
 		});
 

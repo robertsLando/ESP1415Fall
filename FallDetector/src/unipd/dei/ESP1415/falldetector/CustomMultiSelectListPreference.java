@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -46,8 +47,10 @@ public class CustomMultiSelectListPreference extends MultiSelectListPreference {
         super(context);
     }
 
+	@SuppressWarnings("unchecked")
 	public void updateEntriesAndValues (Context context) {
         try {
+			
 			Class<IDynamicProvider> dynamicEntriesProviderClass = (Class<IDynamicProvider>) Class.forName(dynamicEntriesProviderName);
             Class<IDynamicProvider> dynamicEntryValuesProviderClass = (Class<IDynamicProvider>) Class.forName(dynamicEntryValuesProviderName);
 
