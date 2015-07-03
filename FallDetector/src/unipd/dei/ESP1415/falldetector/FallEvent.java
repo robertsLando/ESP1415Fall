@@ -44,9 +44,12 @@ public class FallEvent extends ActionBarActivity {
 		//now I have my session ID--> I have to find the imgcolor and the bgcolor of this session
 		//I have to find this value in the database
 		DbManager databaseManager = new DbManager(this);
-		//Cursor c1 = databaseManager.getSessionById(sessionID);
+		Cursor cIm = databaseManager.getSessionById(sessionID);
 		
-        
+		//test
+		
+        cIm.moveToFirst();
+        System.out.println("BGCOLOR e' pari a---> " + cIm.getInt(SessionTable.BGCOLOR));
 		
 		
 		final TextView dateFall = (TextView) findViewById(R.id.day);
@@ -64,7 +67,7 @@ public class FallEvent extends ActionBarActivity {
 		
 		//federico
 		
-		//Utilities.setThumbnail(sessionImage, c1.getInt(SessionTable.BGCOLOR), c1.getInt(SessionTable.IMGCOLOR));
+		Utilities.setThumbnail(sessionImage, cIm.getInt(SessionTable.BGCOLOR), cIm.getInt(SessionTable.IMGCOLOR));
 		
 		
 		//federico

@@ -537,8 +537,8 @@ public class DbManager {
      public Cursor getSessionById(long sId){
     	 
     	 final String query = "SELECT * " + "FROM "
- 				+ SessionDB.SessionTable.SESSION_TABLE + " WHERE "
- 				+ SessionDB.SessionTable.ID_COLUMN + " =" + sId;
+ 				+ SessionTable.SESSION_TABLE + " WHERE "
+ 				+ SessionTable.ID_COLUMN + " =" + sId;
     	 
         db = dbHelper.getReadableDatabase();
  		
