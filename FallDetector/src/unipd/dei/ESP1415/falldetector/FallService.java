@@ -33,7 +33,7 @@ public class FallService extends Service {
 	public static final String FALLSERVICE = "unipd.dei.ESP1415.falldetector.FallService";
 	private IBinder mBinder = new MyBinder();
 
-	private aData accData = new aData();
+	//private aData accData = new aData();
 	private long elapsedMillis;
 	private long pauseTime;
 	private long startTime;
@@ -179,9 +179,9 @@ public class FallService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		boolean accSrv = intent.getBooleanExtra(GraphViewer.ACCSERVICE, false);
+		//boolean accSrv = intent.getBooleanExtra(GraphViewer.ACCSERVICE, false);
 		
-		if(!accSrv){
+		//if(!accSrv){
 		long sessionElapsed = intent
 				.getLongExtra(SessionViewAdapter.ELAPSED, 0);
 
@@ -191,7 +191,7 @@ public class FallService extends Service {
 		start(); // starts the chrono thread
 
 		System.out.println("Fall service onBind");
-		}
+		//}
 
 		return mBinder;
 	}
@@ -217,12 +217,12 @@ public class FallService extends Service {
 		System.out.println("Fall service destroyed");
 	}
 	
-	public aData getAData(){
+	/*public aData getAData(){
 		accData.setX(ax);
 		accData.setY(ay);
 		accData.setZ(az);
 		return accData;
-	}
+	}*/
 
 	public long getTimestamp() {
 		return elapsedMillis;
@@ -499,7 +499,7 @@ public class FallService extends Service {
 	 * Class for acceleration Data type
 	 * @author thomasGagliardi
 	 */
-	public class aData{
+	/*public class aData{
 		
 		double x;
 		double y;
@@ -524,7 +524,7 @@ public class FallService extends Service {
 			this.z = z;
 		}
 		
-	}
+	}*/
 	/**
 	 * This thread fix the location every 2 minutes
 	 * @author daniellando

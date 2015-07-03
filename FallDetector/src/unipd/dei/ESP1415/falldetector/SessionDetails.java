@@ -3,21 +3,23 @@ package unipd.dei.ESP1415.falldetector;
 import java.util.ArrayList;
 import java.util.Date;
 
-import unipd.dei.ESP1415.falldetector.FallService.MyBinder;
-import unipd.dei.ESP1415.falldetector.FallService.aData;
 //import unipd.dei.ESP1415.falldetector.GraphViewer.AccRunner;
 //import unipd.dei.ESP1415.falldetector.GraphViewer.MyServiceConnection;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ComponentName;
+//import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+//import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.IBinder;
+//import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,18 +44,23 @@ public class SessionDetails extends ActionBarActivity{
 	public static final String FALL = "fall";
 	private Session currentSession;
 	public View v;
-	private aData data;
-	private FallService mService; // the instance of the service
+	//private aData data;
+	//private FallService mService; // the instance of the service
 	public boolean mBound = false;
 	private boolean isRunning = false;
 	private Thread accThread;
-	String[] verlabels = new String[] { "10", "0", "-10" };
+	//String[] verlabels = new String[] { "10", "0", "-10" };
 	public static final String ACCSERVICE = "accservice";
-	public MyBinder binder;
-	
+	//public MyBinder binder;
+	private SensorManager sensorManager;
+
 	private TextView acc_x;
 	private TextView acc_y;
 	private TextView acc_z;
+
+	private double ax;
+	private double ay;
+	private double az;
 
 
 	@Override
@@ -80,6 +87,7 @@ public class SessionDetails extends ActionBarActivity{
 
 		list = (ListView) findViewById(R.id.sessionListView);
 		list.setAdapter(adapter);
+
 		final TextView currentSessionName = (TextView) findViewById(R.id.CourrentSessionName);
 		TextView sessionStartDate = (TextView) findViewById(R.id.startDateTextView);
 		ImageView image = (ImageView) findViewById(R.id.courrentSessionImage);
@@ -92,15 +100,45 @@ public class SessionDetails extends ActionBarActivity{
 		acc_x = (TextView) findViewById(R.id.accelerometer_data_x);
 		acc_y = (TextView) findViewById(R.id.accelerometer_data_y);
 		acc_z = (TextView) findViewById(R.id.accelerometer_data_z);
-		
+
+		/*
+		 * only if the session is running (not stopped or paused) 
+		 * is possible to see the runtime accelerator data
+		 * 
+		 */
 		if(currentSession.isRunning())
-			btnGraphON.setVisibility(View.VISIBLE);
+			btnGraph.setVisibility(View.VISIBLE);
 		else
-			{	acc_x.setVisibility(View.GONE);
-				acc_y.setVisibility(View.GONE);
-				acc_z.setVisibility(View.GONE);
-			}
+		{	acc_x.setVisibility(View.GONE);
+		acc_y.setVisibility(View.GONE);
+		acc_z.setVisibility(View.GONE);
+		}
 		
+		if(savedInstanceState != null)
+		{
+			boolean acRun = savedInstanceState.getBoolean("strTV");
+			
+			if(acRun){
+
+				btnGraph.setVisibility(v.GONE);
+				btnGraphON.setVisibility(v.VISIBLE);
+				if(!mBound)
+				{
+					isRunning = true;
+					accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
+					accThread.start();        	
+				}
+				acc_x.setVisibility(v.VISIBLE);
+				acc_y.setVisibility(v.VISIBLE);
+				acc_z.setVisibility(v.VISIBLE);				
+			}
+		}
+
+		/*
+		 * accelerometer
+		 */
+		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 
 
 		btnGraph.setOnClickListener(new OnClickListener() {
@@ -110,14 +148,14 @@ public class SessionDetails extends ActionBarActivity{
 
 				btnGraph.setVisibility(View.GONE);
 				btnGraphON.setVisibility(View.VISIBLE);
-				
-				Intent intent = new Intent(SessionDetails.this, FallService.class);
-				intent.putExtra(ACCSERVICE, true);
-				bindService(intent, mConnection, Context.BIND_AUTO_CREATE);	
-				
+
 				acc_x.setVisibility(View.VISIBLE);
 				acc_y.setVisibility(View.VISIBLE);
 				acc_z.setVisibility(View.VISIBLE);
+
+				accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
+				accThread.start();
+				isRunning = true;
 			}
 		});
 
@@ -128,13 +166,15 @@ public class SessionDetails extends ActionBarActivity{
 
 				btnGraph.setVisibility(View.VISIBLE);
 				btnGraphON.setVisibility(View.GONE);
-				if(mBound)
-				{
-					unbindService(mConnection);     	
-				}
+
 				acc_x.setVisibility(View.GONE);
 				acc_y.setVisibility(View.GONE);
 				acc_z.setVisibility(View.GONE);
+				if (accThread != null) {
+					accThread.interrupt();
+					accThread = null;
+					isRunning = false;
+				}
 			}
 		});
 
@@ -199,14 +239,35 @@ public class SessionDetails extends ActionBarActivity{
 
 	
 	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState)
+	{
+		// NOTE: with the implementation of this method inherited from
+		// Activity, some widgets save their state in the bundle by default.
+		// Once the user interface contains AT LEAST one non-autosaving
+		// element, you should provide a custom implementation of
+		// the method
+		boolean accRun = isRunning;
+		savedInstanceState.putBoolean("strTV", accRun);
+		super.onSaveInstanceState(savedInstanceState);
+	}
+
+	@Override
 	protected void onResume(){
 		super.onResume();
-		if(!mBound)
+		/*if(isRunning)
 		{
-			Intent intent = new Intent(this, FallService.class);
-			intent.putExtra(ACCSERVICE, true);
-			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);	
-		}
+			btnGraph.setVisibility(View.GONE);
+			btnGraphON.setVisibility(View.VISIBLE);	
+
+			acc_x.setVisibility(View.VISIBLE);
+			acc_y.setVisibility(View.VISIBLE);
+			acc_z.setVisibility(View.VISIBLE);
+
+			accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
+			accThread.start();
+			isRunning = true;
+
+		}*/
 	}
 
 
@@ -224,24 +285,19 @@ public class SessionDetails extends ActionBarActivity{
 			}
 		}
 	}
-*/
-	 
+	 */
+
 
 	@Override
 	protected void onDestroy(){
 		super.onStop();
-		// Unbind from the service
-		if (mBound) {
-			isRunning = false;
-			unbindService(mConnection);
-			mBound = false;
-			if (accThread != null) {
-				accThread.interrupt();
-				accThread = null;
-			}
+		isRunning = false;
+		if (accThread != null) {
+			accThread.interrupt();
+			accThread = null;
 		}
 	}
-	
+
 
 	public void onItemClick(int position, View v) {
 		/*Object clickedObj = parent.getItemAtPosition(position);
@@ -291,8 +347,8 @@ public class SessionDetails extends ActionBarActivity{
 
 		//ok
 		//databaseManager.updateDB(); //uncomment this line when update database
-		
-	
+
+
 		databaseManager.getFalls(sID);
 
 		Cursor c = databaseManager.getFalls(sID);
@@ -304,48 +360,22 @@ public class SessionDetails extends ActionBarActivity{
 			temp.setId(c.getInt(FallTable.ID));
 			temp.setLocation(c.getString(FallTable.LOCATION));
 			temp.setDatef(c.getLong(FallTable.DATE)); 
-			
+
 			//test
-            System.out.println("LA SESSION ID DEL FALL E' : " + sID);
-            temp.setSessionID(sID);
+			System.out.println("LA SESSION ID DEL FALL E' : " + sID);
+			temp.setSessionID(sID);
 
 			temp.setSessionID(sID);
 
 			fallList.add(temp);		
 		}
-
 	}
 
 
-	//SERVICE
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className,
-				IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get LocalService instance
-			binder = (MyBinder) service;
-			mService = binder.getService();
-			mBound = true;
-			accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
-			accThread.start();    
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			mBound = false;
-			isRunning = false;
-			if(accThread != null)
-			{
-				accThread.interrupt();
-				accThread = null;
-			}
-		}
-	};
-
-		/**
-	 * This class implements the Runnable class to manage the Accelerator of the
-	 * FallService with a thread that updates the accelerator data array
+	/**
+	 * 
+	 * This class implements the Runnable class to manage the 
+	 * Accelerator with a thread that updates the accelerator data
 	 * 
 	 * @author thomasgagliardi
 	 *
@@ -365,37 +395,21 @@ public class SessionDetails extends ActionBarActivity{
 
 		@Override
 		public void run() {
-
 			isRunning = true;
 			while (isRunning) {
-				if(mBound) {
-					activity.runOnUiThread( new Runnable() {
+				activity.runOnUiThread( new Runnable() {
 
-						@SuppressLint("ShowToast") @Override
-						public void run() {
-							// TODO Auto-generated method stub
-							data = mService.getAData();
-							/*SeekBar acc_x = (SeekBar) findViewById(R.id.accelerometer_data_x);
-							int x = (int) Math.round(data.x);
-							acc_x.setMax(50);
-							acc_x.incrementProgressBy(x%50);*/
-							double x = round(data.x,2);
-							acc_x.setText("X = " + x);
-							double y = round(data.y,2);
-							acc_y.setText("Y = " + y);
-							double z = round(data.z,2);
-							acc_z.setText("Z = " + z);
-							//							addWindowsData(data);
-							//							GraphView graphView = new GraphView(sdContext, wX,
-							//									wY, wZ, "Session Graph", verlabels,
-							//									GraphView.LINE);
-							//							scroll.addView(graphView);
-							// setContentView(graphView);
-						}
-					});
-				}
+					public void run() {
 
-			}// if bound
+						double x = round(ax,2);
+						acc_x.setText("X = " + x);
+						double y = round(ay,2);
+						acc_y.setText("Y = " + y);
+						double z = round(az,2);
+						acc_z.setText("Z = " + z);
+					}
+				});
+			}// is isRunning
 			try {
 
 				Thread.sleep(100); // update 
@@ -414,5 +428,24 @@ public class SessionDetails extends ActionBarActivity{
 		long tmp = Math.round(value);
 		return (double) tmp / factor;
 	}
+
+	private SensorEventListener sensorListener = new SensorEventListener() {
+
+		@Override
+		public void onAccuracyChanged(Sensor arg0, int arg1) {
+		}
+
+		@SuppressLint("ParserError")
+		@Override
+		public void onSensorChanged(SensorEvent event) {
+			//double ax, ay, az;
+
+			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+				ax = event.values[0];
+				ay = event.values[1];
+				az = event.values[2];
+			}
+		}
+	};
 
 }

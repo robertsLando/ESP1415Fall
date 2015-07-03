@@ -2,7 +2,7 @@ package unipd.dei.ESP1415.falldetector;
 
 
 import unipd.dei.ESP1415.falldetector.FallService.MyBinder;
-import unipd.dei.ESP1415.falldetector.FallService.aData;
+//import unipd.dei.ESP1415.falldetector.FallService.aData;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,7 +15,7 @@ import android.os.IBinder;
 public class GraphViewer extends Activity {
 
 	private Context cont = this.getBaseContext();
-	private aData data;
+	//private aData data;
 	private FallService mService; // the instance of the service
 	public boolean mBound = false;
 	private boolean isRunning = false;
@@ -87,7 +87,7 @@ public class GraphViewer extends Activity {
 			}
 		};
 
-		private void addWindowsData(aData a)
+		/**private void addWindowsData(aData a)
 		{
 			int i;
 			for(i = (wX.length - 1); i>1; i--){
@@ -99,7 +99,7 @@ public class GraphViewer extends Activity {
 			wY[i] = (float)a.y;
 			wZ[i] = (float)a.z;
 
-		}
+		}*/
 
 		/**
 		 * This class implements the Runnable class to manage the Accelerator of the
@@ -114,8 +114,8 @@ public class GraphViewer extends Activity {
 			public void run() {
 				while (isRunning) {
 					if(mBound) {
-						data = mService.getAData();
-						addWindowsData(data);
+						/*data = mService.getAData();
+						addWindowsData(data);*/
 						GraphView graphView = new GraphView(cont, wX, wY, wZ, "Session Graph",verlabels, GraphView.LINE);
 						setContentView(graphView);
 

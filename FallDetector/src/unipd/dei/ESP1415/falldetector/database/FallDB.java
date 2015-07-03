@@ -70,7 +70,7 @@ public final class FallDB {
 				+ DATE_COLUMN + TIMESTAMP_TYPE + NOT_NULL + COMMA_SEP
 				+ SESSIONID_COLUMN + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 				+ FOREIGN_KEY
-				+ ");";
+				+ ";";
 		
 		//references
 				public static final int ID = 0;
