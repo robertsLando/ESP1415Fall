@@ -47,7 +47,7 @@ public class SessionDetails extends ActionBarActivity{
 	//private aData data;
 	//private FallService mService; // the instance of the service
 	public boolean mBound = false;
-	private boolean isRunning = false;
+	private static boolean isRunning = false;
 	private Thread accThread;
 	//String[] verlabels = new String[] { "10", "0", "-10" };
 	public static final String ACCSERVICE = "accservice";
@@ -106,40 +106,37 @@ public class SessionDetails extends ActionBarActivity{
 		 * is possible to see the runtime accelerator data
 		 * 
 		 */
+		
+	
 		if(currentSession.isRunning())
 			btnGraph.setVisibility(View.VISIBLE);
 		else
-		{	acc_x.setVisibility(View.GONE);
-		acc_y.setVisibility(View.GONE);
-		acc_z.setVisibility(View.GONE);
+		{	
+			acc_x.setVisibility(View.GONE);
+			acc_y.setVisibility(View.GONE);
+			acc_z.setVisibility(View.GONE);
 		}
 		
-		if(savedInstanceState != null)
+		if(isRunning)
 		{
-			boolean acRun = savedInstanceState.getBoolean("strTV");
-			
-			if(acRun){
-
-				btnGraph.setVisibility(v.GONE);
-				btnGraphON.setVisibility(v.VISIBLE);
-				if(!mBound)
-				{
-					isRunning = true;
-					accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
-					accThread.start();        	
-				}
-				acc_x.setVisibility(v.VISIBLE);
-				acc_y.setVisibility(v.VISIBLE);
-				acc_z.setVisibility(v.VISIBLE);				
+			btnGraphON.setVisibility(View.VISIBLE);
+			btnGraph.setVisibility(View.GONE);
+			acc_x.setVisibility(View.VISIBLE);
+			acc_y.setVisibility(View.VISIBLE);
+			acc_z.setVisibility(View.VISIBLE);
+			if(accThread == null)
+			{
+				accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
+				accThread.start();
+				isRunning = true;
 			}
 		}
+		
+		
 
 		/*
 		 * accelerometer
 		 */
-		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-
 
 		btnGraph.setOnClickListener(new OnClickListener() {
 
@@ -152,6 +149,10 @@ public class SessionDetails extends ActionBarActivity{
 				acc_x.setVisibility(View.VISIBLE);
 				acc_y.setVisibility(View.VISIBLE);
 				acc_z.setVisibility(View.VISIBLE);
+				
+				sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+				sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+
 
 				accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
 				accThread.start();
@@ -173,8 +174,11 @@ public class SessionDetails extends ActionBarActivity{
 				if (accThread != null) {
 					accThread.interrupt();
 					accThread = null;
-					isRunning = false;
 				}
+				
+				sensorManager.unregisterListener(sensorListener);
+				
+				isRunning = false;
 			}
 		});
 
@@ -236,62 +240,29 @@ public class SessionDetails extends ActionBarActivity{
 		newSessionName.setText(currentSession.getName());
 
 	}
-
 	
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState)
-	{
-		// NOTE: with the implementation of this method inherited from
-		// Activity, some widgets save their state in the bundle by default.
-		// Once the user interface contains AT LEAST one non-autosaving
-		// element, you should provide a custom implementation of
-		// the method
-		boolean accRun = isRunning;
-		savedInstanceState.putBoolean("strTV", accRun);
-		super.onSaveInstanceState(savedInstanceState);
-	}
 
 	@Override
 	protected void onResume(){
 		super.onResume();
-		/*if(isRunning)
+		if(isRunning)
 		{
-			btnGraph.setVisibility(View.GONE);
-			btnGraphON.setVisibility(View.VISIBLE);	
-
-			acc_x.setVisibility(View.VISIBLE);
-			acc_y.setVisibility(View.VISIBLE);
-			acc_z.setVisibility(View.VISIBLE);
-
-			accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
-			accThread.start();
-			isRunning = true;
-
-		}*/
-	}
-
-
-	/*@Override
-	protected void onPause(){
-		super.onPause();
-		// Unbind from the service
-		if (mBound) {
-			isRunning = false;
-			unbindService(mConnection);
-			mBound = false;
-			if (accThread != null) {
-				accThread.interrupt();
-				accThread = null;
+			if(sensorManager == null)
+			sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+			sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+			if(accThread == null)
+			{
+				accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
+				accThread.start();
 			}
 		}
 	}
-	 */
-
-
+	
 	@Override
-	protected void onDestroy(){
-		super.onStop();
-		isRunning = false;
+	protected void onPause(){
+		super.onPause();
+		if(isRunning)
+			sensorManager.unregisterListener(sensorListener);
 		if (accThread != null) {
 			accThread.interrupt();
 			accThread = null;
@@ -326,6 +297,16 @@ public class SessionDetails extends ActionBarActivity{
 		// as you specify a parent activity in AndroidManifest.xml.
 		switch (item.getItemId()) {
 		case android.R.id.home:
+			if(sensorManager != null)
+				sensorManager.unregisterListener(sensorListener);
+			
+			if(isRunning)
+			{
+				accThread.interrupt();
+				accThread = null;
+				isRunning = false;
+			}	
+				
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
 

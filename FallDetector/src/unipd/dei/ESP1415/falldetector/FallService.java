@@ -119,11 +119,20 @@ public class FallService extends Service {
 		sessionID = -1;
 
 		isCreated = true;
+		mode = getRate();
 
 		fallDetected.setName("Fall Detect Thread");
 		locationThread.setName("Find location Thread");
 
-		// thomasgagliardi
+		locationManager = (LocationManager) getApplicationContext()
+				.getSystemService(Context.LOCATION_SERVICE);
+
+		locationThread.start();
+		
+		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		sensorManager.registerListener(sensorListener,
+				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+				mode);
 		
 		
 
@@ -133,7 +142,7 @@ public class FallService extends Service {
 		String rate = settings.getString("accelerometer_settings", "3");
 	    //System.out.println(rate); test
 	    mode = Integer.parseInt(rate);*/
-	   mode = getRate();
+	   
 	   initialize();
 	   System.out.println("IL MODE SCELTO IN ONCREATE E' " + mode);
 	    
@@ -145,24 +154,6 @@ public class FallService extends Service {
 		System.out.println("Fall service OnStartCommand received start id "
 				+ startId + ": " + intent);
 		
-		if(sensorManager == null || mode != getRate())
-		{
-			mode = getRate();
-			sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-			sensorManager.registerListener(sensorListener,
-					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-					mode);
-		}
-
-		if(locationManager == null)// initialize the GPS
-		{
-			locationManager = (LocationManager) getApplicationContext()
-				.getSystemService(Context.LOCATION_SERVICE);
-		}
-	
-		if(locationThread == null)
-			locationThread.start();
-
 		if(intent != null)
 		sessionID = intent.getLongExtra(SessionViewAdapter.ID, -1);
 		
@@ -179,9 +170,7 @@ public class FallService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		//boolean accSrv = intent.getBooleanExtra(GraphViewer.ACCSERVICE, false);
 		
-		//if(!accSrv){
 		long sessionElapsed = intent
 				.getLongExtra(SessionViewAdapter.ELAPSED, 0);
 
@@ -191,7 +180,7 @@ public class FallService extends Service {
 		start(); // starts the chrono thread
 
 		System.out.println("Fall service onBind");
-		//}
+		
 
 		return mBinder;
 	}
@@ -214,6 +203,7 @@ public class FallService extends Service {
 		isRunning = false;
 		isCreated = false;
 		locationManager.removeUpdates(locationListener);
+		sensorManager.unregisterListener(sensorListener);
 		System.out.println("Fall service destroyed");
 	}
 	
@@ -495,36 +485,7 @@ public class FallService extends Service {
 
 	} // FallRecognizedThread
 	
-	/**
-	 * Class for acceleration Data type
-	 * @author thomasGagliardi
-	 */
-	/*public class aData{
-		
-		double x;
-		double y;
-		double z;
-		
-		public aData(){
-			this.x = 0;
-			this.y = 0;
-			this.z = 0;
-		}
-		
-		public void setX(double x)
-		{
-			this.x = x;
-		}
-		public void setY(double y)
-		{
-			this.y = y;
-		}
-		public void setZ(double z)
-		{
-			this.z = z;
-		}
-		
-	}*/
+	
 	/**
 	 * This thread fix the location every 2 minutes
 	 * @author daniellando
