@@ -53,12 +53,13 @@ public class SessionDetails extends ActionBarActivity{
 	private float wZ[] = new float[20];
 	String[] verlabels = new String[] { "10", "0", "-10" };
 	public static final String ACCSERVICE = "accservice";
+	public MyBinder binder;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.activity_session_details);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
@@ -94,11 +95,34 @@ public class SessionDetails extends ActionBarActivity{
 		final TextView acc_y = (TextView) findViewById(R.id.accelerometer_data_y);
 		final TextView acc_z = (TextView) findViewById(R.id.accelerometer_data_z);
 
+		if(savedInstanceState != null)
+		{
+			boolean acRun = savedInstanceState.getBoolean("strTV");
+			
+			if(acRun){
+
+				btnGraph.setVisibility(v.GONE);
+				btnGraphON.setVisibility(v.VISIBLE);
+				if(!mBound)
+				{
+					Intent intent = new Intent(this, FallService.class);
+					intent.putExtra(ACCSERVICE, true);
+					bindService(intent, mConnection, Context.BIND_AUTO_CREATE);	
+					isRunning = true;
+					accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
+					accThread.start();        	
+				}
+				acc_x.setVisibility(v.VISIBLE);
+				acc_y.setVisibility(v.VISIBLE);
+				acc_z.setVisibility(v.VISIBLE);				
+			}
+		} 
+
 		btnGraph.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v){
-				
+
 				btnGraph.setVisibility(v.GONE);
 				btnGraphON.setVisibility(v.VISIBLE);
 				if(mBound)
@@ -117,7 +141,7 @@ public class SessionDetails extends ActionBarActivity{
 
 			@Override
 			public void onClick(View v){
-				
+
 				btnGraph.setVisibility(v.VISIBLE);
 				btnGraphON.setVisibility(v.GONE);
 				if(mBound)
@@ -130,7 +154,7 @@ public class SessionDetails extends ActionBarActivity{
 				acc_z.setVisibility(v.GONE);
 			}
 		});
-		
+
 		btnDelete.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -191,6 +215,19 @@ public class SessionDetails extends ActionBarActivity{
 	}
 
 	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState)
+	{
+		// NOTE: with the implementation of this method inherited from
+		// Activity, some widgets save their state in the bundle by default.
+		// Once the user interface contains AT LEAST one non-autosaving
+		// element, you should provide a custom implementation of
+		// the method
+		boolean accRun = isRunning;
+		savedInstanceState.putBoolean("strTV", accRun);
+		super.onSaveInstanceState(savedInstanceState);
+	} 
+
+	@Override
 	protected void onStart(){
 		super.onStart();
 		//*********************BIND TO THE SERVICE*********************/
@@ -200,6 +237,7 @@ public class SessionDetails extends ActionBarActivity{
 		//*************************END SERVICE*************************//
 	}
 
+	/**
 	@Override
 	protected void onStop(){
 		super.onStop();
@@ -230,7 +268,8 @@ public class SessionDetails extends ActionBarActivity{
 		}
 	}
 
-	
+	 */
+
 	@Override
 	protected void onDestroy(){
 		super.onStop();
@@ -245,12 +284,7 @@ public class SessionDetails extends ActionBarActivity{
 			}
 		}
 	}
-	/**@Override
-	protected void onSaveInstanceState(Bundle savedInstanceState)
-	{
-		savedInstanceState.putBoolean("threadRunning", isRunning);
-		super.onSaveInstanceState(savedInstanceState); 
-	}*/
+	
 
 	public void onItemClick(int position, View v) {
 		/*Object clickedObj = parent.getItemAtPosition(position);
@@ -295,8 +329,6 @@ public class SessionDetails extends ActionBarActivity{
 
 
 	public void setListData(long sID) {
-		 
-		
 
 		DbManager databaseManager = new DbManager(sdContext);
 
@@ -306,7 +338,7 @@ public class SessionDetails extends ActionBarActivity{
 		databaseManager.getFalls(sID);
 
 		Cursor c = databaseManager.getFalls(sID);
-		
+
 		while(c.moveToNext()){
 
 			final Fall temp = new Fall();
@@ -314,9 +346,7 @@ public class SessionDetails extends ActionBarActivity{
 			temp.setId(c.getInt(FallTable.ID));
 			temp.setLocation(c.getString(FallTable.LOCATION));
 			temp.setDatef(c.getLong(FallTable.DATE)); 
-			//test
-			System.out.println("LA SESSION ID DEL FALL E' : " + sID);
-			temp.setSessionID(sID);
+			//temp.setSessionID(c.getInt(FallTable.SESSIONID));
 
 			fallList.add(temp);		
 		}
@@ -331,7 +361,7 @@ public class SessionDetails extends ActionBarActivity{
 		public void onServiceConnected(ComponentName className,
 				IBinder service) {
 			// We've bound to LocalService, cast the IBinder and get LocalService instance
-			MyBinder binder = (MyBinder) service;
+			binder = (MyBinder) service;
 			mService = binder.getService();
 			mBound = true;
 		}
@@ -342,21 +372,7 @@ public class SessionDetails extends ActionBarActivity{
 		}
 	};
 
-	private void addWindowsData(aData a)
-	{
-		int i;
-		for(i = (wX.length - 1); i>1; i--){
-			wX[i-1] = wX[i];
-			wY[i-1] = wY[i];
-			wZ[i-1] = wZ[i];
-		}
-		wX[i]= (float)a.x;
-		wY[i] = (float)a.y;
-		wZ[i] = (float)a.z;
-
-	}
-
-	/**
+		/**
 	 * This class implements the Runnable class to manage the Accelerator of the
 	 * FallService with a thread that updates the accelerator data array
 	 * 
@@ -364,11 +380,11 @@ public class SessionDetails extends ActionBarActivity{
 	 *
 	 */
 	private class AccRunner implements Runnable {
-		
+
 		TextView acc_x;
 		TextView acc_y;
 		TextView acc_z;
-		
+
 		public AccRunner(TextView acc_x, TextView acc_y, TextView acc_z) {
 			this.acc_x = acc_x;
 			this.acc_y = acc_y;
