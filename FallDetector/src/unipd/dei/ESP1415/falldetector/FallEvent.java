@@ -44,7 +44,7 @@ public class FallEvent extends ActionBarActivity {
 		//now I have my session ID--> I have to find the imgcolor and the bgcolor of this session
 		//I have to find this value in the database
 		DbManager databaseManager = new DbManager(this);
-		Cursor c1 = databaseManager.getSessionById(sessionID);
+		//Cursor c1 = databaseManager.getSessionById(sessionID);
 		
         
 		
@@ -52,19 +52,19 @@ public class FallEvent extends ActionBarActivity {
 		final TextView dateFall = (TextView) findViewById(R.id.day);
 		final TextView timeFall = (TextView) findViewById(R.id.hour);
 		final ImageView sessionImage = (ImageView) findViewById(R.id.sessionImage);
-		final TextView latitude = (TextView) findViewById(R.id.latitudeCoordinates);
-		final TextView longitude = (TextView) findViewById(R.id.longitudeCoordinates);
+		final TextView location = (TextView) findViewById(R.id.locationAddress);
+		
 		
 		Date fallDate = new Date(currentFall.getDatef());
 		
 		
 		dateFall.setText(Utilities.getOnlyDate(fallDate));
 		timeFall.setText(Utilities.getOnlyTime(fallDate));
-		
+		location.setText(fallLocation);
 		
 		//federico
 		//latitude.setText(Utilities.latitudeLongitudeToString(value))
-		Utilities.setThumbnail(sessionImage, c1.getInt(SessionTable.BGCOLOR), c1.getInt(SessionTable.IMGCOLOR));
+		//Utilities.setThumbnail(sessionImage, c1.getInt(SessionTable.BGCOLOR), c1.getInt(SessionTable.IMGCOLOR));
 		
 		
 		//federico

@@ -116,7 +116,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/latitude"
+            android:id="@+id/stringLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -124,11 +124,11 @@
             android:layout_below="@+id/location"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
-            android:text="@string/fallLatitude"
+            android:text="@string/fallLocationString"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/latitudeCoordinates"
+            android:id="@+id/locationAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -137,35 +137,11 @@
             android:layout_marginLeft="5dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_toEndOf="@+id/latitude"
-            android:layout_toRightOf="@+id/latitude"
+            android:layout_toEndOf="@+id/stringLocation"
+            android:layout_toRightOf="@+id/stringLocation"
             android:text="N 41° 53’ 24″" />
 
-        <TextView
-            android:id="@+id/longitude"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/latitude"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:text="@string/fallLongitude"
-            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/longitudeCoordinates"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/latitudeCoordinates"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_toEndOf="@+id/longitude"
-            android:layout_toRightOf="@+id/longitude"
-            android:text="E 012° 29’ 32″" />
     </RelativeLayout>
 
     <LinearLayout

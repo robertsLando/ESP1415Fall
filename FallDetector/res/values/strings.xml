@@ -15,7 +15,7 @@
     <string name="fallDate">Date:</string>
     <string name="fallTime">Time:</string>
     <string name="fallLongitude">Longitude:</string>
-    <string name="fallLatitude">Latitude:</string>
+    <string name="fallLocationString">Location:</string>
     <string name="whenFallHappens">WHEN:</string>
     <string name="fallLocation">WHERE:</string>
     <string name="delete">Delete</string>
