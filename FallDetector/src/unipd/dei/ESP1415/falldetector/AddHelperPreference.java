@@ -27,11 +27,7 @@ public class AddHelperPreference extends DialogPreference {
 	private EditText textSurname;
 	private EditText textEmail;
 	private Spinner setPriority;
-	
-	private static String TAG = AddHelperPreference.class.getSimpleName();
-	 
-    private final int DEFAULT_VALUE = 0;
-	
+		
 	// constructor
 	public AddHelperPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);

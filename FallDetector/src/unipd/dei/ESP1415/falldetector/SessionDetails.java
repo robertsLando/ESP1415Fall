@@ -42,7 +42,6 @@ public class SessionDetails extends ActionBarActivity{
 	public static final String FALL = "fall";
 	private Session currentSession;
 	public View v;
-	private Context cont;
 	private aData data;
 	private FallService mService; // the instance of the service
 	public boolean mBound = false;

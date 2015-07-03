@@ -19,7 +19,6 @@ public class GraphViewer extends Activity {
 	private FallService mService; // the instance of the service
 	public boolean mBound = false;
 	private boolean isRunning = false;
-	private Activity activity;
 	private Thread accThread;
 	private float wX[] = new float[20];
 	private float wY[] = new float[20];

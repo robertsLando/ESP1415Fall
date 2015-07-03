@@ -21,9 +21,7 @@ public class FallEvent extends ActionBarActivity {
 	private Fall currentFall;
 	public static Context sdContext;
 	private String fallLocation;
-	private int bgColor;
-	private int imgColor;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

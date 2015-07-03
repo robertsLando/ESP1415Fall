@@ -4,7 +4,7 @@ package unipd.dei.ESP1415.falldetector;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import android.app.Activity;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;

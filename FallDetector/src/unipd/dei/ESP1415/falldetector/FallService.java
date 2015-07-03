@@ -29,7 +29,7 @@ import android.preference.PreferenceManager;
 
 public class FallService extends Service {
 
-	private static String LOG_TAG = "BoundService";
+	//private static String LOG_TAG = "BoundService";
 	public static final String FALLSERVICE = "unipd.dei.ESP1415.falldetector.FallService";
 	private IBinder mBinder = new MyBinder();
 
@@ -54,7 +54,6 @@ public class FallService extends Service {
 	double sigma = 0.5, th = 10, th1 = 5, th2 = 2;
 	private SensorManager sensorManager;
 	private String fall_state, post_state;
-	private Context fsContext;
 	public final static String FALL = "fall";
 	private LocationManager locationManager;
 	private Location mLocation;
@@ -319,7 +318,7 @@ public class FallService extends Service {
 
 	private void fall_recognition(FallData[] window1) {
 		int l = window1.length;
-		int f = 0;
+//		int f = 0;
 		double tMin = 100, tMax = 0;
 
 		for (int i = 0; i < l; i++)
