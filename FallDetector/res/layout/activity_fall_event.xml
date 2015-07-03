@@ -19,7 +19,6 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="5dp" 
             android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
             android:contentDescription="@string/thumbnail"
             android:src="@drawable/ic_fall" />
 
@@ -51,7 +50,6 @@
             android:layout_marginTop="10dp"
             android:layout_marginStart="5dp" 
             android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
             android:text="@string/whenFallHappens"
             android:textColor="#FFFF4444"
             android:textStyle="bold" />
@@ -64,7 +62,6 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="5dp" 
             android:layout_marginLeft="5dp"
-             android:layout_marginStart="5dp"
             android:layout_below="@+id/when"
             android:layout_marginTop="5dp"
             android:text="@string/fallDate"
@@ -94,7 +91,6 @@
             android:layout_marginTop="5dp"
             android:layout_marginStart="5dp" 
             android:layout_marginLeft="5dp"
-             android:layout_marginStart="5dp"
             android:text="@string/fallTime"
             android:textStyle="bold" />
 
@@ -120,7 +116,6 @@
             android:layout_marginTop="10dp"
             android:layout_marginStart="5dp" 
             android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
             android:text="@string/fallLocation"
             android:textColor="#FFFF4444"
             android:textStyle="bold" />
@@ -135,7 +130,6 @@
             android:layout_marginTop="5dp"
             android:layout_marginStart="5dp" 
             android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
             android:text="@string/fallLocationString"
             android:textStyle="bold" />
 
@@ -169,7 +163,6 @@
             android:layout_marginTop="5dp"
             android:layout_marginStart="5dp" 
             android:layout_marginLeft="5dp"
-             android:layout_marginStart="5dp"
             android:text="@string/acc_graph"
             android:textColor="#FF5722"
             android:textStyle="bold" />
