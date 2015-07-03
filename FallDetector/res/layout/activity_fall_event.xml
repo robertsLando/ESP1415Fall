@@ -102,7 +102,7 @@
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/time"
             android:layout_toRightOf="@+id/time"
-            android:text="@sting/emptyString" />
+            android:text="@string/emptyString" />
 
         <TextView
             android:id="@+id/location"
