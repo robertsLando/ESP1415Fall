@@ -1,11 +1,13 @@
 package unipd.dei.ESP1415.falldetector;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.ListPreference;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+
 
 public class SettingFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
 	SharedPreferences.OnSharedPreferenceChangeListener mListener;
@@ -16,6 +18,7 @@ public class SettingFragment extends PreferenceFragment implements OnSharedPrefe
 
 		// upload of the preference layout
 		addPreferencesFromResource(R.xml.preferences);
+		
 		
 		mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
 			public void onSharedPreferenceChanged(SharedPreferences shared_prefs, String key) {
@@ -29,6 +32,16 @@ public class SettingFragment extends PreferenceFragment implements OnSharedPrefe
 						// in the summary field.
 						CustomMultiSelectListPreference listPref = (CustomMultiSelectListPreference) pref;
 						listPref.updateEntriesAndValues(getActivity());
+					}
+				}
+				else if(key.equals("pref_notification_activate")) {
+					CheckBoxPreference mCheckBox = (CheckBoxPreference) findPreference("pref_notification_activate");
+					if(!(mCheckBox.isChecked())){
+						//if the button is unchecked -----> I have to do putBoolean("firstTime", true);
+						SharedPreferences mTimeSettings = getActivity().getApplicationContext().getSharedPreferences("TimePickerSettings", Context.MODE_PRIVATE);
+						SharedPreferences.Editor mEditor = mTimeSettings.edit();
+						mEditor.putBoolean("firstTime", true);
+						mEditor.commit();
 					}
 				}
 			}

@@ -62,7 +62,7 @@ public class FallService extends Service {
 	private Thread locationThread = new Thread(new FindLocationThread());
 	private double ax, ay, az;
 	
-	private int mode; //I use this variable to define the rate of the accelerometer---->the user chose it in the preference
+	private int mode; //I use this variable to define the rate of the accelerometer---->the user choose it in the preference
 	private long maxSessionDuration; //I use this variable to define the maximum duration
 	
 	private SensorEventListener sensorListener = new SensorEventListener() {

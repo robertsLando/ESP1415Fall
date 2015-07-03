@@ -1,14 +1,15 @@
 package unipd.dei.ESP1415.falldetector;
 
 
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
@@ -18,9 +19,10 @@ import android.widget.Toast;
 public class SetAlarmPreference extends DialogPreference {
 	// we create this preference to permit the user to set the time for the
 	// notification
-
-	private int hour = -1;
-	private int minute = -1;
+	private boolean isFirstTime; // I use this boolean to see if it's the first time that the user opens the TimePicker or if he opens it after unchecked and checked the checkbox
+    private Context mContext;
+	private int hour;
+	private int minute;
 	private TimePicker timePicker = null;
 	public String alarmCustomTime = ""; // string for the toast
 	private Calendar calendar; // calendar to show the right hour to the user
@@ -30,6 +32,7 @@ public class SetAlarmPreference extends DialogPreference {
 	public SetAlarmPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		calendar = new GregorianCalendar();
+		mContext=context;
 	}
 
 	// we crate the TimePicker we have to show to the user
@@ -42,15 +45,21 @@ public class SetAlarmPreference extends DialogPreference {
 	// initial values
 	protected void onBindDialogView(View v) {
 		super.onBindDialogView(v);
+		
+		SharedPreferences mTimeSettings = mContext.getSharedPreferences("TimePickerSettings", Context.MODE_PRIVATE);
+		isFirstTime = mTimeSettings.getBoolean("firstTime", true);
 		// if it\'s the first time we show the right hour
-		if ((hour == -1) && (minute == -1)) {
+		if (isFirstTime) {
 			timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
 			timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
 		}
 		// then we show the time of the last alarm
 		else {
-			timePicker.setCurrentHour(hour);
-			timePicker.setCurrentMinute(minute);
+			
+			int oldHour = mTimeSettings.getInt("hour",calendar.get(Calendar.HOUR_OF_DAY) );
+			int oldMinute = mTimeSettings.getInt("minute", calendar.get(Calendar.MINUTE));
+			timePicker.setCurrentHour(oldHour);
+			timePicker.setCurrentMinute(oldMinute);
 		}
 
 	}
@@ -63,12 +72,26 @@ public class SetAlarmPreference extends DialogPreference {
 			hour = timePicker.getCurrentHour();
 			minute = timePicker.getCurrentMinute();
 			alarmCustomTime = hour + ":" + minute;
-
+			
+			isFirstTime = false;
+			
+			//now we save the hour and minute in a SharedPreference file so 
+			// I can show the time of the last alarm time
+			SharedPreferences mTimeSettings = mContext.getSharedPreferences("TimePickerSettings", Context.MODE_PRIVATE);
+            
+			SharedPreferences.Editor mEditor = mTimeSettings.edit();
+			mEditor.putInt("hour", hour);
+			mEditor.putInt("minute", minute);
+			mEditor.putBoolean("firstTime", isFirstTime);
+			
+			mEditor.commit();
+			
+			
 			// set the alarm to start at the time of user decided
 			Calendar calendar = Calendar.getInstance();
 			
 			//current time
-			long currentTime = calendar.getTimeInMillis();
+			//long currentTime = calendar.getTimeInMillis();
 			
 			//alarm time
 			calendar.setTimeInMillis(System.currentTimeMillis());
@@ -78,6 +101,7 @@ public class SetAlarmPreference extends DialogPreference {
 			calendar.set(Calendar.MILLISECOND, 0);
 
 			long alarmTime = calendar.getTimeInMillis();
+			
 			Intent notificationIntent = new Intent(getContext(),
 					MyNotificationBroadcastReceiver.class);
 			PendingIntent notificationPendingIntent = PendingIntent

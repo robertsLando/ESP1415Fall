@@ -67,10 +67,12 @@ public class MyNotificationBroadcastReceiver extends BroadcastReceiver {
 		        PreferenceManager.getDefaultSharedPreferences(context);
 		
 		boolean isChecked = settings.getBoolean("pref_notification_activate", true);
+		
 		if(isChecked){ //we show the notification only if the checkbox is checked
 		//Post a notification to be shown in the status bar.
 		mNotificationManager.notify(notifyID, mBuilder.build());
 		}
+		
 	}
 
 }
