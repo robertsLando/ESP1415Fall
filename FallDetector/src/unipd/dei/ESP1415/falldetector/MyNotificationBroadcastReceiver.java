@@ -8,7 +8,9 @@ import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -59,8 +61,16 @@ public class MyNotificationBroadcastReceiver extends BroadcastReceiver {
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		// notify the notification only if the checkBox is activate
-		// TODO if()
+		//we have to check in the SharedPreference the state of the checkbox
+		//if false---->we haven't to notify the notification in the status bar
+		SharedPreferences settings = 
+		        PreferenceManager.getDefaultSharedPreferences(context);
+		
+		boolean isChecked = settings.getBoolean("pref_notification_activate", true);
+		if(isChecked){ //we show the notification only if the checkbox is checked
+		//Post a notification to be shown in the status bar.
 		mNotificationManager.notify(notifyID, mBuilder.build());
+		}
 	}
 
 }
