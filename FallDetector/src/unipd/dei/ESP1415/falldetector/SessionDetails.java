@@ -92,7 +92,7 @@ public class SessionDetails extends ActionBarActivity{
 		
 		if(currentSession.isRunning())
 			btnGraph.setVisibility(v.VISIBLE);
-
+		
 		if(savedInstanceState != null)
 		{
 			boolean acRun = savedInstanceState.getBoolean("strTV");
