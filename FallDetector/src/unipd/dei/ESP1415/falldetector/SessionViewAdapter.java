@@ -14,8 +14,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -45,6 +47,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private SessionViewHolder itemVisible = null;
 	public SessionViewHolder itemRunning = null;
 	private SessionViewAdapter adapter;
+	private long maxDuration;
 
 	private FallService mBoundService; // the instance of the service
 	public boolean mServiceBound = false; // bind of service true = service is
@@ -67,6 +70,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		adapter = this;
+		maxDuration = getDuration();
 
 	}
 
@@ -326,51 +330,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 								.getString(R.string.stop))) // stop
 						{
 
-							long timeElapsed = 0;
-							itemRunning = null;
-
-							if (isRunning) // if chrono is running I stop it and
-											// I get the time elapsed from the
-											// service
-							{
-								chronoThread.interrupt();
-								mBoundService.pause();
-								timeElapsed = mBoundService.getTimestamp();
-							} else
-								timeElapsed = ses.getTimeElapsed();
-
-							// unbind the service
-							if (mServiceBound) {
-								mBoundService.stopSelf();
-								activity.unbindService(mServiceConnection);
-								mServiceBound = false;
-							}
-
-							chronoThread = null;
-							isRunning = false;
-
-							// stop the service
-							Intent intent = new Intent(activity.getApplicationContext(),FallService.class);
-							activity.stopService(intent);
-
-							databaseManager = new DbManager(v.getContext());
-
-							// update the session info in the database
-							databaseManager.updateTimeElapsed(ses.getId(),
-									timeElapsed);
-							databaseManager.updateStatus(ses.getId(), false);
-							databaseManager.updateEnd(ses.getId());
-
-							// update the session list element info
-							sessionList.get(position).setTimeElapsed(
-									timeElapsed);
-							sessionList.get(position).setEnd(
-									System.currentTimeMillis());
-							sessionList.get(position).setRunning(false);
-
-							displayDuration(holder, ses);
-							MainActivity.completeSession(); // show the fab
-							adapter.notifyDataSetChanged();
+							stopSession(ses, holder, position);
 
 						} // stop
 						if (selected.equals(MainActivity.mContext
@@ -587,12 +547,62 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 			// start the thread that updates the value of the elapsed time
 			// every second
-			chronoThread = new Thread(new MyRunner(holder, ses));
+			chronoThread = new Thread(new MyRunner(holder, ses,position));
 
 			chronoThread.start();
 			
 			chronoThread.setName("Main activity Chrono Thread");
 		}
+
+	}
+	
+	private void stopSession(Session ses, SessionViewHolder holder, int position)
+	{
+		long timeElapsed = 0;
+		itemRunning = null;
+
+		if (isRunning) // if chrono is running I stop it and
+						// I get the time elapsed from the
+						// service
+		{
+			chronoThread.interrupt();
+			mBoundService.pause();
+			timeElapsed = mBoundService.getTimestamp();
+		} else
+			timeElapsed = ses.getTimeElapsed();
+
+		// unbind the service
+		if (mServiceBound) {
+			mBoundService.stopSelf();
+			activity.unbindService(mServiceConnection);
+			mServiceBound = false;
+		}
+
+		chronoThread = null;
+		isRunning = false;
+
+		// stop the service
+		Intent intent = new Intent(activity.getApplicationContext(),FallService.class);
+		activity.stopService(intent);
+
+		DbManager databaseManager = new DbManager(MainActivity.mContext);
+
+		// update the session info in the database
+		databaseManager.updateTimeElapsed(ses.getId(),
+				timeElapsed);
+		databaseManager.updateStatus(ses.getId(), false);
+		databaseManager.updateEnd(ses.getId());
+
+		// update the session list element info
+		sessionList.get(position).setTimeElapsed(
+				timeElapsed);
+		sessionList.get(position).setEnd(
+				System.currentTimeMillis());
+		sessionList.get(position).setRunning(false);
+
+		displayDuration(holder, ses);
+		MainActivity.completeSession(); // show the fab
+		adapter.notifyDataSetChanged();
 
 	}
 
@@ -677,12 +687,16 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	private class MyRunner implements Runnable {
 
 		SessionViewHolder holder;
+		Session ses;
+		int position;
 
 		long time;
 
-		public MyRunner(SessionViewHolder holder, Session ses) {
+		public MyRunner(SessionViewHolder holder, Session ses, int position) {
 			this.holder = holder;
-
+			this.ses = ses;
+			this.position = position;
+			
 		}
 
 		@Override
@@ -699,6 +713,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 						public void run() {
 							time = mBoundService.getTimestamp();
 							holder.chrono.setText(Utilities.getTime(time));
+							if(time >= maxDuration)
+								stopSession(ses, holder, position);
 						}
 					}); // runOnUithread
 				}// if bound
@@ -712,6 +728,19 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			}
 		}
 
+	}
+	
+	/**
+	 * This method is used to find the selected item for the maximum duration of the session
+	 * 
+	 * @return the value of the maximum duration
+	 */
+	private long getDuration() {
+		SharedPreferences settings = 
+		        PreferenceManager.getDefaultSharedPreferences(MainActivity.mContext);
+		String duration = settings.getString("session_duration", "3600" );
+		long durationLong = Long.parseLong(duration);
+		return durationLong * 1000; 
 	}
 
 	/**
