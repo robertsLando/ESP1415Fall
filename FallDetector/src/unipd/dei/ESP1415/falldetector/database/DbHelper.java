@@ -52,11 +52,11 @@ public class DbHelper extends SQLiteOpenHelper {
      	       +  " FOR EACH ROW BEGIN"
      	       +  " DELETE FROM " + FallDataTable.FALLDATA_TABLE + " WHERE " 
      	       + FallDataTable.FALLDATA_TABLE + "." + FallDataTable.FALLID_COLUMN 
-     	       + "=" + FallTable.FALL_TABLE + "." + FallTable.ID_COLUMN 
+     	       + "= old." + FallTable.ID_COLUMN 
      	       +  "; END"); //because delete cascade doesn't works in fallData table
     	}catch(SQLException e)
     	{
-    		Log.e("SQLException",e.getMessage());
+    		System.out.println("Database error");
     	}
     }
 

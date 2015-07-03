@@ -239,7 +239,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 								itemRunning = null;
 
-								if (isRunning) {
+								if (chronoThread != null) {
 									chronoThread.interrupt();
 									chronoThread = null;
 								}

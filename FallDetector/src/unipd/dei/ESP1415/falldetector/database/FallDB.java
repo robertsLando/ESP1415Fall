@@ -60,7 +60,7 @@ public final class FallDB {
 		//CONSTRAINT
 		private static final String PRIMARY_KEY = " PRIMARY KEY";
 		private static final String FOREIGN_KEY = " FOREIGN KEY(" + SESSIONID_COLUMN + ") REFERENCES " + SessionTable.SESSION_TABLE 
-				+ "(" + SessionTable.ID_COLUMN + ") ON DELETE CASCADE)";
+				+ "(" + SessionTable.ID_COLUMN + ")  ON DELETE CASCADE)";
 
 		
 		
