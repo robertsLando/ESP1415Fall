@@ -76,7 +76,7 @@
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/date"
             android:layout_toRightOf="@+id/date"
-            android:text="01.01.2015" />
+            android:text="@string/emptyString" />
 
         <TextView
             android:id="@+id/time"
@@ -102,7 +102,7 @@
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/time"
             android:layout_toRightOf="@+id/time"
-            android:text="15:24:30" />
+            android:text="@sting/emptyString" />
 
         <TextView
             android:id="@+id/location"
@@ -139,7 +139,7 @@
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/stringLocation"
             android:layout_toRightOf="@+id/stringLocation"
-            android:text="N 41° 53’ 24″" />
+            android:text="@string/emptyString" />
 
 
     </RelativeLayout>
