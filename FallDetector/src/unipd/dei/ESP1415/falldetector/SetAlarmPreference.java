@@ -89,7 +89,12 @@ public class SetAlarmPreference extends DialogPreference {
 			Timestamp currentTimestamp = new Timestamp(currentTime);
 			Timestamp alarmTimestamp = new Timestamp(alarmTime);
 			
-			if(alarmTimestamp.after(currentTimestamp)){
+			
+			//FROM ANDROID DOCUMENTATION
+            //repeating alarms are a good choice for scheduling regular events or data lookups.
+			//A repeating alarm has the following characteristics:
+			//A trigger time. If the trigger time you specify is in the past, the alarm triggers immediately.
+			//if(alarmTimestamp.after(currentTimestamp)){
 			mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY,
 					notificationPendingIntent);
 
@@ -97,7 +102,7 @@ public class SetAlarmPreference extends DialogPreference {
 			Toast.makeText(super.getContext(),
 					"You set the notification at " + alarmCustomTime + " !",
 					Toast.LENGTH_SHORT).show();
-			}
+			//}
 		}
 	}
 
