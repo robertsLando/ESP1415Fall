@@ -63,7 +63,7 @@ public class FallEvent extends ActionBarActivity {
 		location.setText(fallLocation);
 		
 		//federico
-		//latitude.setText(Utilities.latitudeLongitudeToString(value))
+		
 		//Utilities.setThumbnail(sessionImage, c1.getInt(SessionTable.BGCOLOR), c1.getInt(SessionTable.IMGCOLOR));
 		
 		

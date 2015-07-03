@@ -295,6 +295,8 @@ public class SessionDetails extends ActionBarActivity{
 
 
 	public void setListData(long sID) {
+		 
+		
 
 		DbManager databaseManager = new DbManager(sdContext);
 
@@ -304,7 +306,7 @@ public class SessionDetails extends ActionBarActivity{
 		databaseManager.getFalls(sID);
 
 		Cursor c = databaseManager.getFalls(sID);
-
+		
 		while(c.moveToNext()){
 
 			final Fall temp = new Fall();
@@ -312,7 +314,9 @@ public class SessionDetails extends ActionBarActivity{
 			temp.setId(c.getInt(FallTable.ID));
 			temp.setLocation(c.getString(FallTable.LOCATION));
 			temp.setDatef(c.getLong(FallTable.DATE)); 
-			//temp.setSessionID(c.getInt(FallTable.SESSIONID));
+			//test
+			System.out.println("LA SESSION ID DEL FALL E' : " + sID);
+			temp.setSessionID(sID);
 
 			fallList.add(temp);		
 		}
