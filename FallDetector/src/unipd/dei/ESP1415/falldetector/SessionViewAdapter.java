@@ -596,6 +596,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 	}
 
+
 	/**
 	 * Used in onDestroy() method of MainActivity to unBind the service
 	 */

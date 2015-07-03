@@ -134,19 +134,9 @@ public class FallService extends Service {
 	    //System.out.println(rate); test
 	    mode = Integer.parseInt(rate);*/
 	   mode = getRate();
+	   initialize();
 	   System.out.println("IL MODE SCELTO IN ONCREATE E' " + mode);
 	    
-		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		sensorManager.registerListener(sensorListener,
-				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-				mode);
-		initialize();
-
-		// initialize the GPS
-		locationManager = (LocationManager) getApplicationContext()
-				.getSystemService(Context.LOCATION_SERVICE);
-		
-		locationThread.start();
 
 	}
 
@@ -154,6 +144,24 @@ public class FallService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		System.out.println("Fall service OnStartCommand received start id "
 				+ startId + ": " + intent);
+		
+		if(sensorManager == null || mode != getRate())
+		{
+			mode = getRate();
+			sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+			sensorManager.registerListener(sensorListener,
+					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+					mode);
+		}
+
+		if(locationManager == null)// initialize the GPS
+		{
+			locationManager = (LocationManager) getApplicationContext()
+				.getSystemService(Context.LOCATION_SERVICE);
+		}
+	
+		if(locationThread == null)
+			locationThread.start();
 
 		if(intent != null)
 		sessionID = intent.getLongExtra(SessionViewAdapter.ID, -1);

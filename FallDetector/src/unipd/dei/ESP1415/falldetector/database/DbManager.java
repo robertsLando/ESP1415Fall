@@ -231,7 +231,7 @@ public class DbManager {
 	public int removeSession(long ID) {
 
 		db = dbHelper.getWritableDatabase();
-		db.delete(FallTable.FALL_TABLE,FallTable.SESSIONID_COLUMN + " = " + ID, null);
+		//db.delete(FallTable.FALL_TABLE,FallTable.SESSIONID_COLUMN + " = " + ID, null);
 		return db.delete(SessionTable.SESSION_TABLE, SessionTable.SESSION_TABLE + "."+SessionTable.ID_COLUMN + " = " + ID, null);
 //		return db.delete(SessionTable.SESSION_TABLE, SessionTable.SESSION_TABLE + "."+SessionTable.ID_COLUMN + " = " + ID, null);
 	}

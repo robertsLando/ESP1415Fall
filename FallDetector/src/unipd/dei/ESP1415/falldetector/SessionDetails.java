@@ -50,6 +50,10 @@ public class SessionDetails extends ActionBarActivity{
 	String[] verlabels = new String[] { "10", "0", "-10" };
 	public static final String ACCSERVICE = "accservice";
 	public MyBinder binder;
+	
+	private TextView acc_x;
+	private TextView acc_y;
+	private TextView acc_z;
 
 
 	@Override
@@ -85,35 +89,19 @@ public class SessionDetails extends ActionBarActivity{
 		final ImageView btnDone = (ImageView) findViewById(R.id.doneButton);
 		final EditText newSessionName = (EditText) findViewById(R.id.newSessionName);
 		final Button btnDelete = (Button) findViewById(R.id.courrentSessionBtnDelete);
-		final TextView acc_x = (TextView) findViewById(R.id.accelerometer_data_x);
-		final TextView acc_y = (TextView) findViewById(R.id.accelerometer_data_y);
-		final TextView acc_z = (TextView) findViewById(R.id.accelerometer_data_z);
+		acc_x = (TextView) findViewById(R.id.accelerometer_data_x);
+		acc_y = (TextView) findViewById(R.id.accelerometer_data_y);
+		acc_z = (TextView) findViewById(R.id.accelerometer_data_z);
 		
 		if(currentSession.isRunning())
-			btnGraph.setVisibility(View.VISIBLE);
-		
-		if(savedInstanceState != null)
-		{
-			boolean acRun = savedInstanceState.getBoolean("strTV");
-			
-			if(acRun){
-
-				btnGraph.setVisibility(View.GONE);
-				btnGraphON.setVisibility(View.VISIBLE);
-				if(!mBound)
-				{
-					Intent intent = new Intent(this, FallService.class);
-					intent.putExtra(ACCSERVICE, true);
-					bindService(intent, mConnection, Context.BIND_AUTO_CREATE);	
-					isRunning = true;
-					accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
-					accThread.start();        	
-				}
-				acc_x.setVisibility(View.VISIBLE);
-				acc_y.setVisibility(View.VISIBLE);
-				acc_z.setVisibility(View.VISIBLE);				
+			btnGraphON.setVisibility(View.VISIBLE);
+		else
+			{	acc_x.setVisibility(View.GONE);
+				acc_y.setVisibility(View.GONE);
+				acc_z.setVisibility(View.GONE);
 			}
-		} 
+		
+
 
 		btnGraph.setOnClickListener(new OnClickListener() {
 
@@ -122,12 +110,11 @@ public class SessionDetails extends ActionBarActivity{
 
 				btnGraph.setVisibility(View.GONE);
 				btnGraphON.setVisibility(View.VISIBLE);
-				if(mBound)
-				{
-					isRunning = true;
-					accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
-					accThread.start();        	
-				}
+				
+				Intent intent = new Intent(SessionDetails.this, FallService.class);
+				intent.putExtra(ACCSERVICE, true);
+				bindService(intent, mConnection, Context.BIND_AUTO_CREATE);	
+				
 				acc_x.setVisibility(View.VISIBLE);
 				acc_y.setVisibility(View.VISIBLE);
 				acc_z.setVisibility(View.VISIBLE);
@@ -143,8 +130,7 @@ public class SessionDetails extends ActionBarActivity{
 				btnGraphON.setVisibility(View.GONE);
 				if(mBound)
 				{
-					isRunning = false;
-					accThread.interrupt();        	
+					unbindService(mConnection);     	
 				}
 				acc_x.setVisibility(View.GONE);
 				acc_y.setVisibility(View.GONE);
@@ -211,46 +197,20 @@ public class SessionDetails extends ActionBarActivity{
 
 	}
 
+	
 	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState)
-	{
-		// NOTE: with the implementation of this method inherited from
-		// Activity, some widgets save their state in the bundle by default.
-		// Once the user interface contains AT LEAST one non-autosaving
-		// element, you should provide a custom implementation of
-		// the method
-		boolean accRun = isRunning;
-		savedInstanceState.putBoolean("strTV", accRun);
-		super.onSaveInstanceState(savedInstanceState);
-	} 
-
-	@Override
-	protected void onStart(){
-		super.onStart();
-		//*********************BIND TO THE SERVICE*********************/
-		Intent intent = new Intent(this, FallService.class);
-		intent.putExtra(ACCSERVICE, true);
-		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);		
-		//*************************END SERVICE*************************//
-	}
-
-	/**
-	@Override
-	protected void onStop(){
-		super.onStop();
-		// Unbind from the service
-		if (mBound) {
-			isRunning = false;
-			unbindService(mConnection);
-			mBound = false;
-			if (accThread != null) {
-				accThread.interrupt();
-				accThread = null;
-			}
+	protected void onResume(){
+		super.onResume();
+		if(!mBound)
+		{
+			Intent intent = new Intent(this, FallService.class);
+			intent.putExtra(ACCSERVICE, true);
+			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);	
 		}
 	}
 
-	@Override
+
+	/*@Override
 	protected void onPause(){
 		super.onPause();
 		// Unbind from the service
@@ -264,8 +224,8 @@ public class SessionDetails extends ActionBarActivity{
 			}
 		}
 	}
-
-	 */
+*/
+	 
 
 	@Override
 	protected void onDestroy(){
@@ -367,11 +327,19 @@ public class SessionDetails extends ActionBarActivity{
 			binder = (MyBinder) service;
 			mService = binder.getService();
 			mBound = true;
+			accThread = new Thread(new AccRunner(acc_x, acc_y, acc_z));
+			accThread.start();    
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName arg0) {
 			mBound = false;
+			isRunning = false;
+			if(accThread != null)
+			{
+				accThread.interrupt();
+				accThread = null;
+			}
 		}
 	};
 
@@ -398,6 +366,7 @@ public class SessionDetails extends ActionBarActivity{
 		@Override
 		public void run() {
 
+			isRunning = true;
 			while (isRunning) {
 				if(mBound) {
 					activity.runOnUiThread( new Runnable() {
