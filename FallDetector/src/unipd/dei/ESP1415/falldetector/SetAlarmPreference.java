@@ -86,8 +86,8 @@ public class SetAlarmPreference extends DialogPreference {
 					.getSystemService(Context.ALARM_SERVICE);
 			
 			//to compare two time we use the class Timestamp
-			Timestamp currentTimestamp = new Timestamp(currentTime);
-			Timestamp alarmTimestamp = new Timestamp(alarmTime);
+			//Timestamp currentTimestamp = new Timestamp(currentTime);
+			//Timestamp alarmTimestamp = new Timestamp(alarmTime);
 			
 			
 			//FROM ANDROID DOCUMENTATION

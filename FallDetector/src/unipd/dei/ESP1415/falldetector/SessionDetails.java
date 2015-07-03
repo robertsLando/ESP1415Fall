@@ -334,7 +334,8 @@ public class SessionDetails extends ActionBarActivity{
 
 		//ok
 		//databaseManager.updateDB(); //uncomment this line when update database
-
+		
+	
 		databaseManager.getFalls(sID);
 
 		Cursor c = databaseManager.getFalls(sID);
@@ -346,7 +347,12 @@ public class SessionDetails extends ActionBarActivity{
 			temp.setId(c.getInt(FallTable.ID));
 			temp.setLocation(c.getString(FallTable.LOCATION));
 			temp.setDatef(c.getLong(FallTable.DATE)); 
-			//temp.setSessionID(c.getInt(FallTable.SESSIONID));
+			
+			//test
+            System.out.println("LA SESSION ID DEL FALL E' : " + sID);
+            temp.setSessionID(sID);
+
+			temp.setSessionID(sID);
 
 			fallList.add(temp);		
 		}
