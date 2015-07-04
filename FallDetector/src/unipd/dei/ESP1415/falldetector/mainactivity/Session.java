@@ -1,4 +1,4 @@
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.mainactivity;
 
 import java.io.Serializable;
 

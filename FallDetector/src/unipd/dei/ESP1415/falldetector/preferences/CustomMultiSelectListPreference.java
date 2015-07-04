@@ -1,10 +1,13 @@
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.preferences;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import unipd.dei.ESP1415.falldetector.preferences.IDynamicProvider;
+import unipd.dei.ESP1415.falldetector.R;
+import unipd.dei.ESP1415.falldetector.R.styleable;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;

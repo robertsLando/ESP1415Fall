@@ -17,12 +17,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <receiver
-            android:name=".MyNotificationBroadcastReceiver"
+            android:name="unipd.dei.ESP1415.falldetector.preferences.MyNotificationBroadcastReceiver"
             android:enabled="true" >
         </receiver>
 
         <activity
-            android:name=".MainActivity"
+            android:name="unipd.dei.ESP1415.falldetector.mainactivity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,28 +31,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FallEvent"
+            android:name="unipd.dei.ESP1415.falldetector.falldetailsactivity.FallEvent"
             android:label="@string/title_activity_fall_event"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".FallDetectorPreferences"
+            android:name="unipd.dei.ESP1415.falldetector.preferences.FallDetectorPreferences"
             android:label="@string/title_activity_fall_detector_preferences" >
         </activity>
         <activity
-            android:name=".SessionDetails"
+            android:name="unipd.dei.ESP1415.falldetector.sessiondetails.SessionDetails"
             android:label="@string/title_activity_session_details" 
             android:screenOrientation="portrait">
         </activity>
 
-        <service android:name=".FallService">
+        <service android:name="unipd.dei.ESP1415.falldetector.mainactivity.FallService">
             <intent-filter android:label="FallServiceFilter" >
                 <action android:name="unipd.dei.ESP1415.falldetector.FallService"/>
             </intent-filter>
         </service>
 
         <activity
-            android:name=".SendEmail"
+            android:name="unipd.dei.ESP1415.falldetector.mainactivity.SendEmail"
             android:label="@string/title_activity_send_email" >
         </activity>
         

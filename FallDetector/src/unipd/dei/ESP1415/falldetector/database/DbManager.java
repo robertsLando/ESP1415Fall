@@ -3,13 +3,13 @@ package unipd.dei.ESP1415.falldetector.database;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import unipd.dei.ESP1415.falldetector.Fall;
-import unipd.dei.ESP1415.falldetector.FallData;
-import unipd.dei.ESP1415.falldetector.Helper;
-import unipd.dei.ESP1415.falldetector.Session;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
 import unipd.dei.ESP1415.falldetector.database.HelperDB.HelperTable;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
+import unipd.dei.ESP1415.falldetector.falldetailsactivity.FallData;
+import unipd.dei.ESP1415.falldetector.mainactivity.Session;
+import unipd.dei.ESP1415.falldetector.preferences.Helper;
+import unipd.dei.ESP1415.falldetector.sessiondetails.Fall;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

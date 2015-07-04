@@ -1,5 +1,7 @@
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.preferences;
 
+import unipd.dei.ESP1415.falldetector.R;
+import unipd.dei.ESP1415.falldetector.R.xml;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;

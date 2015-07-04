@@ -1,7 +1,12 @@
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.sessiondetails;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import unipd.dei.ESP1415.falldetector.R;
+import unipd.dei.ESP1415.falldetector.Utilities;
+import unipd.dei.ESP1415.falldetector.R.id;
+import unipd.dei.ESP1415.falldetector.R.layout;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -1,9 +1,17 @@
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.mainactivity;
 
 import java.util.ArrayList;
 
+import unipd.dei.ESP1415.falldetector.R;
+import unipd.dei.ESP1415.falldetector.Utilities;
+import unipd.dei.ESP1415.falldetector.R.drawable;
+import unipd.dei.ESP1415.falldetector.R.id;
+import unipd.dei.ESP1415.falldetector.R.layout;
+import unipd.dei.ESP1415.falldetector.R.menu;
+import unipd.dei.ESP1415.falldetector.R.string;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
+import unipd.dei.ESP1415.falldetector.mainactivity.FloatingActionButton.Builder;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;

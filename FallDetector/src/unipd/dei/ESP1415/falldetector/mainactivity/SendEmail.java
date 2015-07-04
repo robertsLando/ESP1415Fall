@@ -1,8 +1,15 @@
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.mainactivity;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import unipd.dei.ESP1415.falldetector.R;
+import unipd.dei.ESP1415.falldetector.Utilities;
+import unipd.dei.ESP1415.falldetector.R.id;
+import unipd.dei.ESP1415.falldetector.R.layout;
+import unipd.dei.ESP1415.falldetector.R.menu;
+import unipd.dei.ESP1415.falldetector.sessiondetails.Fall;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;

@@ -1,5 +1,9 @@
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.preferences;
 
+import unipd.dei.ESP1415.falldetector.R;
+import unipd.dei.ESP1415.falldetector.R.drawable;
+import unipd.dei.ESP1415.falldetector.R.string;
+import unipd.dei.ESP1415.falldetector.mainactivity.MainActivity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.NotificationManager;

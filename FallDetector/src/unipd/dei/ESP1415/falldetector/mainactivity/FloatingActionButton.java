@@ -1,4 +1,4 @@
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.mainactivity;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;

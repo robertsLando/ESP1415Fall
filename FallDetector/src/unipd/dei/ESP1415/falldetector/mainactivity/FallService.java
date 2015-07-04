@@ -1,11 +1,14 @@
 
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.mainactivity;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import unipd.dei.ESP1415.falldetector.Utilities;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
+import unipd.dei.ESP1415.falldetector.falldetailsactivity.FallData;
+import unipd.dei.ESP1415.falldetector.sessiondetails.Fall;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;

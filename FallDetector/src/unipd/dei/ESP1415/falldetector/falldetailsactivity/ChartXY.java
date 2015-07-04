@@ -1,4 +1,4 @@
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.falldetailsactivity;
 
 import android.content.Context;
 import android.graphics.Canvas;

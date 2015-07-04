@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="unipd.dei.ESP1415.falldetector.FallEvent" >
+    tools:context="unipd.dei.ESP1415.falldetector.falldetailsactivity.FallEvent" >
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -1,8 +1,9 @@
-package unipd.dei.ESP1415.falldetector;
+package unipd.dei.ESP1415.falldetector.preferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import unipd.dei.ESP1415.falldetector.preferences.IDynamicProvider;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.HelperDB.HelperTable;
 import android.content.Context;
