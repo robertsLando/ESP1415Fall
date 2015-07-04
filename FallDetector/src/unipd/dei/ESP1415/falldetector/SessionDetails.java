@@ -335,16 +335,17 @@ public class SessionDetails extends ActionBarActivity{
 		Cursor c = databaseManager.getFalls(sID);
 
 		while(c.moveToNext()){
-
+            
+			//federico 
 			final Fall temp = new Fall();
 
 			temp.setId(c.getInt(FallTable.ID));
 			temp.setLocation(c.getString(FallTable.LOCATION));
 			temp.setDatef(c.getLong(FallTable.DATE)); 
 
-			//test
-			System.out.println("LA SESSION ID DEL FALL E' : " + sID);
-			temp.setSessionID(sID);
+			//test to see if the sessionId is correct
+			//System.out.println("LA SESSION ID DEL FALL E' : " + sID);
+			
 
 			temp.setSessionID(sID);
 

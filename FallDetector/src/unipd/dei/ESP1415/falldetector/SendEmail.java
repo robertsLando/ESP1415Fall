@@ -53,7 +53,8 @@ public class SendEmail extends Activity {
 		address = new String[receiver.size()];
 		int k = 0;
 		for(String s : receiver){
-			System.out.println(s); //test for control the address
+			//test to see the addresses selected
+			//System.out.println(s); //test for control the address
 			//to.add(s);
 			address[k++]=s;
 		}

@@ -141,10 +141,14 @@ public class FallService extends Service {
 		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		String rate = settings.getString("accelerometer_settings", "3");
 	    //System.out.println(rate); test
-	    mode = Integer.parseInt(rate);*/
+	    mode = Integer.parseInt(rate);
+	    
+	    -------> I create a method */
 	   
 	   initialize();
-	   System.out.println("IL MODE SCELTO IN ONCREATE E' " + mode);
+	   
+	   //test to see if the mode is the mode the user selected
+	   //System.out.println("IL MODE SCELTO IN ONCREATE E' " + mode);
 	    
 
 	}
@@ -246,7 +250,7 @@ public class FallService extends Service {
 		    mode = Integer.parseInt(rate);*/
 		   
 			mode = getRate();
-			 System.out.println("IL MODE SCELTO IN RESUME E' " + mode);
+			// System.out.println("IL MODE SCELTO IN RESUME E' " + mode);
 			
 			sensorManager.registerListener(sensorListener,
 					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
@@ -473,7 +477,7 @@ public class FallService extends Service {
 		    //System.out.println(rate); test
 		    mode = Integer.parseInt(rate);*/
 			 mode = getRate();
-			 System.out.println("IL MODE SCELTO I RUN E' " + mode);
+			 //System.out.println("IL MODE SCELTO I RUN E' " + mode);
 			 
 			sensorManager.registerListener(sensorListener,
 					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
