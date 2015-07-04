@@ -154,25 +154,13 @@
 
         <Button
             android:id="@+id/courrentSessionBtnDelete"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:text="@string/delete"
-            android:width="150dp" />
-
-        <Button
-            android:id="@+id/courrentSessionBtStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/courrentSessionBtnDelete"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/Play"
             android:width="150dp" />
     </RelativeLayout>
 
@@ -185,7 +173,7 @@
             android:id="@+id/accelerometer_data_x"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp" />
 
