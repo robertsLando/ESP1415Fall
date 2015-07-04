@@ -34,31 +34,16 @@
             android:text="@string/sessionText"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <ImageView
-            android:id="@+id/showGraphButton"
+        <Switch
+            android:id="@+id/switch_rotation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:contentDescription="@string/btnGraphDsc"
-            android:src="@drawable/graph_launcher"
-            android:visibility="gone"/>
-       
-        <ImageView
-            android:id="@+id/showGraphButtonON"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:contentDescription="@string/btnGraphDsc"
-            android:src="@drawable/graph_launcher_on" 
-            android:visibility="gone"/>
+            android:text="Rotation" />
         
     </RelativeLayout>
 
@@ -154,7 +139,7 @@
 
         <Button
             android:id="@+id/courrentSessionBtnDelete"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -163,6 +148,30 @@
             android:layout_marginStart="8dp"
             android:text="@string/delete"
             android:width="150dp" />
+
+        <ImageView
+            android:id="@+id/showGraphButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            android:src="@drawable/graph_launcher" />
+
+        <ImageView
+            android:id="@+id/showGraphButtonON"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            android:src="@drawable/graph_launcher_on" />
     </RelativeLayout>
 
     <RelativeLayout

@@ -11,6 +11,8 @@ import java.util.Date;
 
 
 
+
+
 import unipd.dei.ESP1415.falldetector.R;
 import unipd.dei.ESP1415.falldetector.R.id;
 import unipd.dei.ESP1415.falldetector.R.layout;
@@ -29,6 +31,7 @@ import android.app.Activity;
 //import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 //import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.hardware.Sensor;
@@ -48,6 +51,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Switch;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +85,8 @@ public class SessionDetails extends ActionBarActivity{
 	private double ax;
 	private double ay;
 	private double az;
+	
+	public boolean rCk = false;
 
 
 	@Override
@@ -115,6 +123,7 @@ public class SessionDetails extends ActionBarActivity{
 		final ImageView btnDone = (ImageView) findViewById(R.id.doneButton);
 		final EditText newSessionName = (EditText) findViewById(R.id.newSessionName);
 		final Button btnDelete = (Button) findViewById(R.id.courrentSessionBtnDelete);
+		final Switch swtRotation = (Switch) findViewById(R.id.switch_rotation);
 		acc_x = (TextView) findViewById(R.id.accelerometer_data_x);
 		acc_y = (TextView) findViewById(R.id.accelerometer_data_y);
 		acc_z = (TextView) findViewById(R.id.accelerometer_data_z);
@@ -125,7 +134,6 @@ public class SessionDetails extends ActionBarActivity{
 		 * 
 		 */
 		
-	
 		if(currentSession.isRunning())
 			btnGraph.setVisibility(View.VISIBLE);
 		else
@@ -134,7 +142,7 @@ public class SessionDetails extends ActionBarActivity{
 			acc_y.setVisibility(View.GONE);
 			acc_z.setVisibility(View.GONE);
 		}
-		
+
 		if(isRunning)
 		{
 			btnGraphON.setVisibility(View.VISIBLE);
@@ -149,13 +157,23 @@ public class SessionDetails extends ActionBarActivity{
 				isRunning = true;
 			}
 		}
-		
-		
 
-		/*
-		 * accelerometer
-		 */
+		swtRotation.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+
+				if(!isChecked){
+					setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+					rCk = false;
+				}
+				else
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+					rCk = true;
+			}
+		});
+		
 		btnGraph.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -167,7 +185,7 @@ public class SessionDetails extends ActionBarActivity{
 				acc_x.setVisibility(View.VISIBLE);
 				acc_y.setVisibility(View.VISIBLE);
 				acc_z.setVisibility(View.VISIBLE);
-				
+
 				sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 				sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 
@@ -193,9 +211,9 @@ public class SessionDetails extends ActionBarActivity{
 					accThread.interrupt();
 					accThread = null;
 				}
-				
+
 				sensorManager.unregisterListener(sensorListener);
-				
+
 				isRunning = false;
 			}
 		});
@@ -258,32 +276,37 @@ public class SessionDetails extends ActionBarActivity{
 		newSessionName.setText(currentSession.getName());
 
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-	if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-	    
-		if(isRunning)
-			sensorManager.unregisterListener(sensorListener);
-		if (accThread != null) {
-			accThread.interrupt();
-			accThread = null;
+		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+
+			if(isRunning)
+				sensorManager.unregisterListener(sensorListener);
+			if (accThread != null) {
+				accThread.interrupt();
+				accThread = null;
+			}
+			isRunning = false;
+			finish();
 		}
-		isRunning = false;
-		finish();
+
+		return super.onKeyDown(keyCode, event);
 	}
-	
-	return super.onKeyDown(keyCode, event);
-	}
-	
+
 
 	@Override
 	protected void onResume(){
 		super.onResume();
+		if(rCk){
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+		}
+		else
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		if(isRunning)
 		{
 			if(sensorManager == null)
-			sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+				sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 			sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 			if(accThread == null)
 			{
@@ -292,7 +315,7 @@ public class SessionDetails extends ActionBarActivity{
 			}
 		}
 	}
-	
+
 	@Override
 	protected void onPause(){
 		super.onPause();
@@ -334,17 +357,17 @@ public class SessionDetails extends ActionBarActivity{
 		case android.R.id.home:
 			if(sensorManager != null)
 				sensorManager.unregisterListener(sensorListener);
-			
+
 			if(isRunning)
 			{
 				accThread.interrupt();
 				accThread = null;
 				isRunning = false;
 			}	
-				
+
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
-			
+
 			finish();
 
 			break;
@@ -372,7 +395,7 @@ public class SessionDetails extends ActionBarActivity{
 		Cursor c = databaseManager.getFalls(sID);
 
 		while(c.moveToNext()){
-            
+
 			//federico 
 			final Fall temp = new Fall();
 
@@ -382,7 +405,7 @@ public class SessionDetails extends ActionBarActivity{
 
 			//test to see if the sessionId is correct
 			//System.out.println("LA SESSION ID DEL FALL E' : " + sID);
-			
+
 
 			temp.setSessionID(sID);
 
