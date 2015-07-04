@@ -9,7 +9,7 @@ import android.view.View;
 
 
 public class ChartXY extends View {
-
+  
 	private Paint mPaint;
 	private float[] xValues,yValues;
 	private float maxx,maxy,minx,miny,locxAxis,locyAxis;
@@ -19,7 +19,7 @@ public class ChartXY extends View {
 	//constructor
 	public ChartXY(Context context, float[] xValues, float[] yValues, int axes) {
 		super(context);
-		//we pass the arays
+		//we pass the arrays of value
 		this.xValues=xValues;
 		this.yValues=yValues;
 		this.axes=axes;
@@ -34,7 +34,7 @@ public class ChartXY extends View {
 	protected void onDraw(Canvas canvas) {
 		
 		//from android documentation we know that height and width the pixel of the canvas 
-		float canvasHeight = getHeight(); //value in pixel
+		float canvasHeight = getHeight(); //value in pixel (from android documentation)
 		float canvasWidth = getWidth();
 		
 		//we have to transform all the values in pixel (we have to layer the graph)
@@ -98,6 +98,7 @@ public class ChartXY extends View {
 		int[] pint = new int[value.length];
 		
 		for (int i = 0; i < value.length; i++) {
+			//this is the way to transform an int value to a corrispective pixel value
 			p[i] = .1*pixels+((value[i]-min)/(max-min))*.8*pixels;
 			pint[i] = (int)p[i];
 		}

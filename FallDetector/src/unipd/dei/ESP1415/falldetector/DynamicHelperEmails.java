@@ -9,13 +9,15 @@ import android.content.Context;
 import android.database.Cursor;
 
 public class DynamicHelperEmails implements IDynamicProvider {
-
+    
+	//this class has to give us the entry value of our custom  MultiSeletListPreference
 	public List<String> emails;
 	
 	public DynamicHelperEmails() {
 		emails = new ArrayList<String>();
 	}
 	
+	//return the size of array
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
@@ -35,7 +37,8 @@ public class DynamicHelperEmails implements IDynamicProvider {
 		// TODO Auto-generated method stub
 		
 	}
-
+    
+	
 	@Override
 	public void populate(Context mContext) {
 		DbManager databaseManager = new DbManager(mContext);

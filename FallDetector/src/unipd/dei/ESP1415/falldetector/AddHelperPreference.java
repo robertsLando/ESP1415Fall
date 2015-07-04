@@ -91,6 +91,7 @@ public class AddHelperPreference extends DialogPreference {
 				addContact.dismiss();
 			}
 		
+			//we have to save our new contact in the database
 			
 			Helper temp = new Helper();
 			temp.setEmail(email);
