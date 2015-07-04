@@ -51,25 +51,25 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	public ArrayList<Session> sessionList; // the container
 	private static LayoutInflater inflater = null; // calls external xml layout
 	// ()
-	private SessionViewHolder itemVisible = null;
-	public SessionViewHolder itemRunning = null;
-	private SessionViewAdapter adapter;
-	private long maxDuration;
+	private SessionViewHolder itemVisible = null; //the item view that is expand
+	public SessionViewHolder itemRunning = null; //the item running
+	private SessionViewAdapter adapter; //the adapter
+	private long maxDuration; //the max duration set in settings
 
 	private FallService mBoundService; // the instance of the service
 	public boolean mServiceBound = false; // bind of service true = service is
 											// bounded (mainactivity) false =
 											// not buonded
-	private Thread chronoThread;
-	private boolean isRunning = false;
+	private Thread chronoThread; //the thread that updates the ui
+	private boolean isRunning = false; //if the tread is running or not
 
-	// Intent string constants
+	// Intent string CONSTRAINTS
 	public static final String SESSION = "session";
 	public static final String ELAPSED = "elapsed";
 	public static final String ID = "id";
 
-	private MyServiceConnection mServiceConnection;
-	private static Intent serviceIntent;
+	private MyServiceConnection mServiceConnection; //the service connection to handle service state onBind
+	private static Intent serviceIntent; //the intent that starts and stops the service
 
 	public SessionViewAdapter(Activity mactivity, ArrayList<Session> data) {
 
@@ -230,9 +230,9 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							sessionList.remove(position);
 							adapter.notifyDataSetChanged();
 							
-							//the empty list int
+							//the empty list hint
 							TextView tx = (TextView) activity.findViewById(R.id.emptyListHint);
-							
+									
 							if(adapter.isEmpty())		
 								tx.setVisibility(View.VISIBLE);
 							
@@ -292,8 +292,6 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 							text.setText(ses.getName());
 							Utilities.setThumbnail(image, ses.getBgColor(),
 									ses.getImgColor());
-
-							// if button is clicked, close the custom dialog
 
 							dialogOkButton
 									.setOnClickListener(new OnClickListener() {
@@ -384,6 +382,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 				chronoThread.interrupt();
 				chronoThread = null;
 
+				//get the time elapsed from the service and pause the chrono in service
 				long timeelapsed = mBoundService.getTimestamp();
 				mBoundService.pause();
 
@@ -422,6 +421,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		@Override
 		public void onClick(View myView) {
 
+			//EXPAND ANIMATION
 			SessionViewHolder holder = (SessionViewHolder) myView.getTag();
 			if (itemVisible == null) {
 				holder.expandable.setVisibility(View.VISIBLE);
@@ -566,6 +566,12 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 
 	}
 	
+	/**
+	 * Stop the current session and the service, updates the database and the view 
+	 * @param ses The Session Object
+	 * @param holder The Session View holder
+	 * @param position The position of the session in the adapter
+	 */
 	private void stopSession(Session ses, SessionViewHolder holder, int position)
 	{
 		long timeElapsed = 0;

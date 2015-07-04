@@ -26,23 +26,6 @@ public final class FallDB {
 		 * sessionID INTEGER NOT NULL,
 		 * FOREIGN KEY(sessionID) REFERENCES session(_id) ON DELETE CASCADE)*/
 		
-		/*Android documentation suggest on every place where you work with IO,
-		 *  use different thread for disk manipulation.I suggest you should use one
-		 *  thread to receive onSensorChanged events, save it to memory, maybe 
-		 *  add timestamp and values. Add several such values to array, then use 
-		 *  handler or other way to pass this structure to another thread. 
-		 *  That thread should save it into database, ie. Loop through all 
-		 *  gathered values and save each like your saveToDatabase. 
-		 *  This way. UI should be responsive all time, even when 
-		 *  long queue waits to be written to disk.This might work, but there
-		 *  should be some feedback about how fast saving of values is and how big
-		 *  is incoming queue. If it is too long, you might drop some values to prevent
-		 *  full memory. Maybe saving thread would send using handler event to UI thread,
-		 *  that queue is full and it does not want new values for a while. 
-		 *  When it reduces queue or make it empty, it would tell UI thread to start 
-		 *  sending again.
-		*/
-		
 		public static final String ID_COLUMN = "_id";
 		public static final String LOCATION_COLUMN = "location";
 		public static final String DATE_COLUMN = "dateF";

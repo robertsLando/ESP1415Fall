@@ -32,41 +32,41 @@ import android.preference.PreferenceManager;
 
 public class FallService extends Service {
 
-	//private static String LOG_TAG = "BoundService";
-	public static final String FALLSERVICE = "unipd.dei.ESP1415.falldetector.FallService";
+	// service binder
 	private IBinder mBinder = new MyBinder();
 
-	//private aData accData = new aData();
-	private long elapsedMillis;
-	private long pauseTime;
-	private long startTime;
-	private boolean isRunning;
-	private static boolean isCreated = false;
-	private Thread chronoThread;
-	private static long sessionID;
+	private long elapsedMillis; 
+	private long pauseTime; //the time that the chrono has been in pause
+	private long startTime; //the time when the chrono has been started
+	private boolean isRunning; // checks  if the chrono is running
+	private static boolean isCreated = false; //checks if the service has been created
+	private Thread chronoThread; //the thread that updates the elapsedmillis
+	private static long sessionID; //the id of the associated running session
 
-	// thomasgagliardi
-	private double a_norm;
+	//Intent constraint
+	public final static String FALL = "fall"; 
+	
+	private double a_norm; //the value of the acceleration sqrt(x^2+y^2+z^2)
 	private static final int TWO_MINUTES = 1000 * 60 * 2; // location update
 															// time
-	private int i = 0;
-	private boolean fixed = false;
-	private static boolean detected = false;
-	private int BUFF_SIZE = 50;
-	private FallData[] window = new FallData[BUFF_SIZE];
-	double sigma = 0.5, th = 10, th1 = 5, th2 = 2;
-	private SensorManager sensorManager;
-	private String fall_state, post_state;
-	public final static String FALL = "fall";
-	private LocationManager locationManager;
-	private Location mLocation;
-	private Thread fallDetected = new Thread(new FallRecognizedThread());
-	private Thread locationThread = new Thread(new FindLocationThread());
-	private double ax, ay, az;
+	private int i = 0; //the index in the buffer windows for accelerometer data
+	private boolean fixed = false; //checks if the position has been fixed or not
+	private static boolean detected = false; //checks if a fall has been detected
+	private int BUFF_SIZE = 50; //the buffer size for accelerometer data
+	private FallData[] window = new FallData[BUFF_SIZE]; //the buffer for accelerometer data
+	private final double sigma = 0.5, th = 10, th1 = 5, th2 = 2; //constraints for fall recognition
+	private SensorManager sensorManager; //the sensor manager
+	private String fall_state, post_state; //the state of fall
+	private LocationManager locationManager; //the location manager
+	private Location mLocation; //last known location
+	private Thread fallDetected = new Thread(new FallRecognizedThread()); //thread that save and send email
+	private Thread locationThread = new Thread(new FindLocationThread()); //updates the location
+	private double ax, ay, az; //acceleration components x y z
 	
 	private int mode; //I use this variable to define the rate of the accelerometer---->the user choose it in the preference
 	private long maxSessionDuration; //I use this variable to define the maximum duration
 	
+	//the accelerometer listener
 	private SensorEventListener sensorListener = new SensorEventListener() {
 		
 		@Override
@@ -79,16 +79,19 @@ public class FallService extends Service {
 			//double ax, ay, az;
 
 			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+				//get accelerometer datas
 				ax = event.values[0];
 				ay = event.values[1];
 				az = event.values[2];
-				/*accData.setX(ax);
-				accData.setY(ay);
-				accData.setZ(az);*/
+				
+				//add the data in the buffer
 				AddData(ax, ay, az);
+				
+				//compute the data
 				posture_recognition(window, ay);
 				fall_recognition(window);
 				SystemState(fall_state, post_state);
+				
 				if (!fall_state.equalsIgnoreCase(post_state)) {
 					fall_state = post_state;
 				}
@@ -96,6 +99,7 @@ public class FallService extends Service {
 		}
 	};
 	
+	//location listener
 	private LocationListener locationListener = new LocationListener() {
 		public void onLocationChanged(Location location) {
 			if (isBetterLocation(location, mLocation))
@@ -137,16 +141,6 @@ public class FallService extends Service {
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				mode);
 		
-		
-
-		/*//federico---->use the rate that the user will
-		SharedPreferences settings = 
-		        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		String rate = settings.getString("accelerometer_settings", "3");
-	    //System.out.println(rate); test
-	    mode = Integer.parseInt(rate);
-	    
-	    -------> I create a method */
 	   
 	   initialize();
 	   
@@ -161,15 +155,17 @@ public class FallService extends Service {
 		System.out.println("Fall service OnStartCommand received start id "
 				+ startId + ": " + intent);
 		
+		//get the id of the associated session
 		if(intent != null)
-		sessionID = intent.getLongExtra(SessionViewAdapter.ID, -1);
+			sessionID = intent.getLongExtra(SessionViewAdapter.ID, -1);
 		
 		if(sessionID == -1 || sessionID == 0)
 		{
+			//if something gets wrong, get the id from the database
 			DbManager databaseManager = new DbManager(getApplicationContext());
-	
 			sessionID = databaseManager.getRunningSessionID();
 		}
+		
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
 		return START_STICKY;
@@ -209,6 +205,7 @@ public class FallService extends Service {
 		super.onDestroy();
 		isRunning = false;
 		isCreated = false;
+		//free resources
 		locationManager.removeUpdates(locationListener);
 		sensorManager.unregisterListener(sensorListener);
 		System.out.println("Fall service destroyed");
@@ -221,14 +218,26 @@ public class FallService extends Service {
 		return accData;
 	}*/
 
+	
+	/**
+	 * Used from bounded activities to get the time elapsed
+	 * @return the elapsed time in millisecond
+	 */
 	public long getTimestamp() {
 		return elapsedMillis;
 	}
 
+	/**
+	 * Set the chrono start time
+	 * @param timestamp
+	 */
 	public void setTime(long timestamp) {
 		startTime -= timestamp;
 	}
 
+	/**
+	 * Pause the chrono
+	 */
 	public void pause() {
 		isRunning = false;
 		chronoThread.interrupt();
@@ -239,19 +248,16 @@ public class FallService extends Service {
 		sensorManager.unregisterListener(sensorListener);
 	}
 
+	/**
+	 * Resume the chrono
+	 */
 	public void resume() {
 		if (!isRunning) {
 			pauseTime = SystemClock.uptimeMillis()
 					- (startTime + elapsedMillis);
 			start();
 			
-			/*//federico---->use the rate that the user will
-			SharedPreferences settings = 
-			        PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-			String rate = settings.getString("accelerometer_settings", "3");
-		    //System.out.println(rate); test
-		    mode = Integer.parseInt(rate);*/
-		   
+			//gets the rate from the shared preferences
 			mode = getRate();
 			// System.out.println("IL MODE SCELTO IN RESUME E' " + mode);
 			
@@ -264,6 +270,9 @@ public class FallService extends Service {
 		}
 	}
 
+	/**
+	 * Starts the chrono
+	 */
 	public void start() {
 		isRunning = true;
 		chronoThread = new Thread(new MyChrono());
@@ -281,14 +290,15 @@ public class FallService extends Service {
 		}
 	}
 
+	/**
+	 * This class handle the chrono and update time elapsed
+	 * @author daniellando
+	 *
+	 */
 	private class MyChrono implements Runnable {
 
 		@Override
 		public void run() {
-			//I need the maximum duration
-			maxSessionDuration=getDuration();
-			//test
-			System.out.println("THE MAXIMUM DURATION IS: "+ maxSessionDuration);
 			
 			while (isRunning) {
 				
@@ -311,7 +321,9 @@ public class FallService extends Service {
 	 * thomas gagliardi
 	 */
 
-
+/**
+ * Initialize the buffer
+ */
 	private void initialize() {
 
 		for (i = 0; i < BUFF_SIZE; i++) {
@@ -321,6 +333,10 @@ public class FallService extends Service {
 		post_state = "none";
 	}
 
+	/**
+	 * Compute data
+	 * @param window1 the buffer
+	 */
 	private void fall_recognition(FallData[] window1) {
 		int l = window1.length;
 //		int f = 0;
@@ -348,6 +364,11 @@ public class FallService extends Service {
 			fall_state = "none";
 	}
 
+	/**
+	 * Recognize the posture
+	 * @param window2 the buffer
+	 * @param ay2
+	 */
 	private void posture_recognition(FallData[] window2, double ay2) {
 
 		int zrc = compute_zrc(window2);
@@ -401,7 +422,13 @@ public class FallService extends Service {
 			}
 		}
 	}
-
+	
+/**
+ * Add sensor accelerometer data in the buffer
+ * @param ax2 X component
+ * @param ay2 Y component
+ * @param az2 Z component
+ */
 	private void AddData(double ax2, double ay2, double az2) {
 
 		a_norm = Math.sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2); // acceleration

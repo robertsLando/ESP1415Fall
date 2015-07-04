@@ -56,12 +56,12 @@ public class DbHelper extends SQLiteOpenHelper {
      	       +  "; END"); //because delete cascade doesn't works in fallData table
     	}catch(SQLException e)
     	{
-    		System.out.println("Database error");
+    		System.out.println("Error while creating the database");
     	}
     }
 
 	/**
-	 * Called when database need upgrades
+	 * Called when database need upgrades (not implemented yet)
 	 *
 	 * @param db
 	 *            the database
