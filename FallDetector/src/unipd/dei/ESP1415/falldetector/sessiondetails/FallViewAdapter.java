@@ -28,6 +28,7 @@ public class FallViewAdapter extends ArrayAdapter<Fall> {
 	private ArrayList<Fall> items;
 	private Context context;
 	private static LayoutInflater inflater = null;
+	private int i = 1;
 	
 	public FallViewAdapter(Context context, int textViewResourceId,
 			ArrayList<Fall> items) {
@@ -73,7 +74,8 @@ public class FallViewAdapter extends ArrayAdapter<Fall> {
 		// the associated item so we retrieve the Contact
 		Fall c = this.items.get(position);
 		if (c != null) {
-			holder.fallId.setText(": "+c.getId());
+			//holder.fallId.setText(": "+c.getId());
+			holder.fallId.setText(": "+ (i++));
 			
 			Date sessionDate = new Date(c.getDatef());
 			
