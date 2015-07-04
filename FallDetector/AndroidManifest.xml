@@ -42,6 +42,7 @@
         </activity>
         <activity
             android:name="unipd.dei.ESP1415.falldetector.sessiondetails.SessionDetails"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_session_details">
         </activity>
 
