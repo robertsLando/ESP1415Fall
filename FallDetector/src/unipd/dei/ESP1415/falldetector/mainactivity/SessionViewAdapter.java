@@ -69,6 +69,7 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 	public static final String ID = "id";
 
 	private MyServiceConnection mServiceConnection;
+	private static Intent serviceIntent;
 
 	public SessionViewAdapter(Activity mactivity, ArrayList<Session> data) {
 
@@ -261,8 +262,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 								}
 
 								if (isFallServiceRunning()) {
-									Intent intent = new Intent(activity.getApplicationContext(),FallService.class);
-									activity.stopService(intent);
+									//Intent intent = new Intent(activity.getApplicationContext(),FallService.class);
+									activity.stopService(serviceIntent);
 								}
 							}
 
@@ -508,17 +509,19 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 			mServiceConnection = new MyServiceConnection(ses, holder, c,
 					position);
 
-			Intent intent = new Intent(activity.getApplicationContext(),FallService.class);
+			//Intent intent = new Intent(activity.getApplicationContext(),FallService.class);
+			if(serviceIntent == null)
+				serviceIntent = new Intent(activity.getApplicationContext(),FallService.class);
 
 			if (!isFallServiceRunning()) {
 				// start the service
-				intent.putExtra(ELAPSED, ses.getTimeElapsed());
-				intent.putExtra(ID, ses.getId());
-				activity.startService(intent);
+				serviceIntent.putExtra(ELAPSED, ses.getTimeElapsed());
+				serviceIntent.putExtra(ID, ses.getId());
+				activity.startService(serviceIntent);
 			}
 
 			// bind the service
-			activity.bindService(intent, mServiceConnection,
+			activity.bindService(serviceIntent, mServiceConnection,
 					Context.BIND_AUTO_CREATE);
 		} else {
 
@@ -589,8 +592,8 @@ public class SessionViewAdapter extends BaseAdapter implements OnClickListener {
 		isRunning = false;
 
 		// stop the service
-		Intent intent = new Intent(activity.getApplicationContext(),FallService.class);
-		activity.stopService(intent);
+		//Intent intent = new Intent(activity.getApplicationContext(),FallService.class);
+		activity.stopService(serviceIntent);
 
 		DbManager databaseManager = new DbManager(MainActivity.mContext);
 
