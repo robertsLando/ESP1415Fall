@@ -37,7 +37,8 @@
         </activity>
         <activity
             android:name="unipd.dei.ESP1415.falldetector.preferences.FallDetectorPreferences"
-            android:label="@string/title_activity_fall_detector_preferences" >
+            android:label="@string/title_activity_fall_detector_preferences" 
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
         </activity>
         <activity
             android:name="unipd.dei.ESP1415.falldetector.sessiondetails.SessionDetails"
