@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name=".FallEvent"
-            android:label="@string/title_activity_fall_event" >
+            android:label="@string/title_activity_fall_event"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FallDetectorPreferences"
