@@ -11,6 +11,7 @@ import unipd.dei.ESP1415.falldetector.R.string;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.SessionDB.SessionTable;
 import unipd.dei.ESP1415.falldetector.mainactivity.FloatingActionButton.Builder;
+import unipd.dei.ESP1415.falldetector.preferences.FallDetectorPreferences;
 import unipd.dei.ESP1415.falldetector.utilities.Utilities;
 import android.app.Dialog;
 import android.content.Context;
@@ -276,9 +277,7 @@ public class MainActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			Intent intent = new Intent();
-			intent.setClassName("unipd.dei.ESP1415.falldetector",
-					"unipd.dei.ESP1415.falldetector.FallDetectorPreferences");
+			Intent intent = new Intent(MainActivity.this, FallDetectorPreferences.class);
 			startActivity(intent);
 
 			return true;

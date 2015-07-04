@@ -23,7 +23,7 @@
     <PreferenceCategory
         android:key="contacts_setting"
         android:title="@string/pref_contact_setting" >
-        <unipd.dei.ESP1415.falldetector.AddHelperPreference
+        <unipd.dei.ESP1415.falldetector.preferences.AddHelperPreference
             android:key="contact_list_add"
             android:title="@string/add_contact"
             android:summary="@string/pref_contact_list_sum"
@@ -31,14 +31,14 @@
             android:positiveButtonText="@string/add"
             android:windowNoTitle="true" />
 
-        <unipd.dei.ESP1415.falldetector.CustomMultiSelectListPreference
+        <unipd.dei.ESP1415.falldetector.preferences.CustomMultiSelectListPreference
             android:key="contact_list_management_2"
             android:dependency="session_settings"
             android:title="@string/pref_contact_management"
             android:dialogTitle="@string/pref_contact_management"
             android:summary="@string/pref_contact_management_sum"
-            custom:dynamicEntriesProvider="unipd.dei.ESP1415.falldetector.DynamicHelperNames"
-            custom:dynamicEntryValuesProvider="unipd.dei.ESP1415.falldetector.DynamicHelperEmails"
+            custom:dynamicEntriesProvider="unipd.dei.ESP1415.falldetector.preferences.DynamicHelperNames"
+            custom:dynamicEntryValuesProvider="unipd.dei.ESP1415.falldetector.preferences.DynamicHelperEmails"
             custom:selectAllValuesByDefault="true"
             android:entries="@array/empty_array"
             android:entryValues="@array/empty_array"
@@ -53,7 +53,7 @@
             android:key="pref_notification_activate"
             android:title="@string/pref_notification_enable" />
 
-        <unipd.dei.ESP1415.falldetector.SetAlarmPreference
+        <unipd.dei.ESP1415.falldetector.preferences.SetAlarmPreference
             android:dialogMessage="Set the time"
             android:key="notification_alarm"
             android:enabled="true"
