@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class FallEvent extends ActionBarActivity {
+public class FallDetails extends ActionBarActivity {
 	
 	private Fall currentFall;
 	public static Context sdContext;

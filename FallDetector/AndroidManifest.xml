@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="unipd.dei.ESP1415.falldetector.falldetailsactivity.FallEvent"
+            android:name="unipd.dei.ESP1415.falldetector.falldetailsactivity.FallDetails"
             android:label="@string/title_activity_fall_event"
             android:screenOrientation="portrait" >
         </activity>

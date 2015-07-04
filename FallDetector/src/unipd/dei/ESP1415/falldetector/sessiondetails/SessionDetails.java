@@ -18,7 +18,7 @@ import unipd.dei.ESP1415.falldetector.R.string;
 //import unipd.dei.ESP1415.falldetector.GraphViewer.MyServiceConnection;
 import unipd.dei.ESP1415.falldetector.database.DbManager;
 import unipd.dei.ESP1415.falldetector.database.FallDB.FallTable;
-import unipd.dei.ESP1415.falldetector.falldetailsactivity.FallEvent;
+import unipd.dei.ESP1415.falldetector.falldetailsactivity.FallDetails;
 import unipd.dei.ESP1415.falldetector.mainactivity.MainActivity;
 import unipd.dei.ESP1415.falldetector.mainactivity.Session;
 import unipd.dei.ESP1415.falldetector.mainactivity.SessionViewAdapter;
@@ -291,7 +291,7 @@ public class SessionDetails extends ActionBarActivity{
 		Log.i("[onItemClick]", clickedObj.toString());*/
 
 		final Fall fl = (Fall) fallList.get(position);
-		Intent myIntent = new Intent(v.getContext(), FallEvent.class);
+		Intent myIntent = new Intent(v.getContext(), FallDetails.class);
 
 		myIntent.putExtra(FALL, fl);
 		startActivity(myIntent);
