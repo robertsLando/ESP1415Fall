@@ -10,6 +10,7 @@ import java.util.Date;
 
 
 
+
 import unipd.dei.ESP1415.falldetector.R;
 import unipd.dei.ESP1415.falldetector.R.id;
 import unipd.dei.ESP1415.falldetector.R.layout;
@@ -37,6 +38,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 //import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -257,6 +259,23 @@ public class SessionDetails extends ActionBarActivity{
 
 	}
 	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+	    
+		if(isRunning)
+			sensorManager.unregisterListener(sensorListener);
+		if (accThread != null) {
+			accThread.interrupt();
+			accThread = null;
+		}
+		isRunning = false;
+		finish();
+	}
+	
+	return super.onKeyDown(keyCode, event);
+	}
+	
 
 	@Override
 	protected void onResume(){
@@ -325,6 +344,8 @@ public class SessionDetails extends ActionBarActivity{
 				
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
+			
+			finish();
 
 			break;
 
