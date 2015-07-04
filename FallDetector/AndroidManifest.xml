@@ -41,7 +41,8 @@
         </activity>
         <activity
             android:name=".SessionDetails"
-            android:label="@string/title_activity_session_details" >
+            android:label="@string/title_activity_session_details" 
+            android:screenOrientation="portrait">
         </activity>
 
         <service android:name=".FallService">
