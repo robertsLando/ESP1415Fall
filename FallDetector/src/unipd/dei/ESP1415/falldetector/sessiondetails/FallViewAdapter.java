@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import unipd.dei.ESP1415.falldetector.R;
-import unipd.dei.ESP1415.falldetector.Utilities;
 import unipd.dei.ESP1415.falldetector.R.id;
 import unipd.dei.ESP1415.falldetector.R.layout;
+import unipd.dei.ESP1415.falldetector.utilities.Utilities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;

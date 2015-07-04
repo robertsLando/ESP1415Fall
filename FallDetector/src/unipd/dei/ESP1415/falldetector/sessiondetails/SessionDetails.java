@@ -9,8 +9,8 @@ import java.util.Date;
 
 
 
+
 import unipd.dei.ESP1415.falldetector.R;
-import unipd.dei.ESP1415.falldetector.Utilities;
 import unipd.dei.ESP1415.falldetector.R.id;
 import unipd.dei.ESP1415.falldetector.R.layout;
 import unipd.dei.ESP1415.falldetector.R.string;
@@ -22,6 +22,7 @@ import unipd.dei.ESP1415.falldetector.falldetailsactivity.FallEvent;
 import unipd.dei.ESP1415.falldetector.mainactivity.MainActivity;
 import unipd.dei.ESP1415.falldetector.mainactivity.Session;
 import unipd.dei.ESP1415.falldetector.mainactivity.SessionViewAdapter;
+import unipd.dei.ESP1415.falldetector.utilities.Utilities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 //import android.content.ComponentName;
